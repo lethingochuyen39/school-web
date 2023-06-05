@@ -1,11 +1,9 @@
 import {
-  createBrowserRouter,
   Route,
-  RouterProvider,
   Routes,
 } from "react-router-dom";
 import Login from "./page/login";
-import { AuthContextProvider } from "./api/client";
+import { AuthContextProvider } from "./api/AuthContext";
 import Success from "./page/success";
 
 function App() {
