@@ -16,11 +16,11 @@ function App() {
 				<AuthContextProvider>
 					<Routes>
 						<Route path="/login" element={<Login />} />
-						<Route path="/" element={<LayoutAdmin />}>
-							<Route path="home" element={<Home />} />
-							<Route path="academicYear" element={<AcademicYear />} />
-							<Route path="schedule" element={<Schedule />} />
-							<Route path="score" element={<Score />} />
+						<Route path="/admin/" element={<LayoutAdmin />}>
+							<Route path="/admin/home" element={<Home />} />
+							<Route path="/admin/academicYear" element={<AcademicYear />} />
+							<Route path="/admin/schedule" element={<Schedule />} />
+							<Route path="/admin/score" element={<Score />} />
 						</Route>
 					</Routes>
 				</AuthContextProvider>

@@ -58,7 +58,7 @@ export const AuthContextProvider = ({ children }) => {
 			localStorage.setItem("refreshToken", res.data.refreshToken);
 			localStorage.setItem("date", dateUnix);
 			newCookie.set("token", token, { path: "/", expires: date });
-			navigate("/home");
+			navigate("/admin/home");
 		});
 	};
 	return (
