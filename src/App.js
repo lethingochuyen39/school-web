@@ -9,6 +9,7 @@ import { AuthContextProvider, AuthContext } from "./api/AuthContext";
 import { dashboardTheme } from "./dashboardTheme";
 import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
+import ScoreType from "./pages/ScoreType/ScoreType";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -22,6 +23,7 @@ function App() {
 							<Route path="/admin/academicYear" element={<AcademicYear />} />
 							<Route path="/admin/schedule" element={<Schedule />} />
 							<Route path="/admin/score" element={<Score />} />
+							<Route path="/admin/score-type" element={<ScoreType />} />
 						</Route>
 					</Routes>
 				</AuthContextProvider>
