@@ -1,37 +1,3 @@
-// import axios from "axios";
-// import React, { createContext, useState } from "react";
-
-// import { useNavigate } from "react-router-dom";
-// import Cookies from "universal-cookie";
-// import jwt from "jwt-decode";
-// import client from "./client.js";
-
-// const cookies = new Cookies();
-// axios.defaults.headers.common["Authorization"] = cookies.get("token");
-// export const AuthContext = React.createContext();
-// export const AuthContextProvider = ({ children }) => {
-// 	const [getLogin, setLogin] = useState({ isAuthenticated: false });
-
-// 	const navigate = useNavigate();
-// 	const login = async (payload) => {
-// 		await client.post("/auth/login", payload).then((res) => {
-// 			const newCookie = new Cookies();
-// 			setLogin({ isAuthenticated: true });
-// 			const token = res.data.token;
-// 			var jwtDecode = jwt(token);
-// 			console.log(jwtDecode);
-// 			navigate("/", { state: { jwtDecode, token } });
-// 			newCookie.set("token", token, { path: "/" });
-// 		});
-// 	};
-// 	return (
-// 		<>
-// 			<AuthContext.Provider value={{ loginState: getLogin, login }}>
-// 				{children}
-// 			</AuthContext.Provider>
-// 		</>
-// 	);
-// };
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";

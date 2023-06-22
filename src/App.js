@@ -5,7 +5,7 @@ import Schedule from "./pages/Schedule/Schedule";
 import Login from "./pages/login";
 import Home from "./pages/Home/Home";
 import AcademicYear from "./pages/AcademicYear/AcademicYear";
-import { AuthContextProvider } from "./api/AuthContext";
+import { AuthContextProvider, AuthContext } from "./api/AuthContext";
 import { dashboardTheme } from "./dashboardTheme";
 import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
@@ -16,6 +16,7 @@ function App() {
 				<AuthContextProvider>
 					<Routes>
 						<Route path="/login" element={<Login />} />
+						<Route path="/" element={<Home />} />
 						<Route path="/admin/" element={<LayoutAdmin />}>
 							<Route path="/admin/home" element={<Home />} />
 							<Route path="/admin/academicYear" element={<AcademicYear />} />

@@ -87,7 +87,7 @@ export const mainNavbarItems = [
 			{
 				id: 20,
 				label: "Loại điểm",
-				route: "score",
+				route: "score-type",
 			},
 			{
 				id: 21,
