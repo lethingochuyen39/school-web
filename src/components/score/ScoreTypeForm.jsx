@@ -3,7 +3,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import client from "../../api/client";
 import validate from "validate.js";
 
 const schema = {
@@ -54,24 +53,16 @@ const ScoreTypeForm = ({
 				setError(errors);
 				return;
 			}
+
 			if (isEditMode) {
-				await client.put(`/api/score-types/${scoreType.id}`, scoreType);
-				handleUpdateScoreType(scoreType);
-				await handleRefreshData();
+				await handleUpdateScoreType(scoreType);
 			} else {
-				const response = await client.post("/api/score-types", scoreType);
-				const addedScoreType = response.data;
-				handleAddScoreType(addedScoreType);
-				await handleRefreshData();
+				await handleAddScoreType(scoreType);
 			}
-			setScoreType({
-				id: "",
-				name: "",
-			});
-			setShowModal(false);
+
 			handleClose();
 		} catch (error) {
-			console.log(error);
+			setError(error);
 		}
 	};
 

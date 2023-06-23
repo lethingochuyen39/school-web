@@ -12,7 +12,7 @@ import { Button, Modal } from "@mui/material";
 const ScoreType = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [isFormOpen, setisFormOpen] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [scoreType, setScoreType] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
@@ -21,7 +21,6 @@ const ScoreType = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenForm = () => {
-		console.log(scoreType);
 		if (scoreType) {
 			setIsEditMode(true);
 			setselectedScoreType(scoreType);
@@ -29,11 +28,11 @@ const ScoreType = () => {
 			setIsEditMode(false);
 			setselectedScoreType(null);
 		}
-		setisFormOpen(true);
+		setIsFormOpen(true);
 	};
 
 	const handleCloseForm = () => {
-		setisFormOpen(false);
+		setIsFormOpen(false);
 		setScoreType(null);
 	};
 
@@ -41,10 +40,10 @@ const ScoreType = () => {
 		try {
 			await client.post("/api/score-types", newScoreType);
 			setIsModalOpen(true);
+			await handleRefreshData();
 		} catch (error) {
-			console.error(error);
 			if (error.response) {
-				setError(error.response.data.message);
+				setError(error.response.data);
 			} else {
 				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
 			}
@@ -72,7 +71,7 @@ const ScoreType = () => {
 		if (selectedScoreType) {
 			setIsEditMode(true);
 			setselectedScoreType(selectedScoreType);
-			setisFormOpen(true);
+			setIsFormOpen(true);
 		}
 	};
 
@@ -82,11 +81,12 @@ const ScoreType = () => {
 				`/api/score-types/${updatedScoreType.id}`,
 				updatedScoreType
 			);
-			fetchData();
 			setIsModalOpen(true);
+			await handleRefreshData();
 		} catch (error) {
+			console.error(error);
 			if (error.response) {
-				setError(error.response.data.message);
+				setError(error.response.data);
 			} else {
 				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
 			}
@@ -101,7 +101,6 @@ const ScoreType = () => {
 			console.error(error);
 		}
 	};
-
 	const fetchData = useCallback(async () => {
 		try {
 			let url = "/api/score-types";
@@ -123,6 +122,10 @@ const ScoreType = () => {
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
+	};
+
+	const handleRefreshData = () => {
+		fetchData();
 	};
 
 	const getHeader = () => (
@@ -199,16 +202,12 @@ const ScoreType = () => {
 		);
 	};
 
-	const handleRefreshData = () => {
-		fetchData();
-	};
-
 	return (
 		<GridWrapper>
 			{isFormOpen && (
 				<ScoreTypeForm
 					handleAddScoreType={handleAddScoreType}
-					handleUpdateAScoreType={handleUpdateScoreType}
+					handleUpdateScoreType={handleUpdateScoreType}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedScoreType}
