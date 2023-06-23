@@ -17,7 +17,7 @@ function App() {
 				<AuthContextProvider>
 					<Routes>
 						<Route path="/login" element={<Login />} />
-						<Route path="/" element={<Home />} />
+						<Route path="/" element={<Login />} />
 						<Route path="/admin/" element={<LayoutAdmin />}>
 							<Route path="/admin/home" element={<Home />} />
 							<Route path="/admin/academicYear" element={<AcademicYear />} />

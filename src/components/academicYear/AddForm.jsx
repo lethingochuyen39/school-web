@@ -3,7 +3,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import client from "../../api/client";
 import validate from "validate.js";
 
 const schema = {
@@ -34,7 +33,6 @@ const schema = {
 const AddForm = ({
 	handleAddAcademicYear,
 	handleUpdateAcademicYear,
-	handleRefreshData,
 	handleClose,
 	isEditMode,
 	initialData,
@@ -68,24 +66,10 @@ const AddForm = ({
 				setError(errors);
 			}
 			if (isEditMode) {
-				await client.put(
-					`/api/academic-years/${academicYear.id}`,
-					academicYear
-				);
-				handleUpdateAcademicYear(academicYear);
+				await handleUpdateAcademicYear(academicYear);
 			} else {
-				const response = await client.post("/api/academic-years", academicYear);
-				const addedAcademicYear = response.data;
-				handleAddAcademicYear(addedAcademicYear);
-				await handleRefreshData();
+				await handleAddAcademicYear(academicYear);
 			}
-			setAcademicYear({
-				id: "",
-				name: "",
-				startDate: "",
-				endDate: "",
-			});
-			setShowModal(false);
 			handleClose();
 		} catch (error) {
 			console.log(error);

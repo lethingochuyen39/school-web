@@ -125,6 +125,10 @@ const AcademicYear = () => {
 		setSearchTerm(event.target.value);
 	};
 
+	const handleRefreshData = () => {
+		fetchData();
+	};
+
 	const getHeader = () => (
 		<Box
 			display="flex"
@@ -199,10 +203,6 @@ const AcademicYear = () => {
 				handleDelete={handleDelete}
 			/>
 		);
-	};
-
-	const handleRefreshData = () => {
-		fetchData();
 	};
 
 	return (
