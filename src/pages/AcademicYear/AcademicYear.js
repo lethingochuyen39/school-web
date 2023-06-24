@@ -41,6 +41,7 @@ const AcademicYear = () => {
 		try {
 			await client.post("/api/academic-years", newAcademicYear);
 			setIsModalOpen(true);
+			await handleRefreshData();
 		} catch (error) {
 			console.error(error);
 			if (error.response) {
@@ -57,7 +58,7 @@ const AcademicYear = () => {
 			const response = await client.get(`/api/academic-years/${id}`);
 			const data = response.data;
 			setAcademicYear(data);
-			setIsModalOpen(true); // Mở modal để hiển thị thông tin
+			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
 		}
