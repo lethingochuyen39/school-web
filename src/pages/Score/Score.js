@@ -1,55 +1,139 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
-import IconButton from "@mui/material/IconButton";
 import CommonButton from "../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
+import { Button, Modal } from "@mui/material";
+import ScoreForm from "../../components/score/ScoreForm";
 const Score = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [score, setScore] = useState(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isEditMode, setIsEditMode] = useState(false);
+	const [selectedScore, setselectedScore] = useState(null);
+	const [error, setError] = useState("");
+	const [searchTerm, setSearchTerm] = useState("");
+	const [students, setStudents] = useState([]); // Danh sách học sinh
+	const [subjects, setSubjects] = useState([]); // Danh sách môn học
+	const [scoreTypes, setScoreTypes] = useState([]); // Danh sách loại điểm
 
-	const fetchData = async () => {
+	const handleOpenForm = async () => {
+		if (score) {
+			setIsEditMode(true);
+			setselectedScore(score);
+		} else {
+			setIsEditMode(false);
+			setselectedScore(null);
+		}
+
+		// Gọi hàm lấy danh sách học sinh và môn học
 		try {
-			const response = await client.get("/api/scores");
+			const responseStudents = await client.get("/allStudent");
+			const responseSubjects = await client.get("/api/subjects");
+			const responseScoreType = await client.get("/api/score-types");
+			setStudents(responseStudents.data);
+			setSubjects(responseSubjects.data);
+			setScoreTypes(responseScoreType.data);
+		} catch (error) {
+			console.error(error);
+			if (error.response) {
+				setError(error.response.data);
+			}
+		}
+		setIsFormOpen(true);
+	};
+
+	const handleCloseForm = () => {
+		setIsFormOpen(false);
+		setScore(null);
+	};
+
+	const fetchData = useCallback(async () => {
+		try {
+			let url = "/api/scores";
+			if (searchTerm) {
+				url += `?studentName=${searchTerm}`;
+			}
+			const response = await client.get(url);
 			setData(response.data);
 			setLoading(false);
+		} catch (error) {
+			console.error(error);
+			setLoading(false);
+		}
+	}, [searchTerm]);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	const handleAddScore = async (newScore) => {
+		try {
+			await client.post("/api/scores", newScore);
+			setIsModalOpen(true);
+			await fetchData();
+		} catch (error) {
+			if (error.response) {
+				setError(error.response.data);
+			} else {
+				setError("Đã xảy ra lỗi khi cập nhật điểm.");
+			}
+		}
+	};
+
+	const handleSearchChange = (event) => {
+		setSearchTerm(event.target.value);
+	};
+
+	const handleView = async (id) => {
+		try {
+			const response = await client.get(`/api/scores/${id}`);
+			const data = response.data;
+			setScore(data);
+			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	useEffect(() => {
-		fetchData();
-	}, []);
-
-	const handleView = (id) => {
-		console.log("View score with ID:", id);
+	const closeModal = () => {
+		setIsModalOpen(false);
 	};
 
 	const handleEdit = (id) => {
-		console.log("Edit score with ID:", id);
+		const selectedScore = data.find((year) => year.id === id);
+		if (selectedScore) {
+			setIsEditMode(true);
+			setselectedScore(selectedScore);
+			setIsFormOpen(true);
+		}
 	};
-
-	const handleDelete = (id) => {
-		console.log("Delete score with ID:", id);
+	const handleUpdateScore = async (id, updatedScore) => {
+		try {
+			await client.put(`/api/scores/${id}`, updatedScore);
+			await fetchData();
+		} catch (error) {
+			console.error(error);
+			if (error.response) {
+				setError(error.response.data);
+			} else {
+				setError("Đã xảy ra lỗi khi cập nhật điểm.");
+			}
+		}
 	};
-
-	const handleRefresh = () => {
-		setLoading(true);
-		fetchData();
-	};
-
-	const handleChange = (value) => {
-		console.log(value);
-	};
-
-	const addUser = () => {
-		console.log("click");
+	const handleDelete = async (id) => {
+		try {
+			await client.delete(`/api/scores/${id}`);
+			fetchData();
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	const getHeader = () => (
@@ -65,7 +149,24 @@ const Score = () => {
 			flexWrap="wrap"
 		>
 			<Box
-				flex={1}
+				display="flex"
+				alignItems="center"
+				marginTop={{ xs: "10px", sm: 0 }}
+				marginRight={{ xs: "10px" }}
+			>
+				<CommonButton
+					variant="contained"
+					sx={{
+						color: "white",
+						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
+					}}
+					onClick={handleOpenForm}
+					size="large"
+				>
+					Thêm mới
+				</CommonButton>
+			</Box>
+			<Box
 				minWidth={{ xs: "100%", sm: 0, md: "500px" }}
 				marginRight={{ xs: 0, sm: "10px" }}
 				marginBottom={{ xs: "10px", sm: 0 }}
@@ -77,8 +178,9 @@ const Score = () => {
 			>
 				<SearchIcon sx={{ marginRight: "15px" }} />
 				<Input
-					placeholder="Search by email address, phone number, or user UID"
-					onChange={(event) => handleChange(event.target.value)}
+					placeholder="Tìm kiếm theo tên học sinh... "
+					onChange={handleSearchChange}
+					value={searchTerm}
 					sx={{
 						width: { xs: "100%", sm: "auto", md: "100%" },
 						color: "rgba(0, 0, 0, 0.6)",
@@ -86,22 +188,6 @@ const Score = () => {
 					}}
 					disableUnderline
 				/>
-			</Box>
-			<Box display="flex" alignItems="center" marginTop={{ xs: "10px", sm: 0 }}>
-				<CommonButton
-					variant="contained"
-					sx={{
-						color: "white",
-						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-					}}
-					onClick={addUser}
-					size="large"
-				>
-					Add New
-				</CommonButton>
-				<IconButton onClick={handleRefresh}>
-					<RefreshIcon />
-				</IconButton>
 			</Box>
 		</Box>
 	);
@@ -111,19 +197,19 @@ const Score = () => {
 		{
 			field: "student",
 			headerName: "Học sinh",
-			width: 100,
+			width: 200,
 			valueGetter: (params) => params.row.student?.name || "",
 		},
 		{
 			field: "subject",
 			headerName: "Môn học",
-			width: 100,
+			width: 200,
 			valueGetter: (params) => params.row.subject?.name || "",
 		},
 		{
 			field: "scoreType",
 			headerName: "Loại điểm",
-			width: 100,
+			width: 250,
 			valueGetter: (params) => params.row.scoreType?.name || "",
 		},
 		{ field: "score", headerName: "Điểm", width: 100 },
@@ -142,6 +228,53 @@ const Score = () => {
 
 	return (
 		<GridWrapper>
+			{isFormOpen && (
+				<ScoreForm
+					handleAddScore={handleAddScore}
+					handleUpdateScore={handleUpdateScore}
+					handleClose={handleCloseForm}
+					isEditMode={isEditMode}
+					initialData={selectedScore}
+					error={error}
+					students={students} // Danh sách học sinh truyền vào ScoreForm
+					subjects={subjects} // Danh sách môn học truyền vào ScoreForm
+					scoreTypes={scoreTypes} // Danh sách loại điểm truyền vào ScoreForm
+				/>
+			)}
+
+			{score && (
+				<Modal
+					open={isModalOpen}
+					onClose={closeModal}
+					aria-labelledby="modal-title"
+					aria-describedby="modal-description"
+				>
+					<Box
+						sx={{
+							position: "fixed",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+							width: 400,
+							bgcolor: "background.paper",
+							borderRadius: 4,
+							p: 2,
+						}}
+					>
+						<h2 id="modal-title">Thông tin điểm</h2>
+						<p id="modal-description">ID: {score.id}</p>
+						<p>Học sinh: {score.student.name}</p>
+						<p>Môn học: {score.subject.name}</p>
+						<p>Loại điểm: {score.scoreType.name}</p>
+						<p>Điểm: {score.score}</p>
+
+						<Button variant="contained" onClick={closeModal}>
+							Đóng
+						</Button>
+					</Box>
+				</Modal>
+			)}
+
 			<BasicCard header={getHeader()} content={getContent()} />
 		</GridWrapper>
 	);

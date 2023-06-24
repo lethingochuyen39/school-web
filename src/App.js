@@ -5,7 +5,7 @@ import Schedule from "./pages/Schedule/Schedule";
 import Login from "./pages/login";
 import Home from "./pages/Home/Home";
 import AcademicYear from "./pages/AcademicYear/AcademicYear";
-import { AuthContextProvider, AuthContext } from "./api/AuthContext";
+import { AuthContextProvider } from "./api/AuthContext";
 import { dashboardTheme } from "./dashboardTheme";
 import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
