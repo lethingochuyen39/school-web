@@ -64,6 +64,7 @@ const AddForm = ({
 			const errors = validate(academicYear, schema);
 			if (errors) {
 				setError(errors);
+				return;
 			}
 			if (isEditMode) {
 				await handleUpdateAcademicYear(academicYear);
