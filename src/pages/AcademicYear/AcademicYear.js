@@ -41,7 +41,7 @@ const AcademicYear = () => {
 		try {
 			await client.post("/api/academic-years", newAcademicYear);
 			setIsModalOpen(true);
-			await handleRefreshData();
+			await fetchData();
 		} catch (error) {
 			console.error(error);
 			if (error.response) {
@@ -66,6 +66,7 @@ const AcademicYear = () => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+		setAcademicYear(null);
 	};
 
 	const handleEdit = (id) => {
@@ -124,10 +125,6 @@ const AcademicYear = () => {
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
-	};
-
-	const handleRefreshData = () => {
-		fetchData();
 	};
 
 	const getHeader = () => (
@@ -216,7 +213,6 @@ const AcademicYear = () => {
 					isEditMode={isEditMode}
 					initialData={selectedAcademicYear}
 					error={error}
-					handleRefreshData={handleRefreshData}
 				/>
 			)}
 
