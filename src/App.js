@@ -10,6 +10,7 @@ import { dashboardTheme } from "./dashboardTheme";
 import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
+import ClassScorePage from "./pages/Score/ClassScorePage";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -24,6 +25,10 @@ function App() {
 							<Route path="/admin/schedule" element={<Schedule />} />
 							<Route path="/admin/score" element={<Score />} />
 							<Route path="/admin/score-type" element={<ScoreType />} />
+							<Route
+								path="/admin/class-score/:classId"
+								element={<ClassScorePage />}
+							/>
 						</Route>
 					</Routes>
 				</AuthContextProvider>

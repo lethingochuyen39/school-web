@@ -37,9 +37,9 @@ const schema = {
 			message: "^Vui lòng nhập điểm",
 		},
 		numericality: {
-			greaterThanOrEqualTo: 1,
+			greaterThanOrEqualTo: 0,
 			lessThanOrEqualTo: 10,
-			message: "^Điểm phải nằm trong khoảng từ 1 đến 10",
+			message: "^Điểm phải nằm trong khoảng từ 0 đến 10",
 		},
 	},
 };
@@ -56,7 +56,7 @@ const ScoreForm = ({
 }) => {
 	const [score, setScore] = useState({
 		id: isEditMode ? initialData.id : "",
-		studentId: isEditMode ? initialData.student.id : "", // Đảm bảo giá trị studentId đã được khởi tạo
+		studentId: isEditMode ? initialData.student.id : "",
 		subjectId: isEditMode ? initialData.subject.id : "",
 		scoreTypeId: isEditMode ? initialData.scoreType.id : "",
 		score: isEditMode ? initialData.score : "",
@@ -140,88 +140,119 @@ const ScoreForm = ({
 				<h2>{isEditMode ? "Cập nhật điểm" : "Thêm điểm"}</h2>
 
 				<form onSubmit={handleSubmit}>
-					<FormControl fullWidth margin="normal" error={hasError("studentId")}>
-						<InputLabel id="student-label">Học sinh</InputLabel>
-						<Select
-							labelId="student-label"
-							id="student-select"
-							name="studentId"
-							value={score.studentId}
+					{isEditMode ? (
+						<TextField
+							type="number"
+							name="score"
+							label="Điểm"
+							value={score.score}
 							onChange={handleChange}
-							label="Học sinh"
-							disabled={isEditMode}
+							fullWidth
+							margin="normal"
+							variant="outlined"
 							required
-						>
-							{students.map((student) => (
-								<MenuItem key={student.id} value={student.id}>
-									{student.name}
-								</MenuItem>
-							))}
-						</Select>
-						{hasError("studentId") && (
-							<FormHelperText>{getErrorMessage("studentId")}</FormHelperText>
-						)}
-					</FormControl>
+							error={hasError("score")}
+							helperText={getErrorMessage("score")}
+						/>
+					) : (
+						<>
+							<FormControl
+								fullWidth
+								margin="normal"
+								error={hasError("studentId")}
+							>
+								<InputLabel id="student-label">Học sinh</InputLabel>
+								<Select
+									labelId="student-label"
+									id="student-select"
+									name="studentId"
+									value={score.studentId}
+									onChange={handleChange}
+									label="Học sinh"
+									required
+								>
+									{students.map((student) => (
+										<MenuItem key={student.id} value={student.id}>
+											{student.name}
+										</MenuItem>
+									))}
+								</Select>
+								{hasError("studentId") && (
+									<FormHelperText>
+										{getErrorMessage("studentId")}
+									</FormHelperText>
+								)}
+							</FormControl>
 
-					<FormControl fullWidth margin="normal" error={hasError("subjectId")}>
-						<InputLabel id="subject-label">Môn học</InputLabel>
-						<Select
-							labelId="subject-label"
-							id="subject-select"
-							name="subjectId"
-							value={score.subjectId}
-							onChange={handleChange}
-							label="Môn học"
-							disabled={isEditMode}
-						>
-							{subjects.map((subject) => (
-								<MenuItem key={subject.id} value={subject.id}>
-									{subject.name}
-								</MenuItem>
-							))}
-						</Select>
-						{hasError("subjectId") && (
-							<FormHelperText>{getErrorMessage("subjectId")}</FormHelperText>
-						)}
-					</FormControl>
+							<FormControl
+								fullWidth
+								margin="normal"
+								error={hasError("subjectId")}
+							>
+								<InputLabel id="subject-label">Môn học</InputLabel>
+								<Select
+									labelId="subject-label"
+									id="subject-select"
+									name="subjectId"
+									value={score.subjectId}
+									onChange={handleChange}
+									label="Môn học"
+								>
+									{subjects.map((subject) => (
+										<MenuItem key={subject.id} value={subject.id}>
+											{subject.name}
+										</MenuItem>
+									))}
+								</Select>
+								{hasError("subjectId") && (
+									<FormHelperText>
+										{getErrorMessage("subjectId")}
+									</FormHelperText>
+								)}
+							</FormControl>
 
-					<FormControl
-						fullWidth
-						margin="normal"
-						error={hasError("scoreTypeId")}
-					>
-						<InputLabel id="scoreType-label">Loại điểm</InputLabel>
-						<Select
-							labelId="scoreType-label"
-							id="scoreType-select"
-							name="scoreTypeId"
-							value={score.scoreTypeId}
-							onChange={handleChange}
-							label="Loại điểm"
-							disabled={isEditMode}
-						>
-							{scoreTypes.map((scoreType) => (
-								<MenuItem key={scoreType.id} value={scoreType.id}>
-									{scoreType.name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+							<FormControl
+								fullWidth
+								margin="normal"
+								error={hasError("scoreTypeId")}
+							>
+								<InputLabel id="scoreType-label">Loại điểm</InputLabel>
+								<Select
+									labelId="scoreType-label"
+									id="scoreType-select"
+									name="scoreTypeId"
+									value={score.scoreTypeId}
+									onChange={handleChange}
+									label="Loại điểm"
+								>
+									{scoreTypes.map((scoreType) => (
+										<MenuItem key={scoreType.id} value={scoreType.id}>
+											{scoreType.name}
+										</MenuItem>
+									))}
+								</Select>
+								{hasError("scoreTypeId") && (
+									<FormHelperText>
+										{getErrorMessage("scoreTypeId")}
+									</FormHelperText>
+								)}
+							</FormControl>
 
-					<TextField
-						type="number"
-						name="score"
-						label="Điểm"
-						value={score.score}
-						onChange={handleChange}
-						fullWidth
-						margin="normal"
-						variant="outlined"
-						required
-						error={hasError("score")}
-						helperText={getErrorMessage("score")}
-					/>
-
+							<TextField
+								type="number"
+								name="score"
+								label="Điểm"
+								value={score.score}
+								onChange={handleChange}
+								fullWidth
+								margin="normal"
+								variant="outlined"
+								required
+								error={hasError("score")}
+								helperText={getErrorMessage("score")}
+							/>
+						</>
+					)}
 					<Button type="submit" variant="contained" onClick={handleSubmit}>
 						{isEditMode ? "Cập nhật" : "Thêm"}
 					</Button>

@@ -12,6 +12,7 @@ const DataTable = ({
 	handleView,
 	handleEdit,
 	handleDelete,
+	hiddenActions = [],
 }) => {
 	const [rows, setRows] = useState([]);
 
@@ -21,31 +22,38 @@ const DataTable = ({
 
 	const renderCellActions = (params) => (
 		<>
-			<IconButton
-				onClick={() => handleView(params.id)}
-				style={{ color: "#888" }}
-			>
-				<VisibilityIcon />
-			</IconButton>
-			<IconButton
-				onClick={() => handleEdit(params.id)}
-				style={{ color: "#00bcd4" }}
-			>
-				<EditIcon />
-			</IconButton>
-			<IconButton
-				onClick={() => {
-					const shouldDelete = window.confirm("Bạn có chắc muốn xóa?");
-					if (shouldDelete) {
-						handleDelete(params.id);
-					}
-				}}
-				style={{ color: "#f44336" }}
-			>
-				<DeleteIcon />
-			</IconButton>
+			{!hiddenActions.includes("view") && (
+				<IconButton
+					onClick={() => handleView(params.id)}
+					style={{ color: "#888" }}
+				>
+					<VisibilityIcon />
+				</IconButton>
+			)}
+			{!hiddenActions.includes("edit") && (
+				<IconButton
+					onClick={() => handleEdit(params.id)}
+					style={{ color: "#00bcd4" }}
+				>
+					<EditIcon />
+				</IconButton>
+			)}
+			{!hiddenActions.includes("delete") && (
+				<IconButton
+					onClick={() => {
+						const shouldDelete = window.confirm("Bạn có chắc muốn xóa?");
+						if (shouldDelete) {
+							handleDelete(params.id);
+						}
+					}}
+					style={{ color: "#f44336" }}
+				>
+					<DeleteIcon />
+				</IconButton>
+			)}
 		</>
 	);
+
 	const renderCellCheckbox = (params) => (
 		<input
 			type="checkbox"
@@ -75,14 +83,14 @@ const DataTable = ({
 			renderCell: renderCellActions,
 		},
 	];
-
+	// Kiểm tra nếu tất cả các hành động đều bị ẩn thì không hiển thị cột chức năng
+	const shouldHideActionsColumn = hiddenActions.length === 3;
 	return (
 		<div style={{ height: 400, width: "100%" }}>
 			<DataGrid
 				rows={rows}
-				columns={columnsWithActions}
+				columns={shouldHideActionsColumn ? columns : columnsWithActions}
 				loading={loading}
-				// checkboxSelection
 				onSelectionModelChange={handleSelectionModelChange}
 				disableSelectionOnClick
 				pagination
