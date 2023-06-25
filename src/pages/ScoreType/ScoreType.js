@@ -64,6 +64,7 @@ const ScoreType = () => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+		setScoreType(null);
 	};
 
 	const handleEdit = (id) => {
