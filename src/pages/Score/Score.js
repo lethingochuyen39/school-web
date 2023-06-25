@@ -80,7 +80,7 @@ const Score = () => {
 	const handleAddScore = async (newScore) => {
 		try {
 			await client.post("/api/scores", newScore);
-			setIsModalOpen(true);
+
 			await fetchData();
 		} catch (error) {
 			if (error.response) {
@@ -304,6 +304,10 @@ const Score = () => {
 								<li
 									key={classItem.id}
 									onClick={() => handleClassClick(classItem.id)}
+									style={{
+										cursor: "pointer",
+										marginBottom: 8,
+									}}
 								>
 									{classItem.name}
 								</li>

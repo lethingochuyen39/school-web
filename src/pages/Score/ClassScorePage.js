@@ -6,6 +6,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import validate from "validate.js";
 import {
 	Button,
 	FormControl,
@@ -17,11 +18,12 @@ import {
 	Stack,
 	IconButton,
 } from "@mui/material";
+
 const ClassScorePage = () => {
 	const [students, setStudents] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { classId } = useParams();
-	const [score, setScore] = useState("");
+	const [error, setError] = useState(null);
 	const [selectedSubject, setSelectedSubject] = useState("");
 	const [selectedScoreType, setSelectedScoreType] = useState("");
 	const [subjects, setSubjects] = useState([]);
@@ -77,19 +79,32 @@ const ClassScorePage = () => {
 	}, []);
 
 	const handleScoreInput = (id, newScore) => {
-		// Tìm học sinh có id tương ứng trong state students
-		const updatedStudents = students.map((student) => {
-			if (student.id === id) {
-				return {
-					...student,
-					score: newScore, // Cập nhật giá trị score cho học sinh
-				};
-			}
-			return student;
-		});
+		const cleanedScore = newScore.trim();
 
-		setStudents(updatedStudents); // Cập nhật state students mới
+		const isValid = /^\d*\.?\d*$/.test(cleanedScore);
+
+		if (!isValid) {
+			setError({ score: ["Điểm phải là số từ 0 đến 10"] });
+		} else {
+			const parsedScore = parseFloat(cleanedScore);
+			if (parsedScore < 0 || parsedScore > 10) {
+				setError({ score: ["Điểm phải là số từ 0 đến 10"] });
+			} else {
+				setError(null);
+				const updatedStudents = students.map((student) => {
+					if (student.id === id) {
+						return {
+							...student,
+							score: cleanedScore !== "" ? cleanedScore : null,
+						};
+					}
+					return student;
+				});
+				setStudents(updatedStudents);
+			}
+		}
 	};
+
 	const handleSubjectChange = (event) => {
 		setSelectedSubject(event.target.value);
 	};
@@ -123,19 +138,46 @@ const ClassScorePage = () => {
 	const handleGoBack = () => {
 		navigate(-1);
 	};
+
+	const hasErrorInput = (field) => {
+		return error && error[field] ? true : false;
+	};
+
+	const getErrorMessage = (field) => {
+		return hasErrorInput(field) ? error[field][0] : "";
+	};
+
+	const renderErrorMessage = (field) => {
+		if (hasErrorInput(field)) {
+			return (
+				<Alert severity="error">
+					<AlertTitle>Error</AlertTitle>
+					{getErrorMessage(field)}
+				</Alert>
+			);
+		}
+		return null;
+	};
+
 	const columns = [
 		{ field: "id", headerName: "ID", width: 100, disableActions: true },
 		{ field: "name", headerName: "Học sinh", width: 150, disableActions: true },
 		{
 			field: "score",
 			headerName: "Điểm",
-			width: 250,
+			width: 500,
 			renderCell: (params) => (
-				<input
-					type="text"
-					value={params.row.score}
-					onChange={(e) => handleScoreInput(params.id, e.target.value)}
-				/>
+				<>
+					<input
+						type="text"
+						name="score"
+						value={params.row.score}
+						onChange={(e) => handleScoreInput(params.id, e.target.value)}
+						error={hasErrorInput("score")}
+					/>
+
+					{renderErrorMessage("score")}
+				</>
 			),
 			disableActions: true,
 		},
@@ -150,8 +192,7 @@ const ClassScorePage = () => {
 				display="flex"
 				justifyContent="space-between"
 				alignItems="center"
-				padding="20px"
-				paddingTop="5px"
+				padding="5px"
 				flexWrap="wrap"
 			>
 				<Box width="calc(50% - 10px)" marginRight="10px">
@@ -214,8 +255,7 @@ const ClassScorePage = () => {
 				display="flex"
 				justifyContent="flex-end"
 				alignItems="center"
-				padding="20px"
-				paddingTop="5px"
+				padding="5px"
 			>
 				<Button
 					variant="contained"
