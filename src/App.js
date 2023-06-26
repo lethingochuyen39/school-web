@@ -11,6 +11,8 @@ import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
+import Class from "./pages/Class/Class";
+
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -29,6 +31,7 @@ function App() {
 								path="/admin/class-score/:classId"
 								element={<ClassScorePage />}
 							/>
+							<Route path="/admin/classes" element={<Class/>} />
 						</Route>
 					</Routes>
 				</AuthContextProvider>
