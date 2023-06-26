@@ -6,7 +6,6 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import validate from "validate.js";
 import {
 	Button,
 	FormControl,
@@ -38,7 +37,7 @@ const ClassScorePage = () => {
 				const response = await client.get(`/api/classes/${classId}/students`);
 				const updatedStudents = response.data.map((student) => ({
 					...student,
-					score: "", // Thêm thuộc tính score với giá trị ban đầu là chuỗi rỗng
+					score: "",
 				}));
 				setStudents(updatedStudents);
 				setLoading(false);
@@ -84,18 +83,20 @@ const ClassScorePage = () => {
 		const isValid = /^\d*\.?\d*$/.test(cleanedScore);
 
 		if (!isValid) {
-			setError({ score: ["Điểm phải là số từ 0 đến 10"] });
+			const newError = { id, message: "Điểm phải là một số dương" };
+			setError(newError);
 		} else {
 			const parsedScore = parseFloat(cleanedScore);
 			if (parsedScore < 0 || parsedScore > 10) {
-				setError({ score: ["Điểm phải là số từ 0 đến 10"] });
+				const newError = { id, message: "Điểm phải là số từ 0 đến 10" };
+				setError(newError);
 			} else {
 				setError(null);
 				const updatedStudents = students.map((student) => {
 					if (student.id === id) {
 						return {
 							...student,
-							score: cleanedScore !== "" ? cleanedScore : null,
+							score: cleanedScore || "",
 						};
 					}
 					return student;
@@ -103,6 +104,19 @@ const ClassScorePage = () => {
 				setStudents(updatedStudents);
 			}
 		}
+	};
+
+	const renderErrorMessage = (id) => {
+		const errorObj = error && error.id === id ? error : null;
+		if (errorObj) {
+			return (
+				<Alert severity="error">
+					<AlertTitle>Error</AlertTitle>
+					{errorObj.message}
+				</Alert>
+			);
+		}
+		return null;
 	};
 
 	const handleSubjectChange = (event) => {
@@ -127,6 +141,7 @@ const ClassScorePage = () => {
 					await client.post("/api/scores", scoreToAdd);
 					setHasError(false);
 					setIsAddedSuccessfully(true);
+					setError(null);
 				} catch (error) {
 					console.error("Lỗi khi lưu điểm:", error);
 					setHasError(true);
@@ -137,26 +152,6 @@ const ClassScorePage = () => {
 	};
 	const handleGoBack = () => {
 		navigate(-1);
-	};
-
-	const hasErrorInput = (field) => {
-		return error && error[field] ? true : false;
-	};
-
-	const getErrorMessage = (field) => {
-		return hasErrorInput(field) ? error[field][0] : "";
-	};
-
-	const renderErrorMessage = (field) => {
-		if (hasErrorInput(field)) {
-			return (
-				<Alert severity="error">
-					<AlertTitle>Error</AlertTitle>
-					{getErrorMessage(field)}
-				</Alert>
-			);
-		}
-		return null;
 	};
 
 	const columns = [
@@ -173,10 +168,8 @@ const ClassScorePage = () => {
 						name="score"
 						value={params.row.score}
 						onChange={(e) => handleScoreInput(params.id, e.target.value)}
-						error={hasErrorInput("score")}
 					/>
-
-					{renderErrorMessage("score")}
+					{renderErrorMessage(params.id)}
 				</>
 			),
 			disableActions: true,
@@ -205,6 +198,7 @@ const ClassScorePage = () => {
 							value={selectedSubject}
 							onChange={handleSubjectChange}
 							label="Chọn môn học"
+							sx={{ height: "40px" }}
 						>
 							{subjects.map((subject) => (
 								<MenuItem key={subject.id} value={subject.id}>
@@ -226,6 +220,7 @@ const ClassScorePage = () => {
 							label="Chọn loại điểm"
 							displayEmpty
 							fullWidth
+							sx={{ height: "40px" }}
 						>
 							{scoreTypes.map((scoreType) => (
 								<MenuItem key={scoreType.id} value={scoreType.id}>
@@ -245,10 +240,10 @@ const ClassScorePage = () => {
 				display="flex"
 				justifyContent="center"
 				alignItems="center"
-				fontSize="2rem"
+				fontSize="1.5rem"
 				fontWeight="bold"
 			>
-				Nhập điểm lớp
+				Nhập điểm lớp mã - {classId}
 			</Box>
 
 			<Box
