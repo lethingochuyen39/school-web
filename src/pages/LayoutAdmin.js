@@ -14,9 +14,13 @@ function LayoutAdmin() {
 	const navigate = useNavigate();
 
 	const checkLogin = async () => {
-		const cookies = new Cookies();
-		const token = await cookies.get("token");
-		if (token === undefined || token === null) {
+		// const cookies = new Cookies();
+		// const token = await cookies.get("token");
+		// if (token === undefined || token === null) {
+		// 	navigate("/login");
+		// }
+		const token = localStorage.getItem("token");
+		if(!token){
 			navigate("/login");
 		}
 	};

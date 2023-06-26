@@ -9,7 +9,7 @@ const client = axios.create({
 
 // Thêm interceptor để cập nhật giá trị của Authorization header
 client.interceptors.request.use((config) => {
-	const token = cookies.get("token");
+	const token = localStorage.getItem("token");
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
