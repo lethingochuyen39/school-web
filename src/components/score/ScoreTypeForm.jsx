@@ -9,19 +9,24 @@ const schema = {
 	name: {
 		presence: {
 			allowEmpty: false,
-			message: "^Tên loại điểm không được bỏ trống",
+			message: "^Vui lòng nhập tên loại điểm.",
 		},
 		length: {
 			minimum: 1,
 			maximum: 255,
-			message: "^Tên loại điểm phải có từ 1 đến 255 ký tự",
+			message: "^Tên loại điểm phải có từ 1 đến 255 ký tự.",
+		},
+	},
+	coefficient: {
+		presence: {
+			allowEmpty: false,
+			message: "^Vui lòng nhập hệ số.",
 		},
 	},
 };
 const ScoreTypeForm = ({
 	handleAddScoreType,
 	handleUpdateScoreType,
-	handleRefreshData,
 	handleClose,
 	isEditMode,
 	initialData,
@@ -29,6 +34,7 @@ const ScoreTypeForm = ({
 	const [scoreType, setScoreType] = useState({
 		id: isEditMode ? initialData.id : "",
 		name: isEditMode ? initialData.name : "",
+		coefficient: isEditMode ? initialData.coefficient : "",
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
@@ -104,10 +110,23 @@ const ScoreTypeForm = ({
 						fullWidth
 						margin="normal"
 						variant="outlined"
-						focused
 						required
 						error={hasError("name")}
 						helperText={getErrorMessage("name")}
+					/>
+
+					<TextField
+						type="number"
+						name="coefficient"
+						label="Hệ số"
+						value={scoreType.coefficient}
+						onChange={handleChange}
+						fullWidth
+						margin="normal"
+						variant="outlined"
+						required
+						error={hasError("coefficient")}
+						helperText={getErrorMessage("coefficient")}
 					/>
 
 					<Button type="submit" variant="contained" onClick={handleSubmit}>

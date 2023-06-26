@@ -40,7 +40,7 @@ const ScoreType = () => {
 		try {
 			await client.post("/api/score-types", newScoreType);
 			setIsModalOpen(true);
-			await handleRefreshData();
+			await fetchData();
 		} catch (error) {
 			if (error.response) {
 				setError(error.response.data);
@@ -56,7 +56,7 @@ const ScoreType = () => {
 			const response = await client.get(`/api/score-types/${id}`);
 			const data = response.data;
 			setScoreType(data);
-			setIsModalOpen(true); // Mở modal để hiển thị thông tin
+			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
 		}
@@ -83,7 +83,7 @@ const ScoreType = () => {
 				updatedScoreType
 			);
 			setIsModalOpen(true);
-			await handleRefreshData();
+			await fetchData();
 		} catch (error) {
 			console.error(error);
 			if (error.response) {
@@ -123,10 +123,6 @@ const ScoreType = () => {
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
-	};
-
-	const handleRefreshData = () => {
-		fetchData();
 	};
 
 	const getHeader = () => (
@@ -188,6 +184,7 @@ const ScoreType = () => {
 	const columns = [
 		{ field: "id", headerName: "ID", width: 100 },
 		{ field: "name", headerName: "Tên", width: 250 },
+		{ field: "coefficient", headerName: "Hệ số", width: 100 },
 	];
 
 	const getContent = () => {
@@ -213,7 +210,6 @@ const ScoreType = () => {
 					isEditMode={isEditMode}
 					initialData={selectedScoreType}
 					error={error}
-					handleRefreshData={handleRefreshData}
 				/>
 			)}
 
