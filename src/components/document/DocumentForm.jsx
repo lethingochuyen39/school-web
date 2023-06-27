@@ -30,6 +30,7 @@ const DocumentForm = ({
 	handleClose,
 	isEditMode,
 	initialData,
+	uploadedById,
 }) => {
 	const [document, setDocument] = useState({
 		id: initialData ? initialData.id : "",
@@ -51,10 +52,10 @@ const DocumentForm = ({
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-
+		console.log(uploadedById);
 		const formData = new FormData();
 		formData.append("file", document.file);
-		formData.append("uploadedById", 2);
+		formData.append("uploadedById", uploadedById);
 
 		const { title, description } = document;
 		formData.append("title", title);
@@ -191,7 +192,7 @@ const DocumentForm = ({
 									type="file"
 									id="file-upload"
 									name="file"
-									accept=".pdf,.doc,.docx,.xlsx"
+									accept=".pdf,.doc,.docx,excel.exe"
 									style={{ display: "none" }}
 									onChange={handleFileChange}
 								/>

@@ -11,6 +11,8 @@ import client from "../../api/client";
 import { Button, Modal } from "@mui/material";
 import DocumentForm from "../../components/document/DocumentForm";
 import Typography from "@mui/material/Typography";
+import FileDownloader from "./FileDownloader";
+import AuthContext from "../../api/AuthContext";
 const Document = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ const Document = () => {
 	const [selectedDocument, setSelectedDocument] = useState(null);
 	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
-	// const { loggedInUser } = useContext(AuthContext);
+
 	const handleOpenForm = async () => {
 		if (document) {
 			setIsEditMode(true);
@@ -131,6 +133,14 @@ const Document = () => {
 			console.error(error);
 		}
 	};
+	const { userId } = useContext(AuthContext);
+	const [uploadedById, setUploadedById] = useState("");
+
+	useEffect(() => {
+		// Lấy giá trị userId từ localStorage và lưu vào state uploadedById
+		const storedUserId = localStorage.getItem("userId");
+		setUploadedById(storedUserId);
+	}, []);
 
 	const getHeader = () => (
 		<Box
@@ -203,6 +213,17 @@ const Document = () => {
 		},
 		{ field: "uploadedAt", headerName: "Ngày thêm", width: 100 },
 		{ field: "updatedAt", headerName: "Ngày cập nhật", width: 100 },
+		{
+			field: "download",
+			headerName: "Tải xuống",
+			width: 120,
+			renderCell: (params) => (
+				<FileDownloader
+					url={`/api/documents/${params.row.id}/download`}
+					fileName={params.row.fileName}
+				/>
+			),
+		},
 	];
 
 	const getContent = () => (
@@ -227,6 +248,7 @@ const Document = () => {
 					isEditMode={isEditMode}
 					initialData={selectedDocument}
 					error={error}
+					uploadedById={uploadedById}
 				/>
 			)}
 
