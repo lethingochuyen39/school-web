@@ -34,9 +34,9 @@ function App() {
 							/>
 							</Route>
 						</Route>
-						<Route>
-							<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />} >
-								<Route element={<Success/>} path="/user/"/>
+						<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />}>
+							<Route path="/user/" element={<LayoutAdmin/>}>
+								<Route element={<Success/>} path="/user/success"/>
 							</Route>
 						</Route>
 					</Routes>

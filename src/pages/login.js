@@ -32,13 +32,16 @@ const Login = () => {
 		await login(payload);
 	};
 
-	// useEffect(()=>{
-	// 	const role = localStorage.getItem("role");
-	// 	console.log(role);
-	// 	if(role){
-	// 		navigate("/");
-	// 	}
-	// })
+	useEffect(()=>{
+		const role = localStorage.getItem("role");
+		console.log(role);
+		if(role==="ADMIN"){
+			navigate("/admin/home");
+		}
+		if(role==="STUDENT"||role==="PARENT"||role==="TEACHER"){
+			navigate("/user/success");
+		}
+	})
 
 	return (
 		<>

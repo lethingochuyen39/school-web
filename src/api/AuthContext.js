@@ -25,13 +25,14 @@ export const AuthContextProvider = ({ children }) => {
 			const dateUnix = jwtDecode(token).exp;
 			localStorage.setItem("refreshToken", res.data.refreshToken);
 			localStorage.setItem("date", dateUnix);
+			localStorage.setItem("userId", res.data.id);
 			// newCookie.set("token", token, { path: "/", expires: date });
 			localStorage.setItem("token", res.data.token);
 			// navigate("/admin/home");
 			if(role==="ADMIN"){
 				navigate("/admin/home");
 			}else{
-				navigate("/success");
+				navigate("/user/success");
 			}
 		});
 	};
