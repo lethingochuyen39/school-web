@@ -76,7 +76,7 @@ export const mainNavbarItems = [
 		id: 10,
 		icon: <SnippetFolderIcon />,
 		label: "Quản lý tài liệu",
-		route: "login",
+		route: "document",
 	},
 	{
 		id: 11,
