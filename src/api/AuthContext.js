@@ -29,9 +29,9 @@ export const AuthContextProvider = ({ children }) => {
 			// newCookie.set("token", token, { path: "/", expires: date });
 			localStorage.setItem("token", res.data.token);
 			// navigate("/admin/home");
-			if (role === "ADMIN") {
+			if(role==="ADMIN"){
 				navigate("/admin/home");
-			} else {
+			}else{
 				navigate("/user/success");
 			}
 		});
