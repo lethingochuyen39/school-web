@@ -7,47 +7,45 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
-import AddForm from "../../components/academicYear/AddForm";
+import ScoreTypeForm from "../../components/score/ScoreTypeForm";
 import { Button, Modal } from "@mui/material";
-const AcademicYear = () => {
+const ScoreType = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [isAddFormOpen, setIsAddFormOpen] = useState(false);
-	const [academicYear, setAcademicYear] = useState(null);
+	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [scoreType, setScoreType] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
-	const [selectedAcademicYear, setSelectedAcademicYear] = useState(null);
+	const [selectedScoreType, setselectedScoreType] = useState(null);
 	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
-	const handleOpenAddForm = () => {
-		console.log(academicYear);
-		if (academicYear) {
+	const handleOpenForm = () => {
+		if (scoreType) {
 			setIsEditMode(true);
-			setSelectedAcademicYear(academicYear);
+			setselectedScoreType(scoreType);
 		} else {
 			setIsEditMode(false);
-			setSelectedAcademicYear(null);
+			setselectedScoreType(null);
 		}
-		setIsAddFormOpen(true);
+		setIsFormOpen(true);
 	};
 
-	const handleCloseAddForm = () => {
-		setIsAddFormOpen(false);
-		setAcademicYear(null);
+	const handleCloseForm = () => {
+		setIsFormOpen(false);
+		setScoreType(null);
 	};
 
-	const handleAddAcademicYear = async (newAcademicYear) => {
+	const handleAddScoreType = async (newScoreType) => {
 		try {
-			await client.post("/api/academic-years", newAcademicYear);
+			await client.post("/api/score-types", newScoreType);
 			setIsModalOpen(true);
 			await fetchData();
 		} catch (error) {
-			console.error(error);
 			if (error.response) {
-				setError(error.response.data.message);
+				setError(error.response.data);
 			} else {
-				setError("Đã xảy ra lỗi khi cập nhật năm học.");
+				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
 			}
 		}
 	};
@@ -55,9 +53,9 @@ const AcademicYear = () => {
 	// hiển thị thông tin
 	const handleView = async (id) => {
 		try {
-			const response = await client.get(`/api/academic-years/${id}`);
+			const response = await client.get(`/api/score-types/${id}`);
 			const data = response.data;
-			setAcademicYear(data);
+			setScoreType(data);
 			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
@@ -66,47 +64,47 @@ const AcademicYear = () => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
-		setAcademicYear(null);
+		setScoreType(null);
 	};
 
 	const handleEdit = (id) => {
-		const selectedYear = data.find((year) => year.id === id);
-		if (selectedYear) {
+		const selectedScoreType = data.find((year) => year.id === id);
+		if (selectedScoreType) {
 			setIsEditMode(true);
-			setSelectedAcademicYear(selectedYear);
-			setIsAddFormOpen(true);
+			setselectedScoreType(selectedScoreType);
+			setIsFormOpen(true);
 		}
 	};
 
-	const handleUpdateAcademicYear = async (updatedAcademicYear) => {
+	const handleUpdateScoreType = async (updatedScoreType) => {
 		try {
 			await client.put(
-				`/api/academic-years/${updatedAcademicYear.id}`,
-				updatedAcademicYear
+				`/api/score-types/${updatedScoreType.id}`,
+				updatedScoreType
 			);
-			fetchData();
 			setIsModalOpen(true);
+			await fetchData();
 		} catch (error) {
+			console.error(error);
 			if (error.response) {
-				setError(error.response.data.message);
+				setError(error.response.data);
 			} else {
-				setError("Đã xảy ra lỗi khi cập nhật năm học.");
+				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
 			}
 		}
 	};
 
 	const handleDelete = async (id) => {
 		try {
-			await client.delete(`/api/academic-years/${id}`);
+			await client.delete(`/api/score-types/${id}`);
 			fetchData();
 		} catch (error) {
 			console.error(error);
 		}
 	};
-
 	const fetchData = useCallback(async () => {
 		try {
-			let url = "/api/academic-years";
+			let url = "/api/score-types";
 			if (searchTerm) {
 				url += `?name=${searchTerm}`;
 			}
@@ -151,7 +149,7 @@ const AcademicYear = () => {
 						color: "white",
 						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
 					}}
-					onClick={handleOpenAddForm}
+					onClick={handleOpenForm}
 					size="large"
 				>
 					Thêm mới
@@ -169,7 +167,7 @@ const AcademicYear = () => {
 			>
 				<SearchIcon sx={{ marginRight: "15px" }} />
 				<Input
-					placeholder="Tìm kiếm theo tên năm học.. "
+					placeholder="Tìm kiếm theo tên loại điểm... "
 					onChange={handleSearchChange}
 					value={searchTerm}
 					sx={{
@@ -185,9 +183,8 @@ const AcademicYear = () => {
 
 	const columns = [
 		{ field: "id", headerName: "ID", width: 100 },
-		{ field: "name", headerName: "Tên", width: 150 },
-		{ field: "startDate", headerName: "Ngày bắt đầu", width: 150 },
-		{ field: "endDate", headerName: "Ngày kết thúc", width: 150 },
+		{ field: "name", headerName: "Tên", width: 250 },
+		{ field: "coefficient", headerName: "Hệ số", width: 100 },
 	];
 
 	const getContent = () => {
@@ -205,18 +202,18 @@ const AcademicYear = () => {
 
 	return (
 		<GridWrapper>
-			{isAddFormOpen && (
-				<AddForm
-					handleAddAcademicYear={handleAddAcademicYear}
-					handleUpdateAcademicYear={handleUpdateAcademicYear}
-					handleClose={handleCloseAddForm}
+			{isFormOpen && (
+				<ScoreTypeForm
+					handleAddScoreType={handleAddScoreType}
+					handleUpdateScoreType={handleUpdateScoreType}
+					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
-					initialData={selectedAcademicYear}
+					initialData={selectedScoreType}
 					error={error}
 				/>
 			)}
 
-			{academicYear && (
+			{scoreType && (
 				<Modal
 					open={isModalOpen}
 					onClose={closeModal}
@@ -235,11 +232,10 @@ const AcademicYear = () => {
 							p: 2,
 						}}
 					>
-						<h2 id="modal-title">Thông tin năm học</h2>
-						<p id="modal-description">ID: {academicYear.id}</p>
-						<p>Tên năm học: {academicYear.name}</p>
-						<p>Ngày bắt đầu: {academicYear.startDate}</p>
-						<p>Ngày kết thúc: {academicYear.endDate}</p>
+						<h2 id="modal-title">Thông tin loại điểm</h2>
+						<p id="modal-description">ID: {scoreType.id}</p>
+						<p>Tên loại điểm: {scoreType.name}</p>
+
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>
@@ -252,4 +248,4 @@ const AcademicYear = () => {
 	);
 };
 
-export default AcademicYear;
+export default ScoreType;

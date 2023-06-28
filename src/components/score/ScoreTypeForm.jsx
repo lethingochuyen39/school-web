@@ -6,52 +6,45 @@ import Box from "@mui/material/Box";
 import validate from "validate.js";
 
 const schema = {
-	endDate: {
-		presence: {
-			allowEmpty: false,
-			message: "^Ngày kết thúc không được bỏ trống",
-		},
-	},
-	startDate: {
-		presence: {
-			allowEmpty: false,
-			message: "^Ngày bắt đầu không được bỏ trống",
-		},
-	},
 	name: {
 		presence: {
 			allowEmpty: false,
-			message: "^Tên năm học không được bỏ trống",
+			message: "^Vui lòng nhập tên loại điểm.",
 		},
 		length: {
 			minimum: 1,
 			maximum: 255,
-			message: "^Tên năm học phải có từ 1 đến 255 ký tự",
+			message: "^Tên loại điểm phải có từ 1 đến 255 ký tự.",
+		},
+	},
+	coefficient: {
+		presence: {
+			allowEmpty: false,
+			message: "^Vui lòng nhập hệ số.",
 		},
 	},
 };
-const AddForm = ({
-	handleAddAcademicYear,
-	handleUpdateAcademicYear,
+const ScoreTypeForm = ({
+	handleAddScoreType,
+	handleUpdateScoreType,
 	handleClose,
 	isEditMode,
 	initialData,
 }) => {
-	const [academicYear, setAcademicYear] = useState({
+	const [scoreType, setScoreType] = useState({
 		id: isEditMode ? initialData.id : "",
 		name: isEditMode ? initialData.name : "",
-		startDate: isEditMode ? initialData.startDate : "",
-		endDate: isEditMode ? initialData.endDate : "",
+		coefficient: isEditMode ? initialData.coefficient : "",
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
 	useEffect(() => {
 		if (isEditMode && initialData) {
-			setAcademicYear(initialData);
+			setScoreType(initialData);
 		}
 	}, [isEditMode, initialData]);
 	const handleChange = (event) => {
-		setAcademicYear((prev) => ({
+		setScoreType((prev) => ({
 			...prev,
 			[event.target.name]: event.target.value,
 		}));
@@ -61,19 +54,21 @@ const AddForm = ({
 		event.preventDefault();
 
 		try {
-			const errors = validate(academicYear, schema);
+			const errors = validate(scoreType, schema);
 			if (errors) {
 				setError(errors);
 				return;
 			}
+
 			if (isEditMode) {
-				await handleUpdateAcademicYear(academicYear);
+				await handleUpdateScoreType(scoreType);
 			} else {
-				await handleAddAcademicYear(academicYear);
+				await handleAddScoreType(scoreType);
 			}
+
 			handleClose();
 		} catch (error) {
-			console.log(error);
+			setError(error);
 		}
 	};
 
@@ -104,48 +99,36 @@ const AddForm = ({
 					p: 4,
 				}}
 			>
-				<h2>{isEditMode ? "Cập nhật năm học" : "Thêm mới năm học"}</h2>
+				<h2>{isEditMode ? "Cập nhật loại điểm" : "Thêm mới loại điểm"}</h2>
 
 				<form onSubmit={handleSubmit}>
 					<TextField
 						name="name"
-						label="Tên năm học"
-						value={academicYear.name}
+						label="Tên loại điểm"
+						value={scoreType.name}
 						onChange={handleChange}
 						fullWidth
 						margin="normal"
 						variant="outlined"
-						focused
 						required
 						error={hasError("name")}
 						helperText={getErrorMessage("name")}
 					/>
+
 					<TextField
-						name="startDate"
-						label="Ngày bắt đầu"
-						type="date"
-						value={academicYear.startDate}
+						type="number"
+						name="coefficient"
+						label="Hệ số"
+						value={scoreType.coefficient}
 						onChange={handleChange}
 						fullWidth
 						margin="normal"
 						variant="outlined"
-						focused
-						error={hasError("startDate")}
-						helperText={getErrorMessage("startDate")}
+						required
+						error={hasError("coefficient")}
+						helperText={getErrorMessage("coefficient")}
 					/>
-					<TextField
-						name="endDate"
-						label="Ngày kết thúc"
-						type="date"
-						value={academicYear.endDate}
-						onChange={handleChange}
-						fullWidth
-						margin="normal"
-						variant="outlined"
-						focused
-						error={hasError("endDate")}
-						helperText={getErrorMessage("endDate")}
-					/>
+
 					<Button type="submit" variant="contained" onClick={handleSubmit}>
 						{isEditMode ? "Cập nhật" : "Thêm"}
 					</Button>
@@ -158,4 +141,4 @@ const AddForm = ({
 	);
 };
 
-export default AddForm;
+export default ScoreTypeForm;

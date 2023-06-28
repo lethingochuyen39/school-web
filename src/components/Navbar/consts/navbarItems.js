@@ -70,7 +70,7 @@ export const mainNavbarItems = [
 		id: 9,
 		icon: <FlightClassIcon />,
 		label: "Quản lý lớp học",
-		route: "home",
+		route: "classes",
 	},
 	{
 		id: 10,
@@ -87,7 +87,7 @@ export const mainNavbarItems = [
 			{
 				id: 20,
 				label: "Loại điểm",
-				route: "score",
+				route: "score-type",
 			},
 			{
 				id: 21,

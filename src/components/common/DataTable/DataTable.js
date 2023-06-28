@@ -8,9 +8,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const DataTable = ({
 	initialRows,
 	columns,
+	loading,
 	handleView,
 	handleEdit,
 	handleDelete,
+	hiddenActions = [],
 }) => {
 	const [rows, setRows] = useState([]);
 
@@ -20,44 +22,77 @@ const DataTable = ({
 
 	const renderCellActions = (params) => (
 		<>
-			<IconButton
-				onClick={() => handleView(params.id)}
-				style={{ color: "#888" }}
-			>
-				<VisibilityIcon />
-			</IconButton>
-			<IconButton
-				onClick={() => handleEdit(params.id)}
-				style={{ color: "#00bcd4" }}
-			>
-				<EditIcon />
-			</IconButton>
-			<IconButton
-				onClick={() => handleDelete(params.id)}
-				style={{ color: "#f44336" }}
-			>
-				<DeleteIcon />
-			</IconButton>
+			{!hiddenActions.includes("view") && (
+				<IconButton
+					onClick={() => handleView(params.id)}
+					style={{ color: "#888" }}
+				>
+					<VisibilityIcon />
+				</IconButton>
+			)}
+			{!hiddenActions.includes("edit") && (
+				<IconButton
+					onClick={() => handleEdit(params.id)}
+					style={{ color: "#00bcd4" }}
+				>
+					<EditIcon />
+				</IconButton>
+			)}
+			{!hiddenActions.includes("delete") && (
+				<IconButton
+					onClick={() => {
+						const shouldDelete = window.confirm("Bạn có chắc muốn xóa?");
+						if (shouldDelete) {
+							handleDelete(params.id);
+						}
+					}}
+					style={{ color: "#f44336" }}
+				>
+					<DeleteIcon />
+				</IconButton>
+			)}
 		</>
 	);
 
+	const renderCellCheckbox = (params) => (
+		<input
+			type="checkbox"
+			checked={params.value}
+			onChange={(event) => event.stopPropagation()}
+		/>
+	);
+
+	const [selectedRows, setSelectedRows] = useState([]);
+	const handleSelectionModelChange = (newSelection) => {
+		setSelectedRows(newSelection);
+	};
+
 	const columnsWithActions = [
+		{
+			field: "checkbox",
+			headerName: "",
+			width: 50,
+			sortable: false,
+			renderCell: renderCellCheckbox,
+		},
 		...columns,
 		{
 			field: "actions",
 			headerName: "Chức năng",
-			width: 200,
+			width: 150,
 			renderCell: renderCellActions,
 		},
 	];
-
+	// Kiểm tra nếu tất cả các hành động đều bị ẩn thì không hiển thị cột chức năng
+	const shouldHideActionsColumn = hiddenActions.length === 3;
 	return (
 		<div style={{ height: 400, width: "100%" }}>
 			<DataGrid
 				rows={rows}
-				columns={columnsWithActions}
-				loading={!rows.length}
-				checkboxSelection
+				columns={shouldHideActionsColumn ? columns : columnsWithActions}
+				loading={loading}
+				onSelectionModelChange={handleSelectionModelChange}
+				disableSelectionOnClick
 				pagination
 				pageSize={10}
 				rowsPerPageOptions={[10, 25, 50]}
