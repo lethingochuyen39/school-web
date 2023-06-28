@@ -11,8 +11,9 @@ import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
+import RoleAccess from "./api/checkRole";
+import Success from "./pages/success";
 import Class from "./pages/Class/Class";
-
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -21,17 +22,26 @@ function App() {
 					<Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/" element={<Login />} />
-						<Route path="/admin/" element={<LayoutAdmin />}>
-							<Route path="/admin/home" element={<Home />} />
-							<Route path="/admin/academicYear" element={<AcademicYear />} />
-							<Route path="/admin/schedule" element={<Schedule />} />
-							<Route path="/admin/score" element={<Score />} />
-							<Route path="/admin/score-type" element={<ScoreType />} />
-							<Route
+						<Route element={<RoleAccess roles={["ADMIN"]}/>}>
+							<Route path="/admin/" element={<LayoutAdmin />}>
+								<Route path="/admin/home" element={<Home />} />
+								<Route path="/admin/academicYear" element={<AcademicYear />} />
+								<Route path="/admin/schedule" element={<Schedule />} />
+								<Route path="/admin/score" element={<Score />} />
+								<Route path="/admin/score-type" element={<ScoreType />} />
+								<Route
 								path="/admin/class-score/:classId"
 								element={<ClassScorePage />}
+<Route path="/admin/classes" element={<Class/>} />
 							/>
-							<Route path="/admin/classes" element={<Class/>} />
+
+							</Route>
+						</Route>
+						<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />}>
+							<Route path="/user/" element={<LayoutAdmin/>}>
+								<Route element={<Success/>} path="/user/success"/>
+							</Route>
+							
 						</Route>
 					</Routes>
 				</AuthContextProvider>
