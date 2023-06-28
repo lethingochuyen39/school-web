@@ -11,6 +11,7 @@ import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
+import Document from "./pages/Document/Document";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
 import Class from "./pages/Class/Class";
@@ -35,13 +36,14 @@ function App() {
 <Route path="/admin/classes" element={<Class/>} />
 							/>
 
+							<Route path="/admin/document" element={<Document />} />
+
 							</Route>
 						</Route>
 						<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />}>
 							<Route path="/user/" element={<LayoutAdmin/>}>
 								<Route element={<Success/>} path="/user/success"/>
 							</Route>
-							
 						</Route>
 					</Routes>
 				</AuthContextProvider>

@@ -235,7 +235,7 @@ const ScoreType = () => {
 						<h2 id="modal-title">Thông tin loại điểm</h2>
 						<p id="modal-description">ID: {scoreType.id}</p>
 						<p>Tên loại điểm: {scoreType.name}</p>
-
+						<p>Hệ số nhân: {scoreType.coefficient}</p>
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>

@@ -130,6 +130,7 @@ const AddForm = ({
 						margin="normal"
 						variant="outlined"
 						focused
+						disabled={isEditMode}
 						error={hasError("startDate")}
 						helperText={getErrorMessage("startDate")}
 					/>
@@ -143,6 +144,7 @@ const AddForm = ({
 						margin="normal"
 						variant="outlined"
 						focused
+						disabled={isEditMode}
 						error={hasError("endDate")}
 						helperText={getErrorMessage("endDate")}
 					/>
