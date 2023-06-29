@@ -32,7 +32,7 @@ export const AuthContextProvider = ({ children }) => {
 			if (role === "ADMIN") {
 				navigate("/admin/home");
 			} else {
-				navigate("/user/success");
+				navigate("/admin/home");
 			}
 		});
 	};
