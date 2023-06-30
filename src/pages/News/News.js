@@ -125,6 +125,9 @@ const News = () => {
 
 	const handleUpdateNews = async (formData) => {
 		try {
+			if (!formData) {
+				formData = { isActive: news.isActive };
+			}
 			await client.put(`/api/news/edit/${news.id}`, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
@@ -150,25 +153,42 @@ const News = () => {
 		}
 	};
 
-	const handleSwitchChange = (event, id) => {
-		const updatedData = data.map((item) => {
-			if (item.id === id) {
-				const updatedItem = { ...item, isActive: !item.isActive };
-				return updatedItem;
-			}
-			return item;
-		});
+	const handleUpdateSwitch = async (event, id) => {
+		const { checked } = event.target;
 
-		setData(updatedData);
+		try {
+			await handleUpdateNew(id, checked);
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
-	const handleUpdateSwitch = async (event, id) => {
-		const selectedNews = data.find((item) => item.id === id);
-		if (selectedNews) {
-			try {
-				await handleUpdateNews({ isActive: selectedNews.isActive }, true);
-			} catch (error) {
-				console.error(error);
+	const handleUpdateNew = async (id, isActive) => {
+		try {
+			const formData = {
+				isActive: isActive,
+			};
+
+			await client.put(`/api/news/edit/${id}`, formData, {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			// Update the news object in the state with the new isActive value
+			setNews((prevNews) => ({
+				...prevNews,
+				isActive: isActive,
+			}));
+
+			// Fetch the updated data
+			await fetchData();
+		} catch (error) {
+			console.error(error);
+			if (error.response) {
+				setError(error.response.data);
+			} else {
+				setError("Đã xảy ra lỗi khi cập nhật.");
 			}
 		}
 	};
@@ -325,7 +345,7 @@ const News = () => {
 							</Typography>
 							<Typography variant="body1">
 								<b>Trạng thái:</b>{" "}
-								{news.isActive ? "Đang hoạt động" : "Không hoạt động"}
+								{news.isActive ? "Đang hoạt động" : "Ẩn hoạt động"}
 							</Typography>
 						</>
 

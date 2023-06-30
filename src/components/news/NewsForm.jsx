@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-
 import Box from "@mui/material/Box";
 import validate from "validate.js";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
 import Grid from "@mui/material/Grid";
-import { FormHelperText, Typography } from "@mui/material";
+import { FormHelperText, Switch, Typography } from "@mui/material";
 
 const schema = {
 	title: {
@@ -29,6 +27,7 @@ const schema = {
 		},
 	},
 };
+
 const NewsForm = ({
 	handleAddNews,
 	handleUpdateNews,
@@ -48,9 +47,10 @@ const NewsForm = ({
 
 	useEffect(() => {
 		if (isEditMode && initialData) {
-			setNews({
-				...initialData,
-			});
+			setNews((prev) => ({
+				...prev,
+				isActive: initialData.isActive,
+			}));
 		}
 	}, [isEditMode, initialData]);
 
@@ -59,11 +59,9 @@ const NewsForm = ({
 
 		const formData = new FormData();
 		formData.append("image", news.image);
-
-		const { title, content, isActive } = news;
-		formData.append("title", title);
-		formData.append("content", content);
-		formData.append("isActive", isActive);
+		formData.append("title", news.title);
+		formData.append("content", news.content);
+		formData.append("isActive", news.isActive);
 
 		try {
 			if (isEditMode && news.id) {
@@ -100,7 +98,8 @@ const NewsForm = ({
 		handleClose();
 	};
 
-	const handleChange = ({ target: { name, value } }) => {
+	const handleChange = (event) => {
+		const { name, value } = event.target;
 		setNews((prev) => ({
 			...prev,
 			[name]: value,
@@ -112,6 +111,14 @@ const NewsForm = ({
 		setNews((prev) => ({
 			...prev,
 			image: image,
+		}));
+	};
+
+	const handleSwitchChange = (event) => {
+		const { checked } = event.target;
+		setNews((prev) => ({
+			...prev,
+			isActive: checked,
 		}));
 	};
 
@@ -201,7 +208,7 @@ const NewsForm = ({
 								/>
 							</label>
 						</Grid>
-						<Grid item xs={4}>
+						<Grid item xs={8} paddingRight={2}>
 							{news.image && (
 								<Typography
 									variant="body1"
@@ -221,7 +228,27 @@ const NewsForm = ({
 								</Typography>
 							)}
 						</Grid>
-						<Grid item xs={4}></Grid>
+					</Grid>
+					<Grid
+						item
+						xs={12}
+						sx={{ display: "flex", justifyContent: "flex-end" }}
+					>
+						<Typography
+							variant="body1"
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								marginRight: "8px",
+							}}
+						>
+							Trạng thái
+						</Typography>
+						<Switch
+							checked={news.isActive}
+							onChange={handleSwitchChange}
+							color="primary"
+						/>
 					</Grid>
 
 					<Button
