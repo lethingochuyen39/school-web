@@ -13,8 +13,18 @@ function LayoutAdmin() {
 	const navigate = useNavigate();
 
 	const checkLogin = async () => {
+<<<<<<< HEAD
 		const token = localStorage.getItem("token");
 		if (!token) {
+=======
+		// const cookies = new Cookies();
+		// const token = await cookies.get("token");
+		// if (token === undefined || token === null) {
+		// 	navigate("/login");
+		// }
+		const token = localStorage.getItem("token");
+		if(!token){
+>>>>>>> d957b4301669c0108cdc6fb647706f356807623f
 			navigate("/login");
 		}
 	};
