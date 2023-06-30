@@ -19,80 +19,71 @@ const schema = {
       message: "^Vui lòng chọn học sinh",
     },
   },
-  subjectId: {
+  averageScore: {
     presence: {
       allowEmpty: false,
-      message: "^Vui lòng chọn môn học",
-    },
-  },
-  scoreTypeId: {
-    presence: {
-      allowEmpty: false,
-      message: "^Vui lòng chọn loại điểm",
-    },
-  },
-  score: {
-    presence: {
-      allowEmpty: false,
-      message: "^Vui lòng nhập điểm",
+      message: "^Vui lòng nhập điểm trung bình",
     },
     numericality: {
       greaterThanOrEqualTo: 0,
       lessThanOrEqualTo: 10,
-      message: "^Điểm phải nằm trong khoảng từ 0 đến 10",
+      message: "^Điểm trung bình phải nằm trong khoảng từ 0 đến 10",
+    },
+  },
+  academicYearId: {
+    presence: {
+      allowEmpty: false,
+      message: "^Vui lòng chọn năm học",
     },
   },
 };
 
-const ScoreForm = ({
-  handleAddScore,
-  handleUpdateScore,
+const ReportCardForm = ({
+  handleAddReportCard,
+  handleUpdateReportCard,
   handleClose,
   isEditMode,
   initialData,
   students,
-  subjects,
-  scoreTypes,
+  academicYears,
 }) => {
-  const [score, setScore] = useState({
+  const [reportCard, setReportCard] = useState({
     id: isEditMode ? initialData.id : "",
     studentId: isEditMode ? initialData.student.id : "",
-    subjectId: isEditMode ? initialData.subject.id : "",
-    scoreTypeId: isEditMode ? initialData.scoreType.id : "",
-    score: isEditMode ? initialData.score : "",
+    averageScore: isEditMode ? initialData.averageScore : "",
+    academicYearId: isEditMode ? initialData.academicYear.id : "",
   });
 
   const [showModal, setShowModal] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
     if (isEditMode && initialData) {
-      setScore({
+      setReportCard({
         id: initialData.id,
         studentId: initialData.student.id,
-        subjectId: initialData.subject.id,
-        scoreTypeId: initialData.scoreType.id,
-        score: initialData.score,
+        averageScore: initialData.averageScore,
+        academicYearId: initialData.academicYear.id,
       });
     }
-  }, [isEditMode, initialData, students, subjects, scoreTypes]);
+  }, [isEditMode, initialData, students, academicYears]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const errors = validate(score, schema);
+      const errors = validate(reportCard, schema);
       if (errors) {
         setError(errors);
         return;
       }
 
       if (isEditMode) {
-        const updatedScore = {
-          score: score.score,
+        const updatedReportCard = {
+          averageScore: reportCard.averageScore,
         };
-        await handleUpdateScore(score.id, updatedScore);
+        await handleUpdateReportCard(reportCard.id, updatedReportCard);
       } else {
-        await handleAddScore(score);
+        await handleAddReportCard(reportCard);
       }
 
       handleClose();
@@ -116,8 +107,8 @@ const ScoreForm = ({
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setScore((prevScore) => ({
-      ...prevScore,
+    setReportCard((prevReportCard) => ({
+      ...prevReportCard,
       [name]: value,
     }));
   };
@@ -137,22 +128,22 @@ const ScoreForm = ({
           p: 4,
         }}
       >
-        <h2>{isEditMode ? "Cập nhật điểm" : "Thêm điểm"}</h2>
+        <h2>{isEditMode ? "Cập nhật hạng kiểm" : "Thêm hạng kiểm"}</h2>
 
         <form onSubmit={handleSubmit}>
           {isEditMode ? (
             <TextField
               type="number"
-              name="score"
-              label="Điểm"
-              value={score.score}
+              name="averageScore"
+              label="Điểm trung bình"
+              value={reportCard.averageScore}
               onChange={handleChange}
               fullWidth
               margin="normal"
               variant="outlined"
               required
-              error={hasError("score")}
-              helperText={getErrorMessage("score")}
+              error={hasError("averageScore")}
+              helperText={getErrorMessage("averageScore")}
             />
           ) : (
             <>
@@ -166,7 +157,7 @@ const ScoreForm = ({
                   labelId="student-label"
                   id="student-select"
                   name="studentId"
-                  value={score.studentId}
+                  value={reportCard.studentId}
                   onChange={handleChange}
                   label="Học sinh"
                   required
@@ -184,73 +175,46 @@ const ScoreForm = ({
                 )}
               </FormControl>
 
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={hasError("subjectId")}
-              >
-                <InputLabel id="subject-label">Môn học</InputLabel>
-                <Select
-                  labelId="subject-label"
-                  id="subject-select"
-                  name="subjectId"
-                  value={score.subjectId}
-                  onChange={handleChange}
-                  label="Môn học"
-                >
-                  {subjects.map((subject) => (
-                    <MenuItem key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {hasError("subjectId") && (
-                  <FormHelperText>
-                    {getErrorMessage("subjectId")}
-                  </FormHelperText>
-                )}
-              </FormControl>
-
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={hasError("scoreTypeId")}
-              >
-                <InputLabel id="scoreType-label">Loại điểm</InputLabel>
-                <Select
-                  labelId="scoreType-label"
-                  id="scoreType-select"
-                  name="scoreTypeId"
-                  value={score.scoreTypeId}
-                  onChange={handleChange}
-                  label="Loại điểm"
-                >
-                  {scoreTypes.map((scoreType) => (
-                    <MenuItem key={scoreType.id} value={scoreType.id}>
-                      {scoreType.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {hasError("scoreTypeId") && (
-                  <FormHelperText>
-                    {getErrorMessage("scoreTypeId")}
-                  </FormHelperText>
-                )}
-              </FormControl>
-
               <TextField
                 type="number"
-                name="score"
-                label="Điểm"
-                value={score.score}
+                name="averageScore"
+                label="Điểm trung bình"
+                value={reportCard.averageScore}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
                 variant="outlined"
                 required
-                error={hasError("score")}
-                helperText={getErrorMessage("score")}
+                error={hasError("averageScore")}
+                helperText={getErrorMessage("averageScore")}
               />
+
+              <FormControl
+                fullWidth
+                margin="normal"
+                error={hasError("academicYearId")}
+              >
+                <InputLabel id="academicYear-label">Năm học</InputLabel>
+                <Select
+                  labelId="academicYear-label"
+                  id="academicYear-select"
+                  name="academicYearId"
+                  value={reportCard.academicYearId}
+                  onChange={handleChange}
+                  label="Năm học"
+                >
+                  {academicYears.map((academicYear) => (
+                    <MenuItem key={academicYear.id} value={academicYear.id}>
+                      {academicYear.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {hasError("academicYearId") && (
+                  <FormHelperText>
+                    {getErrorMessage("academicYearId")}
+                  </FormHelperText>
+                )}
+              </FormControl>
             </>
           )}
           <Button type="submit" variant="contained" onClick={handleSubmit}>
@@ -265,4 +229,4 @@ const ScoreForm = ({
   );
 };
 
-export default ScoreForm;
+export default ReportCardForm;

@@ -8,42 +8,35 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
 import { Button, Modal } from "@mui/material";
-import ScoreForm from "../../components/score/ScoreForm";
-import { useNavigate } from "react-router-dom";
+import ReportCardForm from "../../components/reportCard/ReportCardForm";
 
-const Score = () => {
+const ReportCard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [score, setScore] = useState(null);
+  const [reportCard, setReportCard] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedScore, setselectedScore] = useState(null);
+  const [selectedReportCard, setSelectedReportCard] = useState(null);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [scoreTypes, setScoreTypes] = useState([]);
-  const [selectedClass, setSelectedClass] = useState(null);
-  const [classScores, setClassScores] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
 
-  const navigate = useNavigate();
   const handleOpenForm = async () => {
-    if (score) {
+    if (reportCard) {
       setIsEditMode(true);
-      setselectedScore(score);
+      setSelectedReportCard(reportCard);
     } else {
       setIsEditMode(false);
-      setselectedScore(null);
+      setSelectedReportCard(null);
     }
 
     try {
       const responseStudents = await client.get("/allStudent");
-      const responseSubjects = await client.get("/api/subjects");
-      const responseScoreType = await client.get("/api/score-types");
+      const responseAcademicYears = await client.get("/api/academic-years/all");
       setStudents(responseStudents.data);
-      setSubjects(responseSubjects.data);
-      setScoreTypes(responseScoreType.data);
+      setAcademicYears(responseAcademicYears.data);
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -55,12 +48,12 @@ const Score = () => {
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-    setScore(null);
+    setReportCard(null);
   };
 
   const fetchData = useCallback(async () => {
     try {
-      let url = "/api/scores";
+      let url = "/api/report_cards";
       if (searchTerm) {
         url += `?studentName=${searchTerm}`;
       }
@@ -77,16 +70,18 @@ const Score = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAddScore = async (newScore) => {
+  const handleAddReportCard = async (newReportCard) => {
+    console.log(newReportCard);
     try {
-      await client.post("/api/scores", newScore);
+      await client.post("/api/report_cards/create", newReportCard);
 
       await fetchData();
     } catch (error) {
+      console.error(error);
       if (error.response) {
         setError(error.response.data);
       } else {
-        setError("Đã xảy ra lỗi khi cập nhật điểm.");
+        setError("Đã xảy ra lỗi khi cập nhật hạng kiểm.");
       }
     }
   };
@@ -97,9 +92,9 @@ const Score = () => {
 
   const handleView = async (id) => {
     try {
-      const response = await client.get(`/api/scores/${id}`);
+      const response = await client.get(`/api/report_cards/findById/${id}`);
       const data = response.data;
-      setScore(data);
+      setReportCard(data);
       setIsModalOpen(true);
     } catch (error) {
       console.error(error);
@@ -108,52 +103,38 @@ const Score = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setScore(null);
+    setReportCard(null);
   };
 
   const handleEdit = (id) => {
-    const selectedScore = data.find((year) => year.id === id);
-    if (selectedScore) {
+    const selectedReportCard = data.find((reportCard) => reportCard.id === id);
+    if (selectedReportCard) {
       setIsEditMode(true);
-      setselectedScore(selectedScore);
+      setSelectedReportCard(selectedReportCard);
       setIsFormOpen(true);
     }
   };
-  const handleUpdateScore = async (id, updatedScore) => {
+  const handleUpdateReportCard = async (id, updatedReportCard) => {
     try {
-      await client.put(`/api/scores/${id}`, updatedScore);
+      await client.put(`/api/report_cards/update/${id}`, updatedReportCard);
+
       await fetchData();
     } catch (error) {
       console.error(error);
       if (error.response) {
         setError(error.response.data);
       } else {
-        setError("Đã xảy ra lỗi khi cập nhật điểm.");
+        setError("Đã xảy ra lỗi khi cập nhật hạng kiểm.");
       }
     }
   };
   const handleDelete = async (id) => {
     try {
-      await client.delete(`/api/scores/${id}`);
+      await client.delete(`/api/report_cards/delete/${id}`);
       fetchData();
     } catch (error) {
       console.error(error);
     }
-  };
-  const handleOpenClassScoresModal = async () => {
-    try {
-      const response = await client.get("/api/classes");
-      setClassScores(response.data);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error(error);
-    }
-    // navigate("/admin/class-score");
-  };
-
-  const handleClassClick = (classId) => {
-    setSelectedClass(classId);
-    navigate(`/admin/class-score/${classId}`);
   };
 
   const getHeader = () => (
@@ -184,24 +165,6 @@ const Score = () => {
           size="large"
         >
           Thêm mới
-        </CommonButton>
-      </Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        marginTop={{ xs: "10px", sm: 0 }}
-        marginRight={{ xs: "10px" }}
-      >
-        <CommonButton
-          variant="contained"
-          sx={{
-            color: "white",
-            backgroundImage: "linear-gradient(to right, #9c27b0, #673ab7)",
-          }}
-          onClick={handleOpenClassScoresModal}
-          size="large"
-        >
-          Thêm Điểm Lớp
         </CommonButton>
       </Box>
       <Box
@@ -238,19 +201,13 @@ const Score = () => {
       width: 100,
       valueGetter: (params) => params.row.student?.name || "",
     },
+    { field: "averageScore", headerName: "Điểm trung bình", width: 100 },
     {
-      field: "subject",
-      headerName: "Môn học",
-      width: 100,
-      valueGetter: (params) => params.row.subject?.name || "",
-    },
-    {
-      field: "scoreType",
-      headerName: "Loại điểm",
+      field: "academicYear",
+      headerName: "Năm học",
       width: 250,
-      valueGetter: (params) => params.row.scoreType?.name || "",
+      valueGetter: (params) => params.row.academicYear?.name || "",
     },
-    { field: "score", headerName: "Điểm", width: 100 },
   ];
 
   const getContent = () => (
@@ -267,19 +224,18 @@ const Score = () => {
   return (
     <GridWrapper>
       {isFormOpen && (
-        <ScoreForm
-          handleAddScore={handleAddScore}
-          handleUpdateScore={handleUpdateScore}
+        <ReportCardForm
+          handleAddReportCard={handleAddReportCard}
+          handleUpdateReportCard={handleUpdateReportCard}
           handleClose={handleCloseForm}
           isEditMode={isEditMode}
-          initialData={selectedScore}
+          initialData={selectedReportCard}
           error={error}
           students={students}
-          subjects={subjects}
-          scoreTypes={scoreTypes}
+          academicYears={academicYears}
         />
       )}
-      {classScores && (
+      {reportCard && (
         <Modal
           open={isModalOpen}
           onClose={closeModal}
@@ -298,53 +254,11 @@ const Score = () => {
               p: 2,
             }}
           >
-            <h2 id="modal-title">Danh sách lớp học</h2>
-            <ul>
-              {classScores.map((classItem) => (
-                <li
-                  key={classItem.id}
-                  onClick={() => handleClassClick(classItem.id)}
-                  style={{
-                    cursor: "pointer",
-                    marginBottom: 8,
-                  }}
-                >
-                  {classItem.name}
-                </li>
-              ))}
-            </ul>
-            <Button variant="contained" onClick={closeModal}>
-              Đóng
-            </Button>
-          </Box>
-        </Modal>
-      )}
-
-      {score && (
-        <Modal
-          open={isModalOpen}
-          onClose={closeModal}
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
-        >
-          <Box
-            sx={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 400,
-              bgcolor: "background.paper",
-              borderRadius: 4,
-              p: 2,
-            }}
-          >
-            <h2 id="modal-title">Thông tin điểm</h2>
-            <p id="modal-description">ID: {score.id}</p>
-            <p>Học sinh: {score.student.name}</p>
-            <p>Môn học: {score.subject.name}</p>
-            <p>Loại điểm: {score.scoreType.name}</p>
-            <p>Điểm: {score.score}</p>
+            <h2 id="modal-title">Thông tin hạng kiểm</h2>
+            <p id="modal-description">ID: {reportCard.id}</p>
+            <p>Học sinh: {reportCard.student.name}</p>
+            <p>Điểm trung bình: {reportCard.averageScore}</p>
+            <p>Năm học: {reportCard.academicYear.name}</p>
 
             <Button variant="contained" onClick={closeModal}>
               Đóng
@@ -358,4 +272,4 @@ const Score = () => {
   );
 };
 
-export default Score;
+export default ReportCard;

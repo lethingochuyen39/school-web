@@ -106,19 +106,19 @@ export const mainNavbarItems = [
 		id: 13,
 		icon: <StackedBarChartIcon />,
 		label: "Quản lý thống kê",
-		route: "home",
+		route: "metric",
 	},
 	{
 		id: 14,
 		icon: <AssessmentIcon />,
 		label: "Quản lý báo cáo",
-		route: "home",
+		route: "evaluationRecord",
 	},
 	{
 		id: 15,
 		icon: <StarsIcon />,
 		label: "Quản lý hạng kiểm",
-		route: "home",
+		route: "reportCard",
 	},
 	{
 		id: 16,
