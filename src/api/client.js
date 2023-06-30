@@ -1,7 +1,4 @@
 import axios from "axios";
-import Cookies from "universal-cookie";
-
-const cookies = new Cookies();
 
 const client = axios.create({
 	baseURL: "http://localhost:8080",
@@ -9,7 +6,7 @@ const client = axios.create({
 
 // Thêm interceptor để cập nhật giá trị của Authorization header
 client.interceptors.request.use((config) => {
-	const token = cookies.get("token");
+	const token = localStorage.getItem("token");
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
@@ -20,6 +17,8 @@ export default client;
 
 // Đăng xuất: xóa token và làm Axios client không gửi token
 export function logout() {
-	cookies.remove("token");
+	localStorage.removeItem("token");
+	localStorage.removeItem("date");
+	localStorage.removeItem("refresh_token");
 	delete client.defaults.headers.common["Authorization"];
 }

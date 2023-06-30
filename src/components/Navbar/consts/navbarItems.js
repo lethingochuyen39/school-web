@@ -52,7 +52,7 @@ export const mainNavbarItems = [
 		id: 6,
 		icon: <FiberNewIcon />,
 		label: "Quản lý tin tức",
-		route: "home",
+		route: "news",
 	},
 	{
 		id: 7,

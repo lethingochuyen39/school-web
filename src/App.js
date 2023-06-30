@@ -12,6 +12,9 @@ import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
 import Document from "./pages/Document/Document";
+import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
+import ScheduleView from "./pages/Schedule/ScheduleView";
+import News from "./pages/News/News";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -31,6 +34,13 @@ function App() {
 								element={<ClassScorePage />}
 							/>
 							<Route path="/admin/document" element={<Document />} />
+							<Route path="/admin/news" element={<News />} />
+							<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
+
+							<Route
+								path="/admin/schedule-view/:id"
+								element={<ScheduleView />}
+							/>
 						</Route>
 					</Routes>
 				</AuthContextProvider>
