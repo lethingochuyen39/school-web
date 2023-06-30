@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import { useLocation, useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
 import Header from "../components/Header/Header";
 import Navbar from "../components/Navbar/Navbar";
 import { useTheme } from "@mui/material/styles";
@@ -14,13 +13,8 @@ function LayoutAdmin() {
 	const navigate = useNavigate();
 
 	const checkLogin = async () => {
-		// const cookies = new Cookies();
-		// const token = await cookies.get("token");
-		// if (token === undefined || token === null) {
-		// 	navigate("/login");
-		// }
 		const token = localStorage.getItem("token");
-		if(!token){
+		if (!token) {
 			navigate("/login");
 		}
 	};
@@ -28,7 +22,7 @@ function LayoutAdmin() {
 		const parsedTitle = location.pathname.replace(/\W/g, " ");
 		setTitle(parsedTitle);
 		checkLogin();
-	}, [location]);
+	}, [location, checkLogin]);
 
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

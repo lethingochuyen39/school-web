@@ -12,6 +12,9 @@ import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
 import Document from "./pages/Document/Document";
+import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
+import ScheduleView from "./pages/Schedule/ScheduleView";
+import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
 import Class from "./pages/Class/Class";
@@ -37,7 +40,13 @@ function App() {
 							/>
 
 							<Route path="/admin/document" element={<Document />} />
+							<Route path="/admin/news" element={<News />} />
+							<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
 
+							<Route
+								path="/admin/schedule-view/:id"
+								element={<ScheduleView />}
+							/>
 							</Route>
 						</Route>
 						<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />}>

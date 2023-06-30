@@ -22,34 +22,33 @@ const schema = {
 			message: "^Kích thước từ 1 đến 255 ký tự",
 		},
 	},
-	file: {
+	content: {
 		presence: {
 			allowEmpty: false,
-			message: "^Vui lòng chọn một file",
+			message: "^Vui lòng nhập nội dung",
 		},
 	},
 };
-const DocumentForm = ({
-	handleAddDocument,
-	handleUpdateDocument,
+const NewsForm = ({
+	handleAddNews,
+	handleUpdateNews,
 	handleClose,
 	isEditMode,
 	initialData,
-	uploadedById,
 }) => {
-	const [document, setDocument] = useState({
+	const [news, setNews] = useState({
 		id: initialData ? initialData.id : "",
 		title: initialData ? initialData.title : "",
-		description: initialData ? initialData.description : "",
-		file: null,
-		// file: initialData ? { name: initialData.fileName } : null,
+		content: initialData ? initialData.content : "",
+		isActive: initialData ? initialData.isActive : true,
+		image: null,
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		if (isEditMode && initialData) {
-			setDocument({
+			setNews({
 				...initialData,
 			});
 		}
@@ -57,28 +56,28 @@ const DocumentForm = ({
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log(uploadedById);
-		const formData = new FormData();
-		formData.append("file", document.file);
-		formData.append("uploadedById", uploadedById);
 
-		const { title, description } = document;
+		const formData = new FormData();
+		formData.append("image", news.image);
+
+		const { title, content, isActive } = news;
 		formData.append("title", title);
-		formData.append("description", description);
+		formData.append("content", content);
+		formData.append("isActive", isActive);
 
 		try {
-			if (isEditMode && document.id) {
-				if (!document.file) {
-					formData.delete("file");
+			if (isEditMode && news.id) {
+				if (!news.image) {
+					formData.delete("image");
 				}
-				await handleUpdateDocument(formData);
+				await handleUpdateNews(formData);
 			} else {
-				const errors = validate(document, schema);
+				const errors = validate(news, schema);
 				if (errors) {
 					setError(errors);
 					return;
 				}
-				await handleAddDocument(formData);
+				await handleAddNews(formData);
 			}
 			handleClose();
 		} catch (error) {
@@ -91,7 +90,7 @@ const DocumentForm = ({
 					setError(errorMessage);
 				}
 			} else {
-				setError("Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.");
+				setError("Đã xảy ra lỗi không xác định.");
 			}
 		}
 	};
@@ -101,19 +100,18 @@ const DocumentForm = ({
 		handleClose();
 	};
 
-	const handleChange = (event) => {
-		const { name, value } = event.target;
-		setDocument((prev) => ({
+	const handleChange = ({ target: { name, value } }) => {
+		setNews((prev) => ({
 			...prev,
 			[name]: value,
 		}));
 	};
 
-	const handleFileChange = (event) => {
-		const file = event.target.files[0];
-		setDocument((prev) => ({
+	const handleImageChange = (event) => {
+		const image = event.target.files[0];
+		setNews((prev) => ({
 			...prev,
-			file: file,
+			image: image,
 		}));
 	};
 
@@ -141,7 +139,7 @@ const DocumentForm = ({
 				}}
 			>
 				<Typography variant="h3" sx={{ mb: 2 }}>
-					{isEditMode ? "Cập nhật tài liệu" : "Thêm tài liệu"}
+					{isEditMode ? "Cập nhật tin tức" : "Thêm tin tức"}
 				</Typography>
 
 				<form onSubmit={handleSubmit}>
@@ -149,7 +147,7 @@ const DocumentForm = ({
 						type="text"
 						name="title"
 						label="Tiêu đề"
-						value={document.title}
+						value={news.title}
 						onChange={handleChange}
 						fullWidth
 						margin="normal"
@@ -162,9 +160,9 @@ const DocumentForm = ({
 
 					<TextField
 						type="text"
-						name="description"
-						label="Mô tả"
-						value={document.description}
+						name="content"
+						label="Nội dung"
+						value={news.content}
 						onChange={handleChange}
 						fullWidth
 						margin="normal"
@@ -175,7 +173,7 @@ const DocumentForm = ({
 					<Grid container spacing={2}>
 						<Grid item xs={4}>
 							<label
-								htmlFor="file-upload"
+								htmlFor="image-upload"
 								style={{ display: "flex", alignItems: "center" }}
 							>
 								<Button
@@ -191,20 +189,20 @@ const DocumentForm = ({
 										},
 									}}
 								>
-									Chọn file
+									Chọn ảnh
 								</Button>
 								<input
 									type="file"
-									id="file-upload"
-									name="file"
-									accept=".pdf,.doc,.docx,excel.exe"
+									id="image-upload"
+									name="image"
+									accept=".jpg,.png,.jfif,."
 									style={{ display: "none" }}
-									onChange={handleFileChange}
+									onChange={handleImageChange}
 								/>
 							</label>
 						</Grid>
 						<Grid item xs={4}>
-							{document.file && (
+							{news.image && (
 								<Typography
 									variant="body1"
 									sx={{
@@ -219,19 +217,12 @@ const DocumentForm = ({
 										whiteSpace: "nowrap",
 									}}
 								>
-									{document.file.name}
+									{news.image.name}
 								</Typography>
 							)}
-							{error && !document.file && !isEditMode && (
-								<FormHelperText error>{getErrorMessage("file")}</FormHelperText>
-							)}
 						</Grid>
-						<Grid item xs={4}>
-							{/* Thêm mã JSX để hiển thị lỗi */}
-						</Grid>
+						<Grid item xs={4}></Grid>
 					</Grid>
-
-					{/* {error && <p style={{ color: "red" }}>{error}</p>} */}
 
 					<Button
 						type="submit"
@@ -250,4 +241,4 @@ const DocumentForm = ({
 	);
 };
 
-export default DocumentForm;
+export default NewsForm;

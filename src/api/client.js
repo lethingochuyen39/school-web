@@ -1,7 +1,6 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-
 const client = axios.create({
 	baseURL: "http://localhost:8080",
 });
