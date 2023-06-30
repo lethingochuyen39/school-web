@@ -26,7 +26,7 @@ function App() {
 					<Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/" element={<Login />} />
-						<Route element={<RoleAccess roles={["ADMIN"]}/>}>
+						<Route element={<RoleAccess roles={["ADMIN"]} />}>
 							<Route path="/admin/" element={<LayoutAdmin />}>
 								<Route path="/admin/home" element={<Home />} />
 								<Route path="/admin/academicYear" element={<AcademicYear />} />
@@ -34,24 +34,26 @@ function App() {
 								<Route path="/admin/score" element={<Score />} />
 								<Route path="/admin/score-type" element={<ScoreType />} />
 								<Route
-								path="/admin/class-score/:classId"
-								element={<ClassScorePage />}
-<Route path="/admin/classes" element={<Class/>} />
-							/>
+									path="/admin/class-score/:classId"
+									element={<ClassScorePage />}
+								/>
+								<Route path="/admin/classes" element={<Class />} />
 
-							<Route path="/admin/document" element={<Document />} />
-							<Route path="/admin/news" element={<News />} />
-							<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
+								<Route path="/admin/document" element={<Document />} />
+								<Route path="/admin/news" element={<News />} />
+								<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
 
-							<Route
-								path="/admin/schedule-view/:id"
-								element={<ScheduleView />}
-							/>
+								<Route
+									path="/admin/schedule-view/:id"
+									element={<ScheduleView />}
+								/>
 							</Route>
 						</Route>
-						<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />}>
-							<Route path="/user/" element={<LayoutAdmin/>}>
-								<Route element={<Success/>} path="/user/success"/>
+						<Route
+							element={<RoleAccess roles={["STUDENT", "PARENTS", "TEACHER"]} />}
+						>
+							<Route path="/user/" element={<LayoutAdmin />}>
+								<Route element={<Success />} path="/user/success" />
 							</Route>
 						</Route>
 					</Routes>
