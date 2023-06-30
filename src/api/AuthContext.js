@@ -31,13 +31,8 @@ export const AuthContextProvider = ({ children }) => {
 			// navigate("/admin/home");
 			if(role==="ADMIN"){
 				navigate("/admin/home");
-<<<<<<< HEAD
-			} else {
-				navigate("/admin/home");
-=======
 			}else{
 				navigate("/user/success");
->>>>>>> d957b4301669c0108cdc6fb647706f356807623f
 			}
 		});
 	};
