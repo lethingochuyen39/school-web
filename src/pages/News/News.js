@@ -152,44 +152,31 @@ const News = () => {
 			console.error(error);
 		}
 	};
-
 	const handleUpdateSwitch = async (event, id) => {
 		const { checked } = event.target;
-
+		console.log(id);
 		try {
-			await handleUpdateNew(id, checked);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+			// Gọi API để cập nhật trạng thái isActive
+			await client.put(`/api/news/isActive/${id}`);
 
-	const handleUpdateNew = async (id, isActive) => {
-		try {
-			const formData = {
-				isActive: isActive,
-			};
-
-			await client.put(`/api/news/edit/${id}`, formData, {
-				headers: {
-					"Content-Type": "application/json",
-				},
+			// Cập nhật dữ liệu trong state với giá trị isActive mới
+			setData((prevData) => {
+				const updatedData = prevData.map((item) =>
+					item.id === id ? { ...item, isActive: checked } : item
+				);
+				return updatedData;
 			});
 
-			// Update the news object in the state with the new isActive value
-			setNews((prevNews) => ({
-				...prevNews,
-				isActive: isActive,
-			}));
-
-			// Fetch the updated data
-			await fetchData();
+			// Cập nhật selectedNews nếu tin tức đang được chọn có cùng id với tin tức thay đổi
+			setSelectedNews((prevNews) => {
+				if (prevNews && prevNews.id === id) {
+					return { ...prevNews, isActive: checked };
+				}
+				return prevNews;
+			});
 		} catch (error) {
 			console.error(error);
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật.");
-			}
+			// Xử lý lỗi nếu có
 		}
 	};
 
