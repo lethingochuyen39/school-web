@@ -22,7 +22,6 @@ const News = () => {
 	const [selectedNews, setSelectedNews] = useState(null);
 	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
-	const [rowData, setRowData] = useState(data);
 	const [isActive, setIsActive] = useState(false);
 
 	const handleOpenForm = async () => {
@@ -125,6 +124,9 @@ const News = () => {
 
 	const handleUpdateNews = async (formData) => {
 		try {
+			if (!formData) {
+				formData = { isActive: news.isActive };
+			}
 			await client.put(`/api/news/edit/${news.id}`, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
@@ -150,26 +152,27 @@ const News = () => {
 		}
 	};
 
-	const handleSwitchChange = (event, id) => {
-		const updatedData = data.map((item) => {
-			if (item.id === id) {
-				const updatedItem = { ...item, isActive: !item.isActive };
-				return updatedItem;
-			}
-			return item;
-		});
-
-		setData(updatedData);
-	};
-
 	const handleUpdateSwitch = async (event, id) => {
-		const selectedNews = data.find((item) => item.id === id);
-		if (selectedNews) {
-			try {
-				await handleUpdateNews({ isActive: selectedNews.isActive }, true);
-			} catch (error) {
-				console.error(error);
-			}
+		const { checked } = event.target;
+		console.log(id);
+		try {
+			await client.put(`/api/news/isActive/${id}`);
+
+			setData((prevData) => {
+				const updatedData = prevData.map((item) =>
+					item.id === id ? { ...item, isActive: checked } : item
+				);
+				return updatedData;
+			});
+
+			setSelectedNews((prevNews) => {
+				if (prevNews && prevNews.id === id) {
+					return { ...prevNews, isActive: checked };
+				}
+				return prevNews;
+			});
+		} catch (error) {
+			console.error(error);
 		}
 	};
 
@@ -232,17 +235,37 @@ const News = () => {
 
 	const columns = [
 		{ field: "id", headerName: "ID", width: 50 },
-		{ field: "imageName", headerName: "Tên file", width: 150 },
-		{ field: "title", headerName: "tiêu đề", width: 150 },
+		{ field: "imageName", headerName: "Tên file", width: 100 },
+		{ field: "title", headerName: "tiêu đề", width: 100 },
 		{ field: "content", headerName: "Nội dung", width: 100 },
 		// { field: "imagePath", headerName: "Đường dẫn", width: 100 },
-
+		{
+			field: "imagePath",
+			headerName: "Hình ảnh",
+			width: 130,
+			renderCell: (params) => (
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "center",
+						maxWidth: "100%",
+						maxHeight: "95%",
+					}}
+				>
+					<img
+						src={process.env.PUBLIC_URL + `/${params.value}`}
+						alt={params.row.imageName}
+						style={{ width: "60%", height: "auto", borderRadius: "6px" }}
+					/>
+				</div>
+			),
+		},
 		{ field: "createdAt", headerName: "Ngày thêm", width: 100 },
 		{ field: "updatedAt", headerName: "Ngày cập nhật", width: 100 },
 		{
 			field: "isActive",
 			headerName: "Trạng thái",
-			width: 120,
+			width: 100,
 			renderCell: (params) => (
 				<Switch
 					checked={params.row.isActive}
@@ -295,12 +318,23 @@ const News = () => {
 							bgcolor: "background.paper",
 							borderRadius: 4,
 							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
 						}}
 					>
 						<>
 							<Typography variant="h4" id="modal-title" sx={{ mb: 2 }}>
 								Thông tin Tin tức
 							</Typography>
+
+							<Box sx={{ display: "flex", justifyContent: "center" }}>
+								<img
+									src={process.env.PUBLIC_URL + `/${news.imagePath}`}
+									alt={news.imageName}
+									style={{ width: 200, height: "auto", marginBottom: 16 }}
+								/>
+							</Box>
 							<Typography variant="body1" id="modal-content">
 								<b>ID:</b> {news.id}
 							</Typography>
@@ -325,7 +359,7 @@ const News = () => {
 							</Typography>
 							<Typography variant="body1">
 								<b>Trạng thái:</b>{" "}
-								{news.isActive ? "Đang hoạt động" : "Không hoạt động"}
+								{news.isActive ? "Đang hoạt động" : "Ẩn hoạt động"}
 							</Typography>
 						</>
 

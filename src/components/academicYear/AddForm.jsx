@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
+import { Typography } from "@mui/material";
 
 const schema = {
 	endDate: {
@@ -104,7 +105,19 @@ const AddForm = ({
 					p: 4,
 				}}
 			>
-				<h2>{isEditMode ? "Cập nhật năm học" : "Thêm mới năm học"}</h2>
+				<Typography
+					id="modal-title"
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
+					{isEditMode ? "Cập nhật năm học" : "Thêm mới năm học"}
+				</Typography>
 
 				<form onSubmit={handleSubmit}>
 					<TextField

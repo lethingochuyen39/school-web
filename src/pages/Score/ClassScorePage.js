@@ -240,8 +240,15 @@ const ClassScorePage = () => {
 				display="flex"
 				justifyContent="center"
 				alignItems="center"
-				fontSize="1.5rem"
+				fontSize="2rem"
 				fontWeight="bold"
+				sx={{
+					mb: 2,
+					fontWeight: "bold",
+					textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+					color: "#FF4500",
+					textAlign: "center",
+				}}
 			>
 				Nhập điểm lớp mã - {classId}
 			</Box>
