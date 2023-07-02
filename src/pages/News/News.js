@@ -22,7 +22,6 @@ const News = () => {
 	const [selectedNews, setSelectedNews] = useState(null);
 	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
-	const [rowData, setRowData] = useState(data);
 	const [isActive, setIsActive] = useState(false);
 
 	const handleOpenForm = async () => {
@@ -152,14 +151,13 @@ const News = () => {
 			console.error(error);
 		}
 	};
+
 	const handleUpdateSwitch = async (event, id) => {
 		const { checked } = event.target;
 		console.log(id);
 		try {
-			// Gọi API để cập nhật trạng thái isActive
 			await client.put(`/api/news/isActive/${id}`);
 
-			// Cập nhật dữ liệu trong state với giá trị isActive mới
 			setData((prevData) => {
 				const updatedData = prevData.map((item) =>
 					item.id === id ? { ...item, isActive: checked } : item
@@ -167,7 +165,6 @@ const News = () => {
 				return updatedData;
 			});
 
-			// Cập nhật selectedNews nếu tin tức đang được chọn có cùng id với tin tức thay đổi
 			setSelectedNews((prevNews) => {
 				if (prevNews && prevNews.id === id) {
 					return { ...prevNews, isActive: checked };
@@ -176,7 +173,6 @@ const News = () => {
 			});
 		} catch (error) {
 			console.error(error);
-			// Xử lý lỗi nếu có
 		}
 	};
 
@@ -239,17 +235,37 @@ const News = () => {
 
 	const columns = [
 		{ field: "id", headerName: "ID", width: 50 },
-		{ field: "imageName", headerName: "Tên file", width: 150 },
-		{ field: "title", headerName: "tiêu đề", width: 150 },
+		{ field: "imageName", headerName: "Tên file", width: 100 },
+		{ field: "title", headerName: "tiêu đề", width: 100 },
 		{ field: "content", headerName: "Nội dung", width: 100 },
 		// { field: "imagePath", headerName: "Đường dẫn", width: 100 },
-
+		{
+			field: "imagePath",
+			headerName: "Hình ảnh",
+			width: 130,
+			renderCell: (params) => (
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "center",
+						maxWidth: "100%",
+						maxHeight: "95%",
+					}}
+				>
+					<img
+						src={process.env.PUBLIC_URL + `/${params.value}`}
+						alt={params.row.imageName}
+						style={{ width: "60%", height: "auto", borderRadius: "6px" }}
+					/>
+				</div>
+			),
+		},
 		{ field: "createdAt", headerName: "Ngày thêm", width: 100 },
 		{ field: "updatedAt", headerName: "Ngày cập nhật", width: 100 },
 		{
 			field: "isActive",
 			headerName: "Trạng thái",
-			width: 120,
+			width: 100,
 			renderCell: (params) => (
 				<Switch
 					checked={params.row.isActive}
@@ -302,12 +318,23 @@ const News = () => {
 							bgcolor: "background.paper",
 							borderRadius: 4,
 							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
 						}}
 					>
 						<>
 							<Typography variant="h4" id="modal-title" sx={{ mb: 2 }}>
 								Thông tin Tin tức
 							</Typography>
+
+							<Box sx={{ display: "flex", justifyContent: "center" }}>
+								<img
+									src={process.env.PUBLIC_URL + `/${news.imagePath}`}
+									alt={news.imageName}
+									style={{ width: 200, height: "auto", marginBottom: 16 }}
+								/>
+							</Box>
 							<Typography variant="body1" id="modal-content">
 								<b>ID:</b> {news.id}
 							</Typography>

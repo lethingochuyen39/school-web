@@ -8,7 +8,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
 import AddForm from "../../components/academicYear/AddForm";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 const AcademicYear = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -235,11 +235,34 @@ const AcademicYear = () => {
 							p: 2,
 						}}
 					>
-						<h2 id="modal-title">Thông tin năm học</h2>
-						<p id="modal-description">ID: {academicYear.id}</p>
-						<p>Tên năm học: {academicYear.name}</p>
-						<p>Ngày bắt đầu: {academicYear.startDate}</p>
-						<p>Ngày kết thúc: {academicYear.endDate}</p>
+						<Typography
+							id="modal-title"
+							variant="h4"
+							sx={{
+								mb: 2,
+								fontWeight: "bold",
+								textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+								color: "#FF4500",
+								textAlign: "center",
+							}}
+						>
+							Thông tin năm học
+						</Typography>
+						<Typography variant="body1" id="modal-description">
+							<b>ID:</b>
+							{academicYear.id}
+						</Typography>
+						<Typography variant="body1">
+							<b>Tên năm học:</b> {academicYear.name}
+						</Typography>
+						<Typography variant="body1">
+							<b>Ngày bắt đầu: </b>
+							{academicYear.startDate}
+						</Typography>
+						<Typography variant="body1">
+							<b>Ngày kết thúc:</b> {academicYear.endDate}
+						</Typography>
+
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>

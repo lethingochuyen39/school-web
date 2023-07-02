@@ -269,10 +269,23 @@ const Document = () => {
 							bgcolor: "background.paper",
 							borderRadius: 4,
 							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
 						}}
 					>
 						<>
-							<Typography variant="h4" id="modal-title" sx={{ mb: 2 }}>
+							<Typography
+								id="modal-title"
+								variant="h4"
+								sx={{
+									mb: 2,
+									fontWeight: "bold",
+									textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+									color: "#FF4500",
+									textAlign: "center",
+								}}
+							>
 								Thông tin Tài liệu
 							</Typography>
 							<Typography variant="body1" id="modal-description">

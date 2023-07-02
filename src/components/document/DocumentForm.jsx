@@ -140,7 +140,17 @@ const DocumentForm = ({
 					p: 4,
 				}}
 			>
-				<Typography variant="h3" sx={{ mb: 2 }}>
+				<Typography
+					id="modal-title"
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
 					{isEditMode ? "Cập nhật tài liệu" : "Thêm tài liệu"}
 				</Typography>
 

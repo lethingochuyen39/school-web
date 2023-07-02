@@ -10,6 +10,7 @@ import {
 	InputLabel,
 	MenuItem,
 	Select,
+	Typography,
 } from "@mui/material";
 
 const schema = {
@@ -137,7 +138,18 @@ const ScoreForm = ({
 					p: 4,
 				}}
 			>
-				<h2>{isEditMode ? "Cập nhật điểm" : "Thêm điểm"}</h2>
+				<Typography
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
+					{isEditMode ? "Cập nhật điểm" : "Thêm mới điểm"}
+				</Typography>
 
 				<form onSubmit={handleSubmit}>
 					{isEditMode ? (

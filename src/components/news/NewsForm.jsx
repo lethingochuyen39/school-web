@@ -41,6 +41,7 @@ const NewsForm = ({
 		content: initialData ? initialData.content : "",
 		isActive: initialData ? initialData.isActive : true,
 		image: null,
+		imageURL: initialData ? initialData.imagePath : null,
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
@@ -143,9 +144,21 @@ const NewsForm = ({
 					border: "2px solid #000",
 					boxShadow: 24,
 					p: 4,
+					maxWidth: "90%",
+					maxHeight: "80%",
+					overflow: "auto",
 				}}
 			>
-				<Typography variant="h3" sx={{ mb: 2 }}>
+				<Typography
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
 					{isEditMode ? "Cập nhật tin tức" : "Thêm tin tức"}
 				</Typography>
 
@@ -178,6 +191,19 @@ const NewsForm = ({
 					/>
 
 					<Grid container spacing={2}>
+						<Grid
+							item
+							xs={12}
+							sx={{ display: "flex", justifyContent: "center" }}
+						>
+							{news.imageURL && (
+								<img
+									src={process.env.PUBLIC_URL + `/${news.imageURL}`}
+									alt="Hình ảnh"
+									style={{ width: "60%", height: "auto" }}
+								/>
+							)}
+						</Grid>
 						<Grid item xs={4}>
 							<label
 								htmlFor="image-upload"
@@ -188,7 +214,7 @@ const NewsForm = ({
 									component="span"
 									startIcon={<CloudUploadIcon />}
 									sx={{
-										backgroundColor: "#ffc400",
+										backgroundColor: "#9e9e9e",
 										color: "black",
 										marginBottom: "8px",
 										"&:hover": {
@@ -208,6 +234,7 @@ const NewsForm = ({
 								/>
 							</label>
 						</Grid>
+
 						<Grid item xs={8} paddingRight={2}>
 							{news.image && (
 								<Typography
