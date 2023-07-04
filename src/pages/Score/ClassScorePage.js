@@ -250,7 +250,7 @@ const ClassScorePage = () => {
 					textAlign: "center",
 				}}
 			>
-				Nhập điểm lớp mã - {classId}
+				Nhập điểm lớp ID - {classId}
 			</Box>
 
 			<Box

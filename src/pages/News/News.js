@@ -324,8 +324,18 @@ const News = () => {
 						}}
 					>
 						<>
-							<Typography variant="h4" id="modal-title" sx={{ mb: 2 }}>
-								Thông tin Tin tức
+							<Typography
+								variant="h4"
+								id="modal-title"
+								sx={{
+									mb: 2,
+									fontWeight: "bold",
+									textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+									color: "#FF4500",
+									textAlign: "center",
+								}}
+							>
+								Thông tin tin tức
 							</Typography>
 
 							<Box sx={{ display: "flex", justifyContent: "center" }}>

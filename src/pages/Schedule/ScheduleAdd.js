@@ -1,257 +1,120 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { Grid, Button } from "@mui/material";
+import { Alert, Button, Divider, Typography } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import client from "../../api/client";
 import { Box } from "@mui/system";
+import { useParams } from "react-router-dom";
+import ScheduleView from "./ScheduleView";
+import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
+import BasicCard from "../../components/common/BasicCard/BasicCard";
 
 const ScheduleTable = () => {
-	const daysOfWeek = [
-		"Thứ hai",
-		"Thứ ba",
-		"Thứ tư",
-		"Thứ năm",
-		"Thứ sáu",
-		"Thứ bảy",
-		"Chủ nhật",
-	];
-	const lessons = Array.from({ length: 10 }, (_, index) => index + 1);
 	const [subjects, setSubjects] = useState([]);
 	const [selectedSubject, setSelectedSubject] = useState("");
 	const [teachers, setTeachers] = useState([]);
-	const [selectedTeachers, setSelectedTeachers] = useState("");
-	const [changedRows, setChangedRows] = useState([]);
-	const [rows, setRows] = useState(getInitialRows());
-	const [selectedClass, setSelectedClasses] = useState("");
-	const [classes, setClasses] = useState([]);
+	const [selectedTeacher, setSelectedTeacher] = useState("");
+	const [lessons, setLessons] = useState([]);
+	const [daysOfWeek, setDaysOfWeek] = useState([]);
+	const [selectedLesson, setSelectedLesson] = useState("");
+	const [selectedDayOfWeek, setSelectedDayOfWeek] = useState("");
+	const { classId } = useParams();
+	const [refreshSchedule, setRefreshSchedule] = useState(false);
+	const [isLoadingData, setIsLoadingData] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 
-	function getInitialRows() {
-		return lessons.map((lesson) => {
-			const rowData = {
-				id: lesson,
-				lesson: `Tiết ${lesson}`,
-				subject: "",
-				teacher: "",
-			};
-			daysOfWeek.forEach((_, index) => {
-				rowData[`daysofweek${index}`] = "";
+	const fetchData = async () => {
+		try {
+			setIsLoadingData(true);
+			const lessonsResponse = await client.get("/api/lessons");
+			setLessons(lessonsResponse.data);
+			setSelectedLesson(lessonsResponse.data[0]?.id || "");
+
+			const daysOfWeekResponse = await client.get("/api/dayofweek");
+			setDaysOfWeek(daysOfWeekResponse.data);
+			setSelectedDayOfWeek(daysOfWeekResponse.data[0]?.id || "");
+
+			const subjectsResponse = await client.get("/api/subjects");
+			setSubjects(subjectsResponse.data);
+			setSelectedSubject(subjectsResponse.data[0]?.id || "");
+
+			const teachersResponse = await client.get("/api/teachers");
+			setTeachers(teachersResponse.data);
+			setSelectedTeacher(teachersResponse.data[0]?.id || "");
+
+			setIsLoadingData(true);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handleLessonChange = (event) => {
+		setSelectedLesson(event.target.value);
+	};
+
+	const handleDayOfWeekChange = (event) => {
+		setSelectedDayOfWeek(event.target.value);
+	};
+
+	const handleSubjectChange = (event) => {
+		setSelectedSubject(event.target.value);
+	};
+
+	const handleTeacherChange = (event) => {
+		setSelectedTeacher(event.target.value);
+	};
+
+	const handleSubmit = () => {
+		const scheduleData = {
+			dayOfWeekId: selectedDayOfWeek,
+			lessonId: selectedLesson,
+			teacherId: selectedTeacher,
+			classId: classId,
+			subjectId: selectedSubject,
+		};
+
+		client
+			.post("/api/schedules", scheduleData)
+			.then((response) => {
+				setRefreshSchedule(true);
+				console.log("Lịch học đã được thêm:", response.data);
+				setErrorMessage("");
+			})
+			.catch((error) => {
+				console.error("Lỗi khi thêm lịch học:", error.response.data);
+				setErrorMessage(error.response.data);
+				setSuccessMessage("");
 			});
-			return rowData;
-		});
-	}
-
-	const fetchClasses = async () => {
-		try {
-			const response = await client.get("/api/classes");
-			const classes = response.data;
-			setClasses(classes);
-			setSelectedClasses(classes[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const handleClassesChange = (event) => {
-		setSelectedClasses(event.target.value);
-	};
-
-	const fetchSubjects = async () => {
-		try {
-			const response = await client.get("/api/subjects");
-			const subjects = response.data;
-			setSubjects(subjects);
-			setSelectedSubject(subjects[0]?.id || "");
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const handleSubjectChange = (event, params) => {
-		const { field, value } = params;
-		const updatedRows = rows.map((row) => {
-			if (row.id === params.id) {
-				return { ...row, [field]: value };
-			}
-			return row;
-		});
-		setRows(updatedRows);
-
-		// Lưu thông tin chi tiết của ô thay đổi vào mảng changedRows
-		const changedRow = {
-			id: params.id,
-			daysofweek: daysOfWeek[params.id],
-			lesson: `Tiết ${params.id + 1}`,
-			subject: rows.find((row) => row.id === params.id)[params.field],
-			teacher: rows.find((row) => row.id === params.id)[`teacher${params.id}`],
-		};
-
-		// Kiểm tra xem đã có thay đổi trong mảng changedRows chưa
-		const existingRow = changedRows.find((row) => row.id === params.id);
-		if (existingRow) {
-			// Nếu đã có thay đổi, cập nhật thông tin của ô vào mảng changedRows
-			const updatedRows = changedRows.map((row) =>
-				row.id === params.id ? changedRow : row
-			);
-			setChangedRows(updatedRows);
-		} else {
-			// Nếu chưa có thay đổi, thêm thông tin của ô vào mảng changedRows
-			setChangedRows([...changedRows, changedRow]);
-		}
-
-		console.log("selectedSubject", selectedSubject);
-	};
-
-	const fetchTeachers = async () => {
-		try {
-			const response = await client.get("/api/teachers");
-			const teachers = response.data;
-			setTeachers(teachers);
-			setSelectedTeachers(teachers[0]?.id || "");
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const handleTeacherChange = (event, params) => {
-		const { field, value } = params;
-		const updatedRows = rows.map((row) => {
-			if (row.id === params.id) {
-				return { ...row, [field]: value };
-			}
-			return row;
-		});
-		setRows(updatedRows);
-		setSelectedTeachers(value);
-
-		// Lưu thông tin chi tiết của ô thay đổi vào mảng changedRows
-		const changedRow = {
-			id: params.id,
-			daysofweek: daysOfWeek[params.id],
-			lesson: `Tiết ${params.id + 1}`,
-			subject: rows.find((row) => row.id === params.id)[`subject${params.id}`],
-			teacher: rows.find((row) => row.id === params.id)[params.field],
-		};
-
-		// Kiểm tra xem đã có thay đổi trong mảng changedRows chưa
-		const existingRow = changedRows.find((row) => row.id === params.id);
-		if (existingRow) {
-			// Nếu đã có thay đổi, cập nhật thông tin của ô vào mảng changedRows
-			const updatedRows = changedRows.map((row) =>
-				row.id === params.id ? changedRow : row
-			);
-			setChangedRows(updatedRows);
-		} else {
-			// Nếu chưa có thay đổi, thêm thông tin của ô vào mảng changedRows
-			setChangedRows([...changedRows, changedRow]);
-		}
-
-		console.log("selectedTeachers", selectedTeachers);
 	};
 
 	useEffect(() => {
-		fetchSubjects();
-		fetchTeachers();
-		fetchClasses();
-	}, []);
+		fetchData();
+	}, [classId]);
 
-	const columns = [
-		{ field: "lesson", headerName: "Tiết", width: 70 },
-		...daysOfWeek.map((daysofweek, index) => ({
-			field: `daysofweek${index}`,
-			headerName: daysofweek,
-			width: 150,
-			renderCell: (params) => (
-				<Grid container direction="column" spacing={1}>
-					<Grid item>
-						<FormControl fullWidth>
-							<InputLabel id={`subject-label-${params.id}`}>
-								Chọn môn học
-							</InputLabel>
-							<Select
-								labelId={`subject-label-${params.id}`}
-								id={`subject-select-${params.id}`}
-								name={`subjectId-${params.id}`}
-								value={rows.find((row) => row.id === params.id)["subject"]}
-								onChange={(event) => handleSubjectChange(event, params)}
-								label="Chọn môn học"
-								sx={{ height: "40px" }}
-							>
-								{subjects.map((subject) => (
-									<MenuItem key={subject.id} value={subject.id}>
-										{subject.name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item>
-						<FormControl fullWidth>
-							<InputLabel id={`teacher-label-${params.id}`}>
-								Chọn giáo viên
-							</InputLabel>
-							<Select
-								labelId={`teacher-label-${params.id}`}
-								id={`teacher-select-${params.id}`}
-								name={`teacherId-${params.id}`}
-								value={rows.find((row) => row.id === params.id)["teacher"]}
-								onChange={(event) => handleTeacherChange(event, params)}
-								label="Chọn giáo viên"
-								sx={{ height: "40px" }}
-							>
-								{teachers.map((teacher) => (
-									<MenuItem key={teacher.id} value={teacher.id}>
-										{teacher.name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-				</Grid>
-			),
-		})),
-	];
-	const handleSubmit = async () => {
-		try {
-			const scheduleDetails = rows.map((row) => ({
-				lesson: row.id,
-				dayOfWeek: daysOfWeek[row.id - 1],
-				subject: {
-					id: row.subject,
-					name:
-						subjects.find((subject) => subject.id === row.subject)?.name || "",
-				},
-				teacher: {
-					id: row.teacher,
-					name:
-						teachers.find((teacher) => teacher.id === row.teacher)?.name || "",
-				},
-			}));
-
-			const scheduleDto = {
-				classesId: selectedClass,
-				scheduleDetails: scheduleDetails,
-			};
-
-			await client.post("/api/schedules", scheduleDto);
-
-			alert("Lưu thành công");
-		} catch (error) {
-			console.error(error);
-			alert("Lưu thất bại");
+	useEffect(() => {
+		if (refreshSchedule) {
+			setSuccessMessage("Lịch học đã được thêm thành công!");
+			setRefreshSchedule(false);
 		}
+	}, [refreshSchedule]);
 
-		try {
-			await client.post("/api/schedule", {});
-
-			alert("Lưu thành công");
-		} catch (error) {
-			console.error(error);
-			alert("Lưu thất bại");
-		}
-	};
-
-	return (
-		<div style={{ height: 500, width: "100%" }}>
+	const getHeader = () => (
+		<>
+			<Box mt={2}>
+				{/* Thông báo thành công */}
+				{successMessage && (
+					<Alert severity="success" onClose={() => setSuccessMessage("")}>
+						{successMessage}
+					</Alert>
+				)}
+				{/* Thông báo lỗi */}
+				{errorMessage && (
+					<Alert severity="error" onClose={() => setErrorMessage("")}>
+						{errorMessage}
+					</Alert>
+				)}
+				{/* ... */}
+			</Box>
 			<Box
 				display="flex"
 				justifyContent="space-between"
@@ -261,36 +124,130 @@ const ScheduleTable = () => {
 			>
 				<Box width="calc(50% - 10px)" marginRight="10px">
 					<FormControl fullWidth margin="normal">
-						<InputLabel id="subject-label">Chọn lớp học</InputLabel>
+						<InputLabel id="lesson-label">Chọn tiết học</InputLabel>
+						<Select
+							labelId="lesson-label"
+							id="lesson-select"
+							name="lessonId"
+							value={selectedLesson}
+							onChange={handleLessonChange}
+							label="Chọn tiết học"
+							sx={{ height: "40px" }}
+						>
+							{lessons.map((lesson) => (
+								<MenuItem key={lesson.id} value={lesson.id}>
+									{lesson.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Box>
+				<Box width="calc(50% - 10px)" marginLeft="10px">
+					<FormControl fullWidth margin="normal">
+						<InputLabel id="dayOfWeek-label">Chọn ngày trong tuần</InputLabel>
+						<Select
+							labelId="dayOfWeek-label"
+							id="dayOfWeek-select"
+							name="dayOfWeekId"
+							value={selectedDayOfWeek}
+							onChange={handleDayOfWeekChange}
+							label="Chọn ngày trong tuần"
+							sx={{ height: "40px" }}
+						>
+							{daysOfWeek.map((day) => (
+								<MenuItem key={day.id} value={day.id}>
+									{day.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Box>
+				<Box width="calc(50% - 10px)" marginRight="10px">
+					<FormControl fullWidth margin="normal">
+						<InputLabel id="subject-label">Chọn môn học</InputLabel>
 						<Select
 							labelId="subject-label"
 							id="subject-select"
 							name="subjectId"
-							value={selectedClass}
-							onChange={handleClassesChange}
-							label="Chọn lớp học"
+							value={selectedSubject}
+							onChange={handleSubjectChange}
+							label="Chọn môn học"
 							sx={{ height: "40px" }}
 						>
-							{classes.map((classes) => (
-								<MenuItem key={classes.id} value={classes.id}>
-									{classes.name}
+							{subjects.map((subject) => (
+								<MenuItem key={subject.id} value={subject.id}>
+									{subject.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Box>
+				<Box width="calc(50% - 10px)" marginLeft="10px">
+					<FormControl fullWidth margin="normal">
+						<InputLabel id="teacher-label">Chọn giáo viên</InputLabel>
+						<Select
+							labelId="teacher-label"
+							id="teacher-select"
+							name="teacherId"
+							value={selectedTeacher}
+							onChange={handleTeacherChange}
+							label="Chọn giáo viên"
+							sx={{ height: "40px" }}
+						>
+							{teachers.map((teacher) => (
+								<MenuItem key={teacher.id} value={teacher.id}>
+									{teacher.name}
 								</MenuItem>
 							))}
 						</Select>
 					</FormControl>
 				</Box>
 			</Box>
-			<Button variant="contained" onClick={handleSubmit} sx={{ mb: 2 }}>
-				Lưu thay đổi
+			<Button
+				variant="contained"
+				onClick={handleSubmit}
+				sx={{
+					fontSize: "1.1rem",
+					width: "100px",
+					marginLeft: "10px",
+					marginTop: "10px",
+					marginBottom: "20px",
+				}}
+			>
+				Thêm
 			</Button>
-			<DataGrid
-				rows={rows}
-				columns={columns}
-				disableSelectionOnClick
-				hideFooter
-				rowHeight={120}
-			/>
-		</div>
+		</>
+	);
+
+	const getContent = () => (
+		<>
+			<Divider sx={{ margin: " auto", width: "80%" }} />
+			<Box mt={2}>
+				<Typography
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
+					Danh sách lịch học lớp ID - {classId}
+				</Typography>
+
+				<ScheduleView
+					classId={classId}
+					refresh={refreshSchedule}
+					setRefresh={setRefreshSchedule}
+				/>
+			</Box>
+		</>
+	);
+	return (
+		<GridWrapper>
+			<BasicCard header={getHeader()} content={getContent()} />
+		</GridWrapper>
 	);
 };
 
