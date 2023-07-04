@@ -55,9 +55,9 @@ function App() {
 									path="/admin/schedule-update/:scheduleId"
 									element={<UpdateSchedulePage />}
 								/>
-								<Route path="/admin/reportCard" element={<ReportCard />} />
-								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
 								<Route path="/admin/metric" element={<Metric />} />
+								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
+								<Route path="/admin/reportCard" element={<ReportCard />} />
 							</Route>
 						</Route>
 						<Route
