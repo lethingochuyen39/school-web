@@ -11,8 +11,15 @@ import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
-import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
-import Metric from "./pages/Metric/Metric";
+import Document from "./pages/Document/Document";
+import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
+import ScheduleView from "./pages/Schedule/ScheduleView";
+import News from "./pages/News/News";
+import RoleAccess from "./api/checkRole";
+import Success from "./pages/success";
+import Class from "./pages/Class/Class";
+import Metric from "./pages/Metric/Metric"
+import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords"
 import ReportCard from "./pages/ReportCard/ReportCard";
 function App() {
 	return (
@@ -22,19 +29,37 @@ function App() {
 					<Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/" element={<Login />} />
-						<Route path="/admin/" element={<LayoutAdmin />}>
-							<Route path="/admin/home" element={<Home />} />
-							<Route path="/admin/academicYear" element={<AcademicYear />} />
-							<Route path="/admin/schedule" element={<Schedule />} />
-							<Route path="/admin/score" element={<Score />} />
-							<Route path="/admin/metric" element={<Metric />} />
-							<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
-							<Route path="/admin/score-type" element={<ScoreType />} />
-							<Route path="/admin/reportCard" element={<ReportCard />} />
-							<Route
-								path="/admin/class-score/:classId"
-								element={<ClassScorePage />}
-							/>
+						<Route element={<RoleAccess roles={["ADMIN"]} />}>
+							<Route path="/admin/" element={<LayoutAdmin />}>
+								<Route path="/admin/home" element={<Home />} />
+								<Route path="/admin/academicYear" element={<AcademicYear />} />
+								<Route path="/admin/schedule" element={<Schedule />} />
+								<Route path="/admin/score" element={<Score />} />
+								<Route path="/admin/score-type" element={<ScoreType />} />
+								<Route
+									path="/admin/class-score/:classId"
+									element={<ClassScorePage />}
+								/>
+								<Route path="/admin/classes" element={<Class />} />
+
+								<Route path="/admin/document" element={<Document />} />
+								<Route path="/admin/news" element={<News />} />
+								<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
+								<Route path="/admin/reportCard" element={<ReportCard />} />
+								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
+								<Route path="/admin/metric" element={<Metric />} />
+								<Route
+									path="/admin/schedule-view/:id"
+									element={<ScheduleView />}
+								/>
+							</Route>
+						</Route>
+						<Route
+							element={<RoleAccess roles={["STUDENT", "PARENTS", "TEACHER"]} />}
+						>
+							<Route path="/user/" element={<LayoutAdmin />}>
+								<Route element={<Success />} path="/user/success" />
+							</Route>
 						</Route>
 					</Routes>
 				</AuthContextProvider>
