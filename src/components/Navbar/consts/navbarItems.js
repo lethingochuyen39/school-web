@@ -52,7 +52,7 @@ export const mainNavbarItems = [
 		id: 6,
 		icon: <FiberNewIcon />,
 		label: "Quản lý tin tức",
-		route: "home",
+		route: "news",
 	},
 	{
 		id: 7,
@@ -70,13 +70,13 @@ export const mainNavbarItems = [
 		id: 9,
 		icon: <FlightClassIcon />,
 		label: "Quản lý lớp học",
-		route: "home",
+		route: "classes",
 	},
 	{
 		id: 10,
 		icon: <SnippetFolderIcon />,
 		label: "Quản lý tài liệu",
-		route: "login",
+		route: "document",
 	},
 	{
 		id: 11,
