@@ -136,21 +136,21 @@ const ClassForm = ({
 
         <form onSubmit={handleSubmit}>
           {isEditMode ? (
-            <>
-              <TextField
-                name="name"
-                label="Tên lớp học"
-                value={classes.name}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                focused
-                required
-                error={hasError("name")}
-                helperText={getErrorMessage("name")}
-              />
-              <TextField
+          <>
+		    <TextField
+              name="name"
+              label="Tên lớp học"
+              value={classes.name}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              focused
+              required
+              error={hasError("name")}
+              helperText={getErrorMessage("name")}
+            />
+			<TextField
                 name="description"
                 label="Mô tả"
                 value={classes.description}
@@ -173,8 +173,7 @@ const ClassForm = ({
                 focused
                 error={hasError("grade")}
                 helperText={getErrorMessage("grade")}
-              />
-            </>
+              /></>
           ) : (
             <>
               <TextField
