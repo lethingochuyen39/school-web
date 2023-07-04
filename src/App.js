@@ -19,6 +19,9 @@ import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
 import Class from "./pages/Class/Class";
 import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
+import Metric from "./pages/Metric/Metric";
+import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
+import ReportCard from "./pages/ReportCard/ReportCard";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -52,6 +55,9 @@ function App() {
 									path="/admin/schedule-update/:scheduleId"
 									element={<UpdateSchedulePage />}
 								/>
+								<Route path="/admin/metric" element={<Metric />} />
+								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
+								<Route path="/admin/reportCard" element={<ReportCard />} />
 							</Route>
 						</Route>
 						<Route

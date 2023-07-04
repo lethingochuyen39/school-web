@@ -1,98 +1,71 @@
-import React, { useState } from "react";
-import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import { mainNavbarItems } from "./consts/navbarItems";
-import { navbarStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SchoolIcon from "@mui/icons-material/School";
-import { Box, Typography } from "@mui/material";
-const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
-	const navigate = useNavigate();
-	const [expandedItems, setExpandedItems] = useState([]);
-
-	const handleItemClick = (route) => {
-		navigate(route);
-	};
-
-	const handleExpandItem = (itemId) => {
-		if (expandedItems.includes(itemId)) {
-			setExpandedItems((prevExpandedItems) =>
-				prevExpandedItems.filter((item) => item !== itemId)
-			);
-		} else {
-			setExpandedItems((prevExpandedItems) => [...prevExpandedItems, itemId]);
-		}
-	};
-
-	const isItemExpanded = (itemId) => {
-		return expandedItems.includes(itemId);
-	};
-
-	const renderNavbarItems = (items) => {
-		return items.map((item) => {
-			if (item.children && item.children.length > 0) {
-				const isExpanded = isItemExpanded(item.id);
-
-				return (
-					<React.Fragment key={item.id}>
-						<ListItem button onClick={() => handleExpandItem(item.id)}>
-							<ListItemIcon sx={navbarStyles.icons}>{item.icon}</ListItemIcon>
-							<ListItemText sx={navbarStyles.text} primary={item.label} />
-							{isExpanded ? (
-								<ExpandLessIcon sx={navbarStyles.icons} />
-							) : (
-								<ExpandMoreIcon sx={navbarStyles.icons} />
-							)}
-						</ListItem>
-						<Collapse in={isExpanded} timeout="auto" unmountOnExit>
-							<List component="div" disablePadding>
-								{renderNavbarItems(item.children)}
-							</List>
-						</Collapse>
-					</React.Fragment>
-				);
-			} else {
-				return (
-					<ListItem
-						button
-						key={item.id}
-						onClick={() => handleItemClick(item.route)}
-					>
-						<ListItemIcon sx={navbarStyles.icons}>{item.icon}</ListItemIcon>
-						<ListItemText sx={navbarStyles.text} primary={item.label} />
-					</ListItem>
-				);
-			}
-		});
-	};
-
+import React from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Schedule from "./pages/Schedule/Schedule";
+import Login from "./pages/login";
+import Home from "./pages/Home/Home";
+import AcademicYear from "./pages/AcademicYear/AcademicYear";
+import { AuthContextProvider } from "./api/AuthContext";
+import { dashboardTheme } from "./dashboardTheme";
+import Score from "./pages/Score/Score";
+import LayoutAdmin from "./pages/LayoutAdmin";
+import ScoreType from "./pages/ScoreType/ScoreType";
+import ClassScorePage from "./pages/Score/ClassScorePage";
+import Document from "./pages/Document/Document";
+import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
+import ScheduleView from "./pages/Schedule/ScheduleView";
+import News from "./pages/News/News";
+import RoleAccess from "./api/checkRole";
+import Success from "./pages/success";
+import Class from "./pages/Class/Class";
+import Metric from "./pages/Metric/Metric"
+import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords"
+import ReportCard from "./pages/ReportCard/ReportCard";
+function App() {
 	return (
-		<Drawer
-			sx={navbarStyles.drawer}
-			variant="persistent"
-			anchor="left"
-			open={isSidebarOpen}
-		>
-			<Toolbar>
-				<Box sx={navbarStyles.logoContainer}>
-					<SchoolIcon sx={navbarStyles.logoIcon} />
-					<Typography variant="h6" sx={navbarStyles.logoText}>
-						Quản lý trường học
-					</Typography>
-				</Box>
-			</Toolbar>
-			<Divider />
-			<List>{renderNavbarItems(mainNavbarItems)}</List>
-		</Drawer>
-	);
-};
+		<ThemeProvider theme={dashboardTheme}>
+			<BrowserRouter>
+				<AuthContextProvider>
+					<Routes>
+						<Route path="/login" element={<Login />} />
+						<Route path="/" element={<Login />} />
+						<Route element={<RoleAccess roles={["ADMIN"]} />}>
+							<Route path="/admin/" element={<LayoutAdmin />}>
+								<Route path="/admin/home" element={<Home />} />
+								<Route path="/admin/academicYear" element={<AcademicYear />} />
+								<Route path="/admin/schedule" element={<Schedule />} />
+								<Route path="/admin/score" element={<Score />} />
+								<Route path="/admin/score-type" element={<ScoreType />} />
+								<Route
+									path="/admin/class-score/:classId"
+									element={<ClassScorePage />}
+								/>
+								<Route path="/admin/classes" element={<Class />} />
 
-export default Navbar;
+								<Route path="/admin/document" element={<Document />} />
+								<Route path="/admin/news" element={<News />} />
+								<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
+								<Route path="/admin/reportCard" element={<ReportCard />} />
+								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
+								<Route path="/admin/metric" element={<Metric />} />
+								<Route
+									path="/admin/schedule-view/:id"
+									element={<ScheduleView />}
+								/>
+							</Route>
+						</Route>
+						<Route
+							element={<RoleAccess roles={["STUDENT", "PARENTS", "TEACHER"]} />}
+						>
+							<Route path="/user/" element={<LayoutAdmin />}>
+								<Route element={<Success />} path="/user/success" />
+							</Route>
+						</Route>
+					</Routes>
+				</AuthContextProvider>
+			</BrowserRouter>
+		</ThemeProvider>
+	);
+}
+
+export default App;
