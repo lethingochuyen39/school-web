@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
+import { Typography } from "@mui/material";
 
 const schema = {
 	name: {
@@ -99,7 +100,18 @@ const ScoreTypeForm = ({
 					p: 4,
 				}}
 			>
-				<h2>{isEditMode ? "Cập nhật loại điểm" : "Thêm mới loại điểm"}</h2>
+				<Typography
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
+					{isEditMode ? "Cập nhật loại điểm" : "Thêm mới loại điểm"}
+				</Typography>
 
 				<form onSubmit={handleSubmit}>
 					<TextField
