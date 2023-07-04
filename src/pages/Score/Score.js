@@ -292,6 +292,9 @@ const Score = () => {
 							bgcolor: "background.paper",
 							borderRadius: 4,
 							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
 						}}
 					>
 						<Typography
@@ -305,7 +308,7 @@ const Score = () => {
 								textAlign: "center",
 							}}
 						>
-							Danh sách lớp học
+							Chọn lớp học
 						</Typography>
 						<ul>
 							{classScores.map((classItem) => (

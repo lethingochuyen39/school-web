@@ -18,6 +18,7 @@ import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
 import Class from "./pages/Class/Class";
+import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -42,10 +43,14 @@ function App() {
 								<Route path="/admin/document" element={<Document />} />
 								<Route path="/admin/news" element={<News />} />
 								<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
-
+								<Route path="/admin/schedule-view" element={<ScheduleView />} />
 								<Route
-									path="/admin/schedule-view/:id"
-									element={<ScheduleView />}
+									path="/admin/class-schedule/:classId"
+									element={<ScheduleAdd />}
+								/>
+								<Route
+									path="/admin/schedule-update/:scheduleId"
+									element={<UpdateSchedulePage />}
 								/>
 							</Route>
 						</Route>

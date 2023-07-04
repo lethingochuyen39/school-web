@@ -1,54 +1,197 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import client from "../api/client";
+const Tkb = () => {
+	const [tkbTemplate, setTkbTemplate] = useState([]);
+	const [dayOfWeekData, setDayOfWeekData] = useState([]);
 
-import dayOfWeek from "../mock/dayOfWeek";
-import tkb from "../mock/tkb";
-const Tbk = () => {
+	useEffect(() => {
+		const fetchTkbData = async () => {
+			try {
+				const tietResponse = await client.get("/api/lessons");
+				const dayOfWeekResponse = await client.get("/api/dayofweek");
+				const tkbResponse = await client.get(`/api/schedules`);
+
+				const tietData = tietResponse.data;
+				const fetchedDayOfWeekData = dayOfWeekResponse.data;
+				const tkbData = tkbResponse.data;
+
+				const filledTkbTemplate = tietData.map((t) =>
+					fetchedDayOfWeekData.map((d) => {
+						const findMon = tkbData.find(
+							(m) => m.lesson.id === t.id && m.dayOfWeek.id === d.id
+						);
+
+						if (findMon) {
+							return {
+								tietId: t.id,
+								tietName: t.name,
+								dayOfWeekId: d.id,
+								dayOfWeekName: d.name,
+								subjectId: findMon.subject.id,
+								subjectName: findMon.subject.name,
+								teacherId: findMon.teacher.id,
+							};
+						}
+						return {
+							tietId: t.id,
+							tietName: t.name,
+							dayOfWeekId: d.id,
+							dayOfWeekName: d.name,
+							subjectId: "",
+							subjectName: "",
+							teacherId: "",
+						};
+					})
+				);
+
+				setTkbTemplate(filledTkbTemplate);
+				setDayOfWeekData(fetchedDayOfWeekData);
+			} catch (error) {
+				console.error("Error fetching TKB data:", error);
+			}
+		};
+
+		fetchTkbData();
+	}, []);
+
 	return (
-		<Grid container>
-			{dayOfWeek.map((day, i) => (
-				<Grid item key={day.id} md={2}>
-					<Typography variant="h5">{day.name}</Typography>
-
-					<Grid container>
-						{tkb
-							.filter((d) => d.DayOfWeeek_Id === day.id)
-							.map((e) => (
-								<React.Fragment>
-									<Grid item md={12}>
-										<Divider />
-										<Divider />
-										<Divider />
-									</Grid>
-									<Grid item md={12}>
-										<Grid container>
-											<Grid item md={8}>
-												<Grid container direction="column">
-													<Grid item md={12}>
-														<Typography> {e["Subject/mônhọc"]}</Typography>
-													</Grid>
-													<Grid item md={12}>
-														{e.Teacher_id === "" && i <= 4 ? (
-															<div style={{ paddingBottom: "5.1px" }}>
-																&nbsp;&nbsp;&nbsp;
-															</div>
-														) : (
-															<Typography component="p">
-																{e.Teacher_id}
-															</Typography>
-														)}
-													</Grid>
-												</Grid>
-											</Grid>
-										</Grid>
-									</Grid>
-								</React.Fragment>
+		<TableContainer component={Paper}>
+			<Table sx={{ minWidth: 650 }} aria-label="simple table">
+				<TableHead>
+					<TableRow>
+						<TableCell align="right">Tiết</TableCell>
+						{dayOfWeekData.map((d) => (
+							<TableCell key={d.id} align="right">
+								{d.name}
+							</TableCell>
+						))}
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{tkbTemplate.map((row, i) => (
+						<TableRow
+							key={i}
+							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+						>
+							{row.map((d, j) => (
+								<TableCell key={j} align="right">
+									{j === 0 ? d.tietName : `${d.subjectName}_${d.teacherId}`}
+								</TableCell>
 							))}
-					</Grid>
-				</Grid>
-			))}
-		</Grid>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</TableContainer>
 	);
 };
 
-export default Tbk;
+export default Tkb;
+
+// import { Divider, Grid, Typography } from "@mui/material";
+// import React, { useEffect, useState } from "react";
+// import {
+// 	Table,
+// 	TableBody,
+// 	TableCell,
+// 	TableContainer,
+// 	TableHead,
+// 	TableRow,
+// 	Paper,
+// } from "@mui/material";
+// import client from "../../api/client";
+
+// const ScheduleView = () => {
+// 	const [tkbTemplate, setTkbTemplate] = useState([]);
+// 	const [dayOfWeekData, setDayOfWeekData] = useState([]);
+
+// 	useEffect(() => {
+// 		const fetchTkbData = async () => {
+// 			try {
+// 				const tietResponse = await client.get("/api/lessons");
+// 				const dayOfWeekResponse = await client.get("/api/dayofweek");
+// 				const tkbResponse = await client.get(`/api/schedules`);
+
+// 				const tietData = tietResponse.data;
+// 				const fetchedDayOfWeekData = dayOfWeekResponse.data;
+// 				const tkbData = tkbResponse.data;
+
+// 				const filledTkbTemplate = tietData.map((t) =>
+// 					fetchedDayOfWeekData.map((d) => {
+// 						const findMon = tkbData.find(
+// 							(m) => m.lesson.id === t.id && m.dayOfWeek.id === d.id
+// 						);
+
+// 						if (findMon) {
+// 							return {
+// 								tietId: t.id,
+// 								tietName: t.name,
+// 								dayOfWeekId: d.id,
+// 								dayOfWeekName: d.name,
+// 								subjectId: findMon.subject.id,
+// 								subjectName: findMon.subject.name,
+// 								teacherId: findMon.teacher.id,
+// 							};
+// 						}
+// 						return {
+// 							tietId: t.id,
+// 							tietName: t.name,
+// 							dayOfWeekId: d.id,
+// 							dayOfWeekName: d.name,
+// 							subjectId: "",
+// 							subjectName: "",
+// 							teacherId: "",
+// 						};
+// 					})
+// 				);
+
+// 				setTkbTemplate(filledTkbTemplate);
+// 				setDayOfWeekData(fetchedDayOfWeekData);
+// 			} catch (error) {
+// 				console.error("Error fetching TKB data:", error);
+// 			}
+// 		};
+
+// 		fetchTkbData();
+// 	}, []);
+
+// 	return (
+// 		<TableContainer component={Paper}>
+// 			<Table sx={{ minWidth: 650 }} aria-label="simple table">
+// 				<TableHead>
+// 					<TableRow>
+// 						<TableCell align="right">Tiết</TableCell>
+// 						{dayOfWeekData.map((d) => (
+// 							<TableCell key={d.id} align="right">
+// 								{d.name}
+// 							</TableCell>
+// 						))}
+// 					</TableRow>
+// 				</TableHead>
+// 				<TableBody>
+// 					{tkbTemplate.map((row, i) => (
+// 						<TableRow
+// 							key={i}
+// 							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+// 						>
+// 							{row.map((d, j) => (
+// 								<TableCell key={j} align="right">
+// 									{j === 0 ? d.tietName : `${d.subjectName}_${d.teacherId}`}
+// 								</TableCell>
+// 							))}
+// 						</TableRow>
+// 					))}
+// 				</TableBody>
+// 			</Table>
+// 		</TableContainer>
+// 	);
+// };
+// export default ScheduleView;
