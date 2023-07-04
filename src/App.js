@@ -18,8 +18,9 @@ import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
 import Class from "./pages/Class/Class";
-import Metric from "./pages/Metric/Metric"
-import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords"
+import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
+import Metric from "./pages/Metric/Metric";
+import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
 function App() {
 	return (
@@ -45,13 +46,18 @@ function App() {
 								<Route path="/admin/document" element={<Document />} />
 								<Route path="/admin/news" element={<News />} />
 								<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
+								<Route path="/admin/schedule-view" element={<ScheduleView />} />
+								<Route
+									path="/admin/class-schedule/:classId"
+									element={<ScheduleAdd />}
+								/>
+								<Route
+									path="/admin/schedule-update/:scheduleId"
+									element={<UpdateSchedulePage />}
+								/>
 								<Route path="/admin/reportCard" element={<ReportCard />} />
 								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
 								<Route path="/admin/metric" element={<Metric />} />
-								<Route
-									path="/admin/schedule-view/:id"
-									element={<ScheduleView />}
-								/>
 							</Route>
 						</Route>
 						<Route
