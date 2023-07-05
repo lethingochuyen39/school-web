@@ -6,6 +6,7 @@ import Header from "../components/Header/Header";
 import Navbar from "../components/Navbar/Navbar";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import FooterAdmin from "../components/Footer/FooterAdmin";
 
 function LayoutAdmin() {
 	const [title, setTitle] = useState(null);
@@ -51,8 +52,19 @@ function LayoutAdmin() {
 					transition: "margin-left 0.3s ease-in-out",
 				}}
 			>
-				<Header title={title} toggleSidebar={toggleSidebar} />
-				<Outlet />
+				<div style={{ minHeight: "calc(100vh - 64px)", marginBottom: "20px" }}>
+					<Header
+						title={title}
+						toggleSidebar={toggleSidebar}
+						style={{
+							position: "sticky",
+							zIndex: 999,
+							top: 0,
+						}}
+					/>
+					<Outlet />
+				</div>
+				<FooterAdmin />
 			</Grid>
 		</Grid>
 	);
