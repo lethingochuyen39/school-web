@@ -9,7 +9,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import FooterAdmin from "../components/Footer/FooterAdmin";
 
 function LayoutAdmin() {
-	const [title, setTitle] = useState(null);
+	// const [title, setTitle] = useState(null);
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -19,9 +19,10 @@ function LayoutAdmin() {
 			navigate("/login");
 		}
 	};
+
 	useEffect(() => {
-		const parsedTitle = location.pathname.replace(/\W/g, " ");
-		setTitle(parsedTitle);
+		// const parsedTitle = location.pathname.replace(/\W/g, " ");
+		// setTitle(parsedTitle);
 		checkLogin();
 	}, [location, checkLogin]);
 
@@ -53,15 +54,7 @@ function LayoutAdmin() {
 				}}
 			>
 				<div style={{ minHeight: "calc(100vh - 64px)", marginBottom: "20px" }}>
-					<Header
-						title={title}
-						toggleSidebar={toggleSidebar}
-						style={{
-							position: "sticky",
-							zIndex: 999,
-							top: 0,
-						}}
-					/>
+					<Header toggleSidebar={toggleSidebar} />
 					<Outlet />
 				</div>
 				<FooterAdmin />

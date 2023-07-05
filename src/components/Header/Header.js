@@ -3,16 +3,13 @@ import CommonButton from "../common/CommonButton/CommonButton";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
-import HelpIcon from "@mui/icons-material/Help";
 import Box from "@mui/material/Box";
 import { Menu as MenuIcon } from "@mui/icons-material";
-import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import HomeIcon from "@mui/icons-material/Home";
 import {
 	ClickAwayListener,
 	Fade,
-	Grid,
 	MenuList,
 	Paper,
 	Popper,
@@ -21,7 +18,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../api/client";
-const Header = ({ title, toggleSidebar }) => {
+const Header = ({ toggleSidebar }) => {
 	const navigate = useNavigate();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const theme = useTheme();
@@ -57,14 +54,7 @@ const Header = ({ title, toggleSidebar }) => {
 			display: "flex",
 			alignItems: "center",
 		},
-		link: {
-			fontWeight: 300,
-			color: "rgba(255, 255, 255, 0.7)",
-			"&:hover": {
-				color: "#fff",
-				cursor: "pointer",
-			},
-		},
+
 		webButton: {
 			marginRight: "5px",
 		},
@@ -83,11 +73,13 @@ const Header = ({ title, toggleSidebar }) => {
 			alignItems: "center",
 			marginLeft: "auto",
 		},
-		title: {
-			marginRight: "20px",
-			color: "white",
-			fontSize: "18px",
-			fontWeight: "bold",
+		link: {
+			color: "#ffffff",
+			textDecoration: "none",
+			"&:hover": {
+				color: "rgba(255, 255, 255, 0.7)",
+				cursor: "pointer",
+			},
 		},
 	};
 
@@ -101,8 +93,22 @@ const Header = ({ title, toggleSidebar }) => {
 				>
 					<MenuIcon />
 				</IconButton>
-				<Typography variant="h1" color="white" sx={headerStyles.title}>
-					{title}
+				<Typography variant="h6" color="white">
+					<Box display="flex" alignItems="center">
+						<HomeIcon
+							sx={{
+								marginLeft: "5px",
+								verticalAlign: "middle",
+								color: "#FFFF",
+							}}
+						/>
+						<Link
+							to="/admin/home"
+							style={{ ...headerStyles.link, verticalAlign: "middle" }}
+						>
+							Trang chủ
+						</Link>
+					</Box>
 				</Typography>
 			</Box>
 			<Box sx={headerStyles.rightSection}>
