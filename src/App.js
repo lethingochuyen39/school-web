@@ -29,7 +29,7 @@ function App() {
 		<ThemeProvider theme={dashboardTheme}>
 			<BrowserRouter>
 				<AuthContextProvider>
-					{/* <Routes>
+					<Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/" element={<Login />} />
 						<Route element={<RoleAccess roles={["ADMIN"]} />}>
@@ -76,14 +76,14 @@ function App() {
 								<Route path="/teacher/home" element={<Dashboard />} />
 							</Route>
 						</Route>
-					</Routes> */}
-					<Routes>
+					</Routes>
+					{/* <Routes>
 						<Route path="/" element={<Dashboard />} />
 
 						<Route path="/teacher/" element={<LayoutTeacher />}>
 							<Route path="/teacher/home" element={<Dashboard />} />
 						</Route>
-					</Routes>
+					</Routes> */}
 				</AuthContextProvider>
 			</BrowserRouter>
 		</ThemeProvider>
