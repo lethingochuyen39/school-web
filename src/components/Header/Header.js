@@ -9,7 +9,14 @@ import Box from "@mui/material/Box";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Grid } from "@mui/material";
+import {
+	ClickAwayListener,
+	Fade,
+	Grid,
+	MenuList,
+	Paper,
+	Popper,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,7 +27,6 @@ const Header = ({ title, toggleSidebar }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 	const handleLogout = () => {
-		// Thực hiện đăng xuất: xóa token và chuyển hướng về trang đăng nhập
 		logout();
 		navigate("/login");
 	};
@@ -75,6 +81,7 @@ const Header = ({ title, toggleSidebar }) => {
 			display: "flex",
 			flexDirection: "row",
 			alignItems: "center",
+			marginLeft: "auto",
 		},
 		title: {
 			marginRight: "20px",
@@ -95,64 +102,50 @@ const Header = ({ title, toggleSidebar }) => {
 					<MenuIcon />
 				</IconButton>
 				<Typography variant="h1" color="white" sx={headerStyles.title}>
-					{/* <Link to="/" style={{ ...headerStyles.link, textDecoration: "none" }}>
-						<span style={{ fontSize: "20px", fontWeight: "bold" }}>
-							Trang chủ
-						</span>
-					</Link>{" "} */}
-					{/* {title ? "/ " + title : ""} */}
-
 					{title}
 				</Typography>
 			</Box>
 			<Box sx={headerStyles.rightSection}>
-				<Grid container alignItems="center" spacing={1}>
-					<Grid item>
-						{!isMobile && (
-							<Tooltip title="Help">
-								<IconButton color="white">
-									<HelpIcon />
-								</IconButton>
-							</Tooltip>
-						)}
-					</Grid>
-					<Grid item>
-						{!isMobile && (
-							<CommonButton
-								sx={headerStyles.webButton}
-								variant="outlined"
-								onClick={handleLogout}
-							>
-								Đăng xuất
-							</CommonButton>
-						)}
-					</Grid>
-
-					<Grid item>
-						<IconButton
-							color="white"
-							aria-label="account"
-							onClick={handleClick}
-						>
-							<Avatar src="https://mui.com/static/images/avatar/1.jpg" />
-						</IconButton>
-						<Menu
-							anchorEl={anchorEl}
-							open={Boolean(anchorEl)}
-							onClose={handleClose}
-						>
-							<MenuItem>
-								<Typography sx={headerStyles.username}>Username</Typography>
-							</MenuItem>
-							<MenuItem>
-								<Typography>Tài khoản</Typography>
-							</MenuItem>
-							<MenuItem>
-								<Typography>Đăng xuất</Typography>
-							</MenuItem>
-						</Menu>
-					</Grid>
-				</Grid>
+				{!isMobile && (
+					<CommonButton
+						sx={headerStyles.webButton}
+						variant="outlined"
+						onClick={handleLogout}
+					>
+						Đăng xuất
+					</CommonButton>
+				)}
+				<IconButton color="white" aria-label="account" onClick={handleClick}>
+					<Avatar src="https://mui.com/static/images/avatar/1.jpg" />
+				</IconButton>
+				<Popper
+					open={Boolean(anchorEl)}
+					anchorEl={anchorEl}
+					placement="bottom-end"
+					transition
+				>
+					{({ TransitionProps }) => (
+						<Fade {...TransitionProps} timeout={350}>
+							<Paper>
+								<ClickAwayListener onClickAway={handleClose}>
+									<MenuList autoFocusItem={Boolean(anchorEl)}>
+										<MenuItem onClick={handleClose}>
+											<Typography sx={headerStyles.username}>
+												Username
+											</Typography>
+										</MenuItem>
+										<MenuItem onClick={handleClose}>
+											<Typography>Tài khoản</Typography>
+										</MenuItem>
+										<MenuItem onClick={handleLogout}>
+											<Typography>Đăng xuất</Typography>
+										</MenuItem>
+									</MenuList>
+								</ClickAwayListener>
+							</Paper>
+						</Fade>
+					)}
+				</Popper>
 			</Box>
 		</Box>
 	);
