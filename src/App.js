@@ -22,12 +22,14 @@ import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Metric from "./pages/Metric/Metric";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
+import Dashboard from "./pages/Teacher/Dashboard";
+import LayoutTeacher from "./pages/LayoutTeacher";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
 			<BrowserRouter>
 				<AuthContextProvider>
-					<Routes>
+					{/* <Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/" element={<Login />} />
 						<Route element={<RoleAccess roles={["ADMIN"]} />}>
@@ -56,7 +58,10 @@ function App() {
 									element={<UpdateSchedulePage />}
 								/>
 								<Route path="/admin/metric" element={<Metric />} />
-								<Route path="/admin/evaluationRecord" element={<EvaluationRecord />} />
+								<Route
+									path="/admin/evaluationRecord"
+									element={<EvaluationRecord />}
+								/>
 								<Route path="/admin/reportCard" element={<ReportCard />} />
 							</Route>
 						</Route>
@@ -66,6 +71,17 @@ function App() {
 							<Route path="/user/" element={<LayoutAdmin />}>
 								<Route element={<Success />} path="/user/success" />
 							</Route>
+
+							<Route path="/teacher/" element={<LayoutTeacher />}>
+								<Route path="/teacher/home" element={<Dashboard />} />
+							</Route>
+						</Route>
+					</Routes> */}
+					<Routes>
+						<Route path="/" element={<Dashboard />} />
+
+						<Route path="/teacher/" element={<LayoutTeacher />}>
+							<Route path="/teacher/home" element={<Dashboard />} />
 						</Route>
 					</Routes>
 				</AuthContextProvider>
