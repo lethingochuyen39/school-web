@@ -46,40 +46,40 @@ const schema = {
 };
 
 const ClassForm = ({
-  handleAddclasses,
-  handleUpdateclasses,
+  handleAddClasses,
+  handleUpdateClasses,
   handleClose,
   isEditMode,
   initialData,
-  teacher,
-  academicYear,
+  teacherId,
+  academicYearId,
 }) => {
-  const [classes, setclasses] = useState({
+  const [classes, setClasses] = useState({
     id: isEditMode ? initialData.id : "",
     description: isEditMode ? initialData.description : "",
     grade: isEditMode ? initialData.grade : "",
     name: isEditMode ? initialData.name : "",
-    academicYear: isEditMode ? initialData.academicYear.name : "",
-    teacher: isEditMode ? initialData.teacher.name : "",
+    academicYearId: isEditMode ? initialData.academicYear.name : "",
+    teacherId: isEditMode ? initialData.teacher.name : "",
   });
 
   const [showModal, setShowModal] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
     if (isEditMode && initialData) {
-      setclasses({
+      setClasses({
         id: initialData.id,
         description: initialData.description,
         grade: initialData.grade,
         name: initialData.name,
-        academicYear: initialData.academicYear.name,
-        teacher: initialData.teacher.name,
+        academicYearId: initialData.academicYear.name,
+        teacherId: initialData.teacher.name,
       });
     }
-  }, [isEditMode, initialData, teacher, academicYear]);
+  }, [isEditMode, initialData, teacherId, academicYearId]);
 
   const handleChange = (event) => {
-    setclasses((prev) => ({
+    setClasses((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
@@ -95,9 +95,9 @@ const ClassForm = ({
         return;
       }
       if (isEditMode) {
-        await handleUpdateclasses(classes);
+        await handleUpdateClasses(classes);
       } else {
-        await handleAddclasses(classes);
+        await handleAddClasses(classes);
       }
       handleClose();
     } catch (error) {
@@ -136,21 +136,21 @@ const ClassForm = ({
 
         <form onSubmit={handleSubmit}>
           {isEditMode ? (
-          <>
-		    <TextField
-              name="name"
-              label="Tên lớp học"
-              value={classes.name}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("name")}
-              helperText={getErrorMessage("name")}
-            />
-			<TextField
+            <>
+              <TextField
+                name="name"
+                label="Tên lớp học"
+                value={classes.name}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("name")}
+                helperText={getErrorMessage("name")}
+              />
+              <TextField
                 name="description"
                 label="Mô tả"
                 value={classes.description}
@@ -173,7 +173,8 @@ const ClassForm = ({
                 focused
                 error={hasError("grade")}
                 helperText={getErrorMessage("grade")}
-              /></>
+              />
+            </>
           ) : (
             <>
               <TextField
@@ -199,46 +200,48 @@ const ClassForm = ({
                   labelId="academic-year-label"
                   id="academic-year-select"
                   name="academicYear"
-                  value={classes.academicYear.name}
+                  value={classes.academicYearId.name}
                   onChange={handleChange}
                   label="Năm"
                   required
                 >
-                  {academicYear.map((academicYear) => (
+                  {academicYearId.map((academicYear) => (
                     <MenuItem key={academicYear.id} value={academicYear.id}>
                       {academicYear.name}
                     </MenuItem>
                   ))}
                 </Select>
-                {hasError("academicYear") && (
+                {hasError("academicYearId") && (
                   <FormHelperText>
-                    {getErrorMessage("academicYear")}
+                    {getErrorMessage("academicYearId")}
                   </FormHelperText>
                 )}
               </FormControl>
               <FormControl
                 fullWidth
                 margin="normal"
-                error={hasError("teacher")}
+                error={hasError("teacherId")}
               >
                 <InputLabel id="teacher-label">Giáo viên</InputLabel>
                 <Select
                   labelId="teacher-label"
                   id="teacher-select"
                   name="teacher"
-                  value={classes.teacher.name}
+                  value={classes.teacherId.name}
                   onChange={handleChange}
                   label="Giáo viên"
                   required
                 >
-                  {teacher.map((teacher) => (
+                  {teacherId.map((teacher) => (
                     <MenuItem key={teacher.id} value={teacher.id}>
                       {teacher.name}
                     </MenuItem>
                   ))}
                 </Select>
-                {hasError("teacher") && (
-                  <FormHelperText>{getErrorMessage("teacher")}</FormHelperText>
+                {hasError("teacherId") && (
+                  <FormHelperText>
+                    {getErrorMessage("teacherId")}
+                  </FormHelperText>
                 )}
               </FormControl>
             </>

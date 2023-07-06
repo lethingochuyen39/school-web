@@ -33,7 +33,7 @@ export const mainNavbarItems = [
 			{
 				id: 4,
 				label: "Giáo viên",
-				route: "home",
+				route: "teacher",
 			},
 			{
 				id: 19,
@@ -64,7 +64,7 @@ export const mainNavbarItems = [
 		id: 8,
 		icon: <MenuBookIcon />,
 		label: "Quản lý môn học",
-		route: "home",
+		route: "subject",
 	},
 	{
 		id: 9,

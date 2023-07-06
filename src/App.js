@@ -11,7 +11,9 @@ import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
-import Class from "./pages/Class/Class";
+import Classes from "./pages/Classes/Classes.js";
+import Subject from "./pages/Subject/Subject.js";
+import Teacher from "./pages/Teacher/Teacher.js";
 
 function App() {
 	return (
@@ -31,7 +33,9 @@ function App() {
 								path="/admin/class-score/:classId"
 								element={<ClassScorePage />}
 							/>
-							<Route path="/admin/classes" element={<Class/>} />
+							<Route path="/admin/classes" element={<Classes/>} />
+							<Route path="/admin/subject" element={<Subject/>} />
+							<Route path="/admin/teacher" element={<Teacher/>} />
 						</Route>
 					</Routes>
 				</AuthContextProvider>
