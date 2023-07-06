@@ -13,6 +13,7 @@ import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
+import Class from "./pages/Class/Class";
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -31,13 +32,16 @@ function App() {
 								<Route
 								path="/admin/class-score/:classId"
 								element={<ClassScorePage />}
+<Route path="/admin/classes" element={<Class/>} />
 							/>
+
 							</Route>
 						</Route>
 						<Route element={<RoleAccess roles={["STUDENT","PARENTS","TEACHER"]} />}>
 							<Route path="/user/" element={<LayoutAdmin/>}>
 								<Route element={<Success/>} path="/user/success"/>
 							</Route>
+							
 						</Route>
 					</Routes>
 				</AuthContextProvider>
