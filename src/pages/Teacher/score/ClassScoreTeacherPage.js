@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "../../components/common/DataTable/DataTable";
-import client from "../../api/client";
+import DataTable from "../../../components/common/DataTable/DataTable";
+import client from "../../../api/client";
 import Box from "@mui/material/Box";
-import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
-import BasicCard from "../../components/common/BasicCard/BasicCard";
+import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
+import BasicCard from "../../../components/common/BasicCard/BasicCard";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
@@ -18,7 +18,7 @@ import {
 	IconButton,
 } from "@mui/material";
 
-const ClassScorePage = () => {
+const ClassScoreTeacherPage = () => {
 	const [students, setStudents] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { classId } = useParams();
@@ -303,4 +303,4 @@ const ClassScorePage = () => {
 	);
 };
 
-export default ClassScorePage;
+export default ClassScoreTeacherPage;

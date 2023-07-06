@@ -25,7 +25,9 @@ export const AuthContextProvider = ({ children }) => {
 			const dateUnix = jwtDecode(token).exp;
 			localStorage.setItem("refreshToken", res.data.refreshToken);
 			localStorage.setItem("date", dateUnix);
-			localStorage.setItem("userId", res.data.id);
+			localStorage.setItem("userId", res.data.uid);
+			localStorage.setItem("id", res.data.id);
+
 			// newCookie.set("token", token, { path: "/", expires: date });
 			localStorage.setItem("token", res.data.token);
 

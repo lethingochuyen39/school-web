@@ -25,6 +25,8 @@ import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
 import Metric from "./pages/Metric/Metric";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
+import ScoreTeacherPage from "./pages/Teacher/score/ScoreTeacherPage";
+import ClassScoreTeacherPage from "./pages/Teacher/score/ClassScoreTeacherPage";
 
 function App() {
 	return (
@@ -64,7 +66,7 @@ function App() {
 									path="/admin/evaluationRecord"
 									element={<EvaluationRecord />}
 								/>
-								<Route path="/admin/reportCard" element={<ReportCard />} /> 
+								<Route path="/admin/reportCard" element={<ReportCard />} />
 							</Route>
 						</Route>
 
@@ -74,6 +76,11 @@ function App() {
 								<Route
 									path="/teacher/document"
 									element={<DocumentTeacherPage />}
+								/>
+								<Route path="/teacher/score" element={<ScoreTeacherPage />} />
+								<Route
+									path="/teacher/class-score/:classId"
+									element={<ClassScoreTeacherPage />}
 								/>
 							</Route>
 						</Route>

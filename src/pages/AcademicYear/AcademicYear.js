@@ -95,14 +95,14 @@ const AcademicYear = () => {
 		}
 	};
 
-	const handleDelete = async (id) => {
-		try {
-			await client.delete(`/api/academic-years/${id}`);
-			fetchData();
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// const handleDelete = async (id) => {
+	// 	try {
+	// 		await client.delete(`/api/academic-years/${id}`);
+	// 		fetchData();
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -197,7 +197,8 @@ const AcademicYear = () => {
 				loading={loading}
 				handleView={handleView}
 				handleEdit={handleEdit}
-				handleDelete={handleDelete}
+				// handleDelete={handleDelete}
+				hiddenActions={["delete"]}
 			/>
 		);
 	};

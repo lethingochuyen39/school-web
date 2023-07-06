@@ -53,7 +53,7 @@ const News = () => {
 			// Cập nhật trạng thái "isActive" cho tất cả các tin tức
 			const updatedData = fetchedData.map((item) => ({
 				...item,
-				isActive: item.isActive, // Thay item.isActive bằng giá trị mặc định bạn muốn nếu không lấy từ fetchedData
+				isActive: item.isActive,
 			}));
 			setData(updatedData);
 			setLoading(false);

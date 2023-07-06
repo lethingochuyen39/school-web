@@ -38,7 +38,7 @@ const Score = () => {
 		}
 
 		try {
-			const responseStudents = await client.get("/allStudent");
+			const responseStudents = await client.get("/api/student/allStudent");
 			const responseSubjects = await client.get("/api/subjects");
 			const responseScoreType = await client.get("/api/score-types");
 			setStudents(responseStudents.data);

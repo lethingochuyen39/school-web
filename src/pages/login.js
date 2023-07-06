@@ -44,7 +44,7 @@ const Login = () => {
 		if (role === "TEACHER") {
 			navigate("/teacher/home");
 		}
-	});
+	}, []);
 
 	return (
 		<>
