@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import BasicCard from "../../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
@@ -12,7 +12,6 @@ import { Button, Modal } from "@mui/material";
 import DocumentForm from "../../../components/document/DocumentForm";
 import Typography from "@mui/material/Typography";
 import FileDownloader from "../../Document/FileDownloader";
-import AuthContext from "../../../api/AuthContext";
 
 const DocumentTeacherPage = () => {
 	const [data, setData] = useState([]);
@@ -98,7 +97,6 @@ const DocumentTeacherPage = () => {
 		setDocument(null);
 	};
 
-	const { userId } = useContext(AuthContext);
 	const [uploadedById, setUploadedById] = useState("");
 
 	useEffect(() => {

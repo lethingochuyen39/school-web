@@ -26,7 +26,7 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Thống kê" />
 		</ListItemButton>
-		<ListItemButton>
+		<ListItemButton component={Link} to="/teacher/score">
 			<ListItemIcon>
 				<FactCheckIcon />
 			</ListItemIcon>

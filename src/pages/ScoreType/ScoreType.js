@@ -94,14 +94,14 @@ const ScoreType = () => {
 		}
 	};
 
-	const handleDelete = async (id) => {
-		try {
-			await client.delete(`/api/score-types/${id}`);
-			fetchData();
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// const handleDelete = async (id) => {
+	// 	try {
+	// 		await client.delete(`/api/score-types/${id}`);
+	// 		fetchData();
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
 	const fetchData = useCallback(async () => {
 		try {
 			let url = "/api/score-types";
@@ -132,7 +132,6 @@ const ScoreType = () => {
 			justifyContent="space-between"
 			alignItems="center"
 			paddingLeft="20px"
-			paddingBottom="20px"
 			paddingTop="10px"
 			paddingRight="10px"
 			flexWrap="wrap"
@@ -195,7 +194,8 @@ const ScoreType = () => {
 				loading={loading}
 				handleView={handleView}
 				handleEdit={handleEdit}
-				handleDelete={handleDelete}
+				// handleDelete={handleDelete}
+				hiddenActions={["delete"]}
 			/>
 		);
 	};
