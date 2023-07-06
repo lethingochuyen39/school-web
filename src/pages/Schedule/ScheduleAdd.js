@@ -3,7 +3,7 @@ import { Alert, Button, Divider, Typography } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import client from "../../api/client";
 import { Box } from "@mui/system";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ScheduleView from "./ScheduleView";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
@@ -62,6 +62,11 @@ const ScheduleTable = () => {
 
 	const handleTeacherChange = (event) => {
 		setSelectedTeacher(event.target.value);
+	};
+
+	const navigate = useNavigate();
+	const handleCloseModal = () => {
+		navigate(-1);
 	};
 
 	const handleSubmit = () => {
@@ -215,6 +220,18 @@ const ScheduleTable = () => {
 				}}
 			>
 				Thêm
+			</Button>
+			<Button
+				onClick={handleCloseModal}
+				color="error"
+				sx={{
+					fontSize: "1.1rem",
+					width: "100px",
+					marginTop: "10px",
+					marginBottom: "20px",
+				}}
+			>
+				Quay lại
 			</Button>
 		</>
 	);
