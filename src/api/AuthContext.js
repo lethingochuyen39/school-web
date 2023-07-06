@@ -28,10 +28,14 @@ export const AuthContextProvider = ({ children }) => {
 			localStorage.setItem("userId", res.data.id);
 			// newCookie.set("token", token, { path: "/", expires: date });
 			localStorage.setItem("token", res.data.token);
-			// navigate("/admin/home");
-			if(role==="ADMIN"){
+
+			if (role === "ADMIN") {
 				navigate("/admin/home");
-			}else{
+			}
+			if (role === "TEACHER") {
+				navigate("/teacher/home");
+			}
+			if (role === "STUDENT") {
 				navigate("/user/success");
 			}
 		});

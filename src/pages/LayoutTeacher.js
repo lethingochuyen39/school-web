@@ -18,14 +18,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { mainListItems, secondaryListItems } from "../pages/Teacher/listItems";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { logout } from "../api/client";
 
-function Copyright(props) {
+function Footer(props) {
 	return (
 		<Typography
 			variant="body2"
 			color="text.secondary"
 			align="center"
+			marginBottom="10px"
 			{...props}
 		>
 			{"Copyright © "}
@@ -100,6 +102,12 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function LayoutTeacher() {
+
+	const navigate = useNavigate();
+	const handleLogout = () => {
+		logout();
+		navigate("/login");
+	};
 	const [open, setOpen] = React.useState(true);
 	const toggleDrawer = () => {
 		setOpen(!open);
@@ -137,7 +145,7 @@ export default function LayoutTeacher() {
 								{"Trang chủ"}
 							</Link>
 						</Typography>
-						<IconButton color="inherit">
+						<IconButton color="inherit" onClick={handleLogout}>
 							<LogoutIcon />
 						</IconButton>
 					</Toolbar>
@@ -179,9 +187,14 @@ export default function LayoutTeacher() {
 					}}
 				>
 					<Toolbar />
-					<Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+					<Container
+						maxWidth="lg"
+						sx={{ mt: 3, mb: 4, minHeight: "calc(83vh - 64px)" }}
+					>
 						<Outlet />
 					</Container>
+					<Footer />
+
 				</Box>
 			</Box>
 		</ThemeProvider>

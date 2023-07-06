@@ -19,11 +19,13 @@ import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
 import Class from "./pages/Class/Class";
 import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
+import Dashboard from "./pages/Teacher/Dashboard";
+import LayoutTeacher from "./pages/LayoutTeacher";
+import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
 import Metric from "./pages/Metric/Metric";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
-import Dashboard from "./pages/Teacher/Dashboard";
-import LayoutTeacher from "./pages/LayoutTeacher";
+
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -62,28 +64,26 @@ function App() {
 									path="/admin/evaluationRecord"
 									element={<EvaluationRecord />}
 								/>
-								<Route path="/admin/reportCard" element={<ReportCard />} />
+								<Route path="/admin/reportCard" element={<ReportCard />} /> 
 							</Route>
 						</Route>
-						<Route
-							element={<RoleAccess roles={["STUDENT", "PARENTS", "TEACHER"]} />}
-						>
+
+						<Route element={<RoleAccess roles={["TEACHER"]} />}>
+							<Route path="/teacher/" element={<LayoutTeacher />}>
+								<Route path="/teacher/home" element={<Dashboard />} />
+								<Route
+									path="/teacher/document"
+									element={<DocumentTeacherPage />}
+								/>
+							</Route>
+						</Route>
+
+						<Route element={<RoleAccess roles={["STUDENT", "PARENTS"]} />}>
 							<Route path="/user/" element={<LayoutAdmin />}>
 								<Route element={<Success />} path="/user/success" />
 							</Route>
-
-							<Route path="/teacher/" element={<LayoutTeacher />}>
-								<Route path="/teacher/home" element={<Dashboard />} />
-							</Route>
 						</Route>
 					</Routes>
-					{/* <Routes>
-						<Route path="/" element={<Dashboard />} />
-
-						<Route path="/teacher/" element={<LayoutTeacher />}>
-							<Route path="/teacher/home" element={<Dashboard />} />
-						</Route>
-					</Routes> */}
 				</AuthContextProvider>
 			</BrowserRouter>
 		</ThemeProvider>

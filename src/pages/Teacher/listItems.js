@@ -38,7 +38,7 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Điểm danh" />
 		</ListItemButton>
-		<ListItemButton>
+		<ListItemButton component={Link} to="/teacher/document">
 			<ListItemIcon>
 				<LibraryBooksIcon />
 			</ListItemIcon>
