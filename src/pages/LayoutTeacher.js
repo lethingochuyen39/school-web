@@ -102,6 +102,7 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function LayoutTeacher() {
+
 	const navigate = useNavigate();
 	const handleLogout = () => {
 		logout();
@@ -193,6 +194,7 @@ export default function LayoutTeacher() {
 						<Outlet />
 					</Container>
 					<Footer />
+
 				</Box>
 			</Box>
 		</ThemeProvider>

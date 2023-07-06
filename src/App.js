@@ -22,6 +22,10 @@ import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
 import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
+import Metric from "./pages/Metric/Metric";
+import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
+import ReportCard from "./pages/ReportCard/ReportCard";
+
 function App() {
 	return (
 		<ThemeProvider theme={dashboardTheme}>
@@ -55,12 +59,12 @@ function App() {
 									path="/admin/schedule-update/:scheduleId"
 									element={<UpdateSchedulePage />}
 								/>
-								{/* <Route path="/admin/metric" element={<Metric />} />
+								<Route path="/admin/metric" element={<Metric />} />
 								<Route
 									path="/admin/evaluationRecord"
 									element={<EvaluationRecord />}
 								/>
-								<Route path="/admin/reportCard" element={<ReportCard />} /> */}
+								<Route path="/admin/reportCard" element={<ReportCard />} /> 
 							</Route>
 						</Route>
 
@@ -80,14 +84,6 @@ function App() {
 							</Route>
 						</Route>
 					</Routes>
-					{/* <Routes>
-						<Route path="/" element={<LayoutTeacher />} />
-
-						<Route path="/teacher/" element={<LayoutTeacher />}>
-							<Route path="/teacher/home" element={<Dashboard />} />
-						
-						</Route>
-					</Routes> */}
 				</AuthContextProvider>
 			</BrowserRouter>
 		</ThemeProvider>
