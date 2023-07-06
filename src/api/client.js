@@ -17,6 +17,7 @@ export default client;
 
 // Đăng xuất: xóa token và làm Axios client không gửi token
 export function logout() {
+	localStorage.removeItem("role");
 	localStorage.removeItem("token");
 	localStorage.removeItem("date");
 	localStorage.removeItem("refresh_token");
