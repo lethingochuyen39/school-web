@@ -241,29 +241,29 @@ const DocumentTeacherPage = () => {
 							>
 								Thông tin Tài liệu
 							</Typography>
-							<Typography variant="body1" id="modal-description">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>ID:</b> {document.id}
 							</Typography>
-							<Typography variant="body1">
-								<b>tên file:</b> {document.fileName}
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Tên file:</b> {document.fileName}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tiêu đề:</b> {document.title}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Mô tả:</b> {document.description}
 							</Typography>
-							<Typography variant="body1" noWrap>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Đường dẫn:</b> {document.filePath}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tạo bởi UserId:</b> {document.uploadedBy.id} - <b>Email: </b>
 								{document.uploadedBy.email}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày thêm:</b> {document.uploadedAt}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày cập nhật:</b> {document.updatedAt}
 							</Typography>
 						</>

@@ -335,12 +335,25 @@ const Score = () => {
 						>
 							Thông tin điểm
 						</Typography>
-						<p id="modal-description">ID: {score.id}</p>
-						<p>Học sinh: {score.student.name}</p>
-						<p>Môn học: {score.subject.name}</p>
-						<p>Loại điểm: {score.scoreType.name}</p>
-						<p>Điểm: {score.score}</p>
 
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>ID:</b> {score.id}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Học sinh:</b> {score.student.name}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Môn học: </b> {score.subject.name}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Loại điểm: </b> {score.scoreType.name}
+						</Typography>
+						<Typography
+							variant="body1"
+							sx={{ overflowWrap: "break-word", mb: 2 }}
+						>
+							<b>Điểm: </b> {score.score}
+						</Typography>
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>

@@ -8,7 +8,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
 import ScoreTypeForm from "../../components/score/ScoreTypeForm";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 const ScoreType = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -17,7 +17,6 @@ const ScoreType = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedScoreType, setselectedScoreType] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenForm = () => {
@@ -34,20 +33,6 @@ const ScoreType = () => {
 	const handleCloseForm = () => {
 		setIsFormOpen(false);
 		setScoreType(null);
-	};
-
-	const handleAddScoreType = async (newScoreType) => {
-		try {
-			await client.post("/api/score-types", newScoreType);
-			setIsModalOpen(true);
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
-			}
-		}
 	};
 
 	// hiển thị thông tin
@@ -76,32 +61,6 @@ const ScoreType = () => {
 		}
 	};
 
-	const handleUpdateScoreType = async (updatedScoreType) => {
-		try {
-			await client.put(
-				`/api/score-types/${updatedScoreType.id}`,
-				updatedScoreType
-			);
-			setIsModalOpen(true);
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
-			}
-		}
-	};
-
-	// const handleDelete = async (id) => {
-	// 	try {
-	// 		await client.delete(`/api/score-types/${id}`);
-	// 		fetchData();
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// };
 	const fetchData = useCallback(async () => {
 		try {
 			let url = "/api/score-types";
@@ -204,12 +163,10 @@ const ScoreType = () => {
 		<GridWrapper>
 			{isFormOpen && (
 				<ScoreTypeForm
-					handleAddScoreType={handleAddScoreType}
-					handleUpdateScoreType={handleUpdateScoreType}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedScoreType}
-					error={error}
+					fetchData={fetchData}
 				/>
 			)}
 
@@ -232,10 +189,32 @@ const ScoreType = () => {
 							p: 2,
 						}}
 					>
-						<h2 id="modal-title">Thông tin loại điểm</h2>
-						<p id="modal-description">ID: {scoreType.id}</p>
-						<p>Tên loại điểm: {scoreType.name}</p>
-						<p>Hệ số nhân: {scoreType.coefficient}</p>
+						<Typography
+							id="modal-title"
+							variant="h4"
+							sx={{
+								mb: 2,
+								fontWeight: "bold",
+								textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+								color: "#FF4500",
+								textAlign: "center",
+							}}
+						>
+							Thông tin loại điểm
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>ID:</b> {scoreType.id}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Tên loại điểm: </b> {scoreType.name}
+						</Typography>
+						<Typography
+							variant="body1"
+							sx={{ overflowWrap: "break-word", mb: 2 }}
+						>
+							<b>Hệ số nhân: </b> {scoreType.coefficient}
+						</Typography>
+
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>

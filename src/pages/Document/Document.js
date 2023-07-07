@@ -21,7 +21,6 @@ const Document = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedDocument, setSelectedDocument] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenForm = async () => {
@@ -169,13 +168,6 @@ const Document = () => {
 		{ field: "fileName", headerName: "Tên file", width: 150 },
 		{ field: "title", headerName: "tiêu đề", width: 150 },
 		{ field: "description", headerName: "Mô tả", width: 100 },
-		// { field: "filePath", headerName: "Đường dẫn", width: 100 },
-		// {
-		// 	field: "uploadedBy",
-		// 	headerName: "Thêm bởi UserId",
-		// 	width: 70,
-		// 	valueGetter: (params) => params.row.uploadedBy?.id || "",
-		// },
 		{ field: "uploadedAt", headerName: "Ngày thêm", width: 100 },
 		{ field: "updatedAt", headerName: "Ngày cập nhật", width: 100 },
 		{
@@ -210,7 +202,6 @@ const Document = () => {
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedDocument}
-					error={error}
 					uploadedById={uploadedById}
 					fetchData={fetchData}
 				/>
@@ -252,29 +243,29 @@ const Document = () => {
 							>
 								Thông tin Tài liệu
 							</Typography>
-							<Typography variant="body1" id="modal-description">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>ID:</b> {document.id}
 							</Typography>
-							<Typography variant="body1">
-								<b>tên file:</b> {document.fileName}
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Tên file:</b> {document.fileName}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tiêu đề:</b> {document.title}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Mô tả:</b> {document.description}
 							</Typography>
-							<Typography variant="body1" noWrap>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Đường dẫn:</b> {document.filePath}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tạo bởi UserId:</b> {document.uploadedBy.id} - <b>Email: </b>
 								{document.uploadedBy.email}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày thêm:</b> {document.uploadedAt}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày cập nhật:</b> {document.updatedAt}
 							</Typography>
 						</>

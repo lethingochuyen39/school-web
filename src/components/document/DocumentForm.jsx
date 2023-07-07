@@ -147,6 +147,9 @@ const DocumentForm = ({
 					border: "2px solid #000",
 					boxShadow: 24,
 					p: 4,
+					maxWidth: "90%",
+					maxHeight: "85%",
+					overflow: "auto",
 				}}
 			>
 				<Typography
@@ -191,6 +194,7 @@ const DocumentForm = ({
 					<TextField
 						type="text"
 						name="description"
+						multiline
 						label="Mô tả"
 						value={document.description}
 						onChange={handleChange}
@@ -211,7 +215,7 @@ const DocumentForm = ({
 									component="span"
 									startIcon={<CloudUploadIcon />}
 									sx={{
-										backgroundColor: "#ffc400",
+										backgroundColor: "#9e9e9e",
 										color: "black",
 										marginBottom: "8px",
 										"&:hover": {
