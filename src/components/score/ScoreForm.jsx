@@ -4,7 +4,9 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
+import client from "../../api/client";
 import {
+	Alert,
 	FormControl,
 	FormHelperText,
 	InputLabel,
@@ -46,14 +48,13 @@ const schema = {
 };
 
 const ScoreForm = ({
-	handleAddScore,
-	handleUpdateScore,
 	handleClose,
 	isEditMode,
 	initialData,
 	students,
 	subjects,
 	scoreTypes,
+	fetchData,
 }) => {
 	const [score, setScore] = useState({
 		id: isEditMode ? initialData.id : "",
@@ -65,6 +66,8 @@ const ScoreForm = ({
 
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 	useEffect(() => {
 		if (isEditMode && initialData) {
 			setScore({
@@ -91,14 +94,17 @@ const ScoreForm = ({
 				const updatedScore = {
 					score: score.score,
 				};
-				await handleUpdateScore(score.id, updatedScore);
+				await client.put(`/api/scores/${score.id}`, updatedScore);
+				await fetchData();
 			} else {
-				await handleAddScore(score);
+				await client.post("/api/scores", score);
+				await fetchData();
 			}
-
-			handleClose();
+			setSuccessMessage("Thao tác thành công");
+			setErrorMessage("");
 		} catch (error) {
-			setError(error);
+			setErrorMessage(error.response.data);
+			setSuccessMessage("");
 		}
 	};
 
@@ -121,6 +127,12 @@ const ScoreForm = ({
 			...prevScore,
 			[name]: value,
 		}));
+
+		const errors = validate({ ...score, [name]: value }, schema);
+		setError((prevError) => ({
+			...prevError,
+			[name]: errors ? errors[name] : null,
+		}));
 	};
 
 	return (
@@ -132,6 +144,7 @@ const ScoreForm = ({
 					left: "50%",
 					transform: "translate(-50%, -50%)",
 					width: 500,
+					maxHeight: "90%",
 					bgcolor: "background.paper",
 					border: "2px solid #000",
 					boxShadow: 24,
@@ -150,7 +163,16 @@ const ScoreForm = ({
 				>
 					{isEditMode ? "Cập nhật điểm" : "Thêm mới điểm"}
 				</Typography>
-
+				{successMessage && (
+					<Alert severity="success" onClose={() => setSuccessMessage("")}>
+						{successMessage}
+					</Alert>
+				)}
+				{errorMessage && (
+					<Alert severity="error" onClose={() => setErrorMessage("")}>
+						{errorMessage}
+					</Alert>
+				)}
 				<form onSubmit={handleSubmit}>
 					{isEditMode ? (
 						<TextField

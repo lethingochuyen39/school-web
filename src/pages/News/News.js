@@ -20,7 +20,6 @@ const News = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedNews, setSelectedNews] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [isActive, setIsActive] = useState(false);
 
@@ -75,22 +74,22 @@ const News = () => {
 		fetchData();
 	}, [fetchData]);
 
-	const handleAddNews = async (newNews) => {
-		try {
-			await client.post("/api/news", newNews, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật.");
-			}
-		}
-	};
+	// const handleAddNews = async (newNews) => {
+	// 	try {
+	// 		await client.post("/api/news", newNews, {
+	// 			headers: {
+	// 				"Content-Type": "multipart/form-data",
+	// 			},
+	// 		});
+	// 		await fetchData();
+	// 	} catch (error) {
+	// 		if (error.response) {
+	// 			setError(error.response.data);
+	// 		} else {
+	// 			setError("Đã xảy ra lỗi khi cập nhật.");
+	// 		}
+	// 	}
+	// };
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
@@ -122,26 +121,23 @@ const News = () => {
 		}
 	};
 
-	const handleUpdateNews = async (formData) => {
-		try {
-			if (!formData) {
-				formData = { isActive: news.isActive };
-			}
-			await client.put(`/api/news/edit/${news.id}`, formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật.");
-			}
-		}
-	};
+	// const handleUpdateNews = async (formData) => {
+	// 	try {
+	// 		await client.put(`/api/news/edit/${news.id}`, formData, {
+	// 			headers: {
+	// 				"Content-Type": "multipart/form-data",
+	// 			},
+	// 		});
+	// 		await fetchData();
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 		if (error.response) {
+	// 			setError(error.response.data);
+	// 		} else {
+	// 			setError("Đã xảy ra lỗi khi cập nhật.");
+	// 		}
+	// 	}
+	// };
 
 	const handleDelete = async (id) => {
 		try {
@@ -183,7 +179,6 @@ const News = () => {
 			justifyContent="space-between"
 			alignItems="center"
 			paddingLeft="20px"
-			paddingBottom="10px"
 			paddingTop="10px"
 			paddingRight="10px"
 			flexWrap="wrap"
@@ -252,11 +247,15 @@ const News = () => {
 						maxHeight: "95%",
 					}}
 				>
-					<img
-						src={process.env.PUBLIC_URL + `/${params.value}`}
-						alt={params.row.imageName}
-						style={{ width: "60%", height: "auto", borderRadius: "6px" }}
-					/>
+					{params.value ? (
+						<img
+							src={process.env.PUBLIC_URL + `/${params.value}`}
+							alt={params.row.imageName}
+							style={{ width: "60%", height: "auto", borderRadius: "6px" }}
+						/>
+					) : (
+						""
+					)}
 				</div>
 			),
 		},
@@ -284,7 +283,6 @@ const News = () => {
 			handleView={handleView}
 			handleEdit={handleEdit}
 			handleDelete={handleDelete}
-			fetchData={fetchData}
 		/>
 	);
 
@@ -292,12 +290,10 @@ const News = () => {
 		<GridWrapper>
 			{isFormOpen && (
 				<NewsForm
-					handleAddNews={handleAddNews}
-					handleUpdateNews={handleUpdateNews}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedNews}
-					error={error}
+					fetchData={fetchData}
 				/>
 			)}
 
@@ -339,32 +335,36 @@ const News = () => {
 							</Typography>
 
 							<Box sx={{ display: "flex", justifyContent: "center" }}>
-								<img
-									src={process.env.PUBLIC_URL + `/${news.imagePath}`}
-									alt={news.imageName}
-									style={{ width: 200, height: "auto", marginBottom: 16 }}
-								/>
+								{news.imagePath ? (
+									<img
+										src={process.env.PUBLIC_URL + `/${news.imagePath}`}
+										alt={news.imageName}
+										style={{ width: 200, height: "auto", marginBottom: 16 }}
+									/>
+								) : (
+									""
+								)}
 							</Box>
 							<Typography variant="body1" id="modal-content">
 								<b>ID:</b> {news.id}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tên file:</b> {news.imageName}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tiêu đề:</b> {news.title}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Nội dung:</b> {news.content}
 							</Typography>
-							<Typography variant="body1" noWrap>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Đường dẫn:</b> {news.imagePath}
 							</Typography>
 
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày thêm:</b> {news.createdAt}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày cập nhật:</b> {news.updatedAt}
 							</Typography>
 							<Typography variant="body1">

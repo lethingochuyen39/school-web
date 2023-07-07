@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-
+import client from "../../api/client";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import Grid from "@mui/material/Grid";
-import { FormHelperText, Typography } from "@mui/material";
+import { Alert, FormHelperText, Typography } from "@mui/material";
 
 const schema = {
 	title: {
@@ -30,12 +30,11 @@ const schema = {
 	},
 };
 const DocumentForm = ({
-	handleAddDocument,
-	handleUpdateDocument,
 	handleClose,
 	isEditMode,
 	initialData,
 	uploadedById,
+	fetchData,
 }) => {
 	const [document, setDocument] = useState({
 		id: initialData ? initialData.id : "",
@@ -46,7 +45,8 @@ const DocumentForm = ({
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
-
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 	useEffect(() => {
 		if (isEditMode && initialData) {
 			setDocument({
@@ -71,28 +71,31 @@ const DocumentForm = ({
 				if (!document.file) {
 					formData.delete("file");
 				}
-				await handleUpdateDocument(formData);
+				// await handleUpdateDocument(formData);
+				await client.put(`/api/documents/${document.id}`, formData, {
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				});
+				await fetchData();
 			} else {
 				const errors = validate(document, schema);
 				if (errors) {
 					setError(errors);
 					return;
 				}
-				await handleAddDocument(formData);
+				await client.post("/api/documents", formData, {
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				});
+				await fetchData();
 			}
-			handleClose();
+			setSuccessMessage("Thao tác thành công");
+			setErrorMessage("");
 		} catch (error) {
-			if (error.response) {
-				if (error.response.status === 400 || error.response.status === 500) {
-					const errorMessage =
-						error.response.data && error.response.data.message
-							? error.response.data.message
-							: "Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.";
-					setError(errorMessage);
-				}
-			} else {
-				setError("Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.");
-			}
+			setErrorMessage(error.response.data);
+			setSuccessMessage("");
 		}
 	};
 
@@ -106,6 +109,12 @@ const DocumentForm = ({
 		setDocument((prev) => ({
 			...prev,
 			[name]: value,
+		}));
+
+		const errors = validate({ ...document, [name]: value }, schema);
+		setError((prevError) => ({
+			...prevError,
+			[name]: errors ? errors[name] : null,
 		}));
 	};
 
@@ -138,6 +147,9 @@ const DocumentForm = ({
 					border: "2px solid #000",
 					boxShadow: 24,
 					p: 4,
+					maxWidth: "90%",
+					maxHeight: "85%",
+					overflow: "auto",
 				}}
 			>
 				<Typography
@@ -153,7 +165,16 @@ const DocumentForm = ({
 				>
 					{isEditMode ? "Cập nhật tài liệu" : "Thêm tài liệu"}
 				</Typography>
-
+				{successMessage && (
+					<Alert severity="success" onClose={() => setSuccessMessage("")}>
+						{successMessage}
+					</Alert>
+				)}
+				{errorMessage && (
+					<Alert severity="error" onClose={() => setErrorMessage("")}>
+						{errorMessage}
+					</Alert>
+				)}
 				<form onSubmit={handleSubmit}>
 					<TextField
 						type="text"
@@ -173,6 +194,7 @@ const DocumentForm = ({
 					<TextField
 						type="text"
 						name="description"
+						multiline
 						label="Mô tả"
 						value={document.description}
 						onChange={handleChange}
@@ -193,7 +215,7 @@ const DocumentForm = ({
 									component="span"
 									startIcon={<CloudUploadIcon />}
 									sx={{
-										backgroundColor: "#ffc400",
+										backgroundColor: "#9e9e9e",
 										color: "black",
 										marginBottom: "8px",
 										"&:hover": {
@@ -236,12 +258,8 @@ const DocumentForm = ({
 								<FormHelperText error>{getErrorMessage("file")}</FormHelperText>
 							)}
 						</Grid>
-						<Grid item xs={4}>
-							{/* Thêm mã JSX để hiển thị lỗi */}
-						</Grid>
+						<Grid item xs={4}></Grid>
 					</Grid>
-
-					{/* {error && <p style={{ color: "red" }}>{error}</p>} */}
 
 					<Button
 						type="submit"
