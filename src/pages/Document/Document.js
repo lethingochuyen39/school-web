@@ -60,22 +60,7 @@ const Document = () => {
 		fetchData();
 	}, [fetchData]);
 
-	const handleAddDocument = async (newDocument) => {
-		try {
-			await client.post("/api/documents", newDocument, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật.");
-			}
-		}
-	};
+	//
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
@@ -107,24 +92,6 @@ const Document = () => {
 		}
 	};
 
-	const handleUpdateDocument = async (formData) => {
-		try {
-			await client.put(`/api/documents/${document.id}`, formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật tài liệu.");
-			}
-		}
-	};
-
 	const handleDelete = async (id) => {
 		try {
 			await client.delete(`/api/documents/${id}`);
@@ -137,7 +104,6 @@ const Document = () => {
 	const [uploadedById, setUploadedById] = useState("");
 
 	useEffect(() => {
-		// Lấy giá trị userId từ localStorage và lưu vào state uploadedById
 		const storedUserId = localStorage.getItem("userId");
 		setUploadedById(storedUserId);
 	}, []);
@@ -149,7 +115,6 @@ const Document = () => {
 			justifyContent="space-between"
 			alignItems="center"
 			paddingLeft="20px"
-			paddingBottom="10px"
 			paddingTop="10px"
 			paddingRight="10px"
 			flexWrap="wrap"
@@ -242,13 +207,12 @@ const Document = () => {
 		<GridWrapper>
 			{isFormOpen && (
 				<DocumentForm
-					handleAddDocument={handleAddDocument}
-					handleUpdateDocument={handleUpdateDocument}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedDocument}
 					error={error}
 					uploadedById={uploadedById}
+					fetchData={fetchData}
 				/>
 			)}
 
