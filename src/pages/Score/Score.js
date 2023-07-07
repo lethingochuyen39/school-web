@@ -77,20 +77,6 @@ const Score = () => {
 		fetchData();
 	}, [fetchData]);
 
-	const handleAddScore = async (newScore) => {
-		try {
-			await client.post("/api/scores", newScore);
-
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật điểm.");
-			}
-		}
-	};
-
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
 	};
@@ -119,19 +105,7 @@ const Score = () => {
 			setIsFormOpen(true);
 		}
 	};
-	const handleUpdateScore = async (id, updatedScore) => {
-		try {
-			await client.put(`/api/scores/${id}`, updatedScore);
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật điểm.");
-			}
-		}
-	};
+
 	const handleDelete = async (id) => {
 		try {
 			await client.delete(`/api/scores/${id}`);
@@ -148,7 +122,6 @@ const Score = () => {
 		} catch (error) {
 			console.error(error);
 		}
-		// navigate("/admin/class-score");
 	};
 
 	const handleClassClick = (classId) => {
@@ -264,8 +237,6 @@ const Score = () => {
 		<GridWrapper>
 			{isFormOpen && (
 				<ScoreForm
-					handleAddScore={handleAddScore}
-					handleUpdateScore={handleUpdateScore}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedScore}
@@ -273,6 +244,7 @@ const Score = () => {
 					students={students}
 					subjects={subjects}
 					scoreTypes={scoreTypes}
+					fetchData={fetchData}
 				/>
 			)}
 			{classScores && (
