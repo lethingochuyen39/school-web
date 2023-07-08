@@ -21,7 +21,6 @@ const DocumentTeacherPage = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedDocument, setSelectedDocument] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenForm = async () => {
@@ -60,22 +59,22 @@ const DocumentTeacherPage = () => {
 		fetchData();
 	}, [fetchData]);
 
-	const handleAddDocument = async (newDocument) => {
-		try {
-			await client.post("/api/documents", newDocument, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật.");
-			}
-		}
-	};
+	// const handleAddDocument = async (newDocument) => {
+	// 	try {
+	// 		await client.post("/api/documents", newDocument, {
+	// 			headers: {
+	// 				"Content-Type": "multipart/form-data",
+	// 			},
+	// 		});
+	// 		await fetchData();
+	// 	} catch (error) {
+	// 		if (error.response) {
+	// 			setError(error.response.data);
+	// 		} else {
+	// 			setError("Đã xảy ra lỗi khi cập nhật.");
+	// 		}
+	// 	}
+	// };
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
@@ -188,7 +187,6 @@ const DocumentTeacherPage = () => {
 			loading={loading}
 			handleView={handleView}
 			hiddenActions={["delete", "edit"]}
-			fetchData={fetchData}
 		/>
 	);
 
@@ -196,11 +194,10 @@ const DocumentTeacherPage = () => {
 		<GridWrapper>
 			{isFormOpen && (
 				<DocumentForm
-					handleAddDocument={handleAddDocument}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedDocument}
-					error={error}
+					fetchData={fetchData}
 					uploadedById={uploadedById}
 				/>
 			)}

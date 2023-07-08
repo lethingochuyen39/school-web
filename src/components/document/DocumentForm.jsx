@@ -77,7 +77,6 @@ const DocumentForm = ({
 						"Content-Type": "multipart/form-data",
 					},
 				});
-				await fetchData();
 			} else {
 				const errors = validate(document, schema);
 				if (errors) {
@@ -89,8 +88,8 @@ const DocumentForm = ({
 						"Content-Type": "multipart/form-data",
 					},
 				});
-				await fetchData();
 			}
+			await fetchData();
 			setSuccessMessage("Thao tác thành công");
 			setErrorMessage("");
 		} catch (error) {

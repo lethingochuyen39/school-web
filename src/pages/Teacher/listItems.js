@@ -44,7 +44,7 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Tài liệu" />
 		</ListItemButton>
-		<ListItemButton>
+		<ListItemButton component={Link} to="/teacher/news">
 			<ListItemIcon>
 				<NewspaperIcon />
 			</ListItemIcon>

@@ -24,10 +24,13 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
+    "react-scroll": "^1.8.9",
+    "react-slick": "^0.29.0",
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.3",
+    "slick-carousel": "^1.8.1",
     "universal-cookie": "^4.0.4",
     "validate.js": "^0.13.1",
     "web-vitals": "^2.1.4"

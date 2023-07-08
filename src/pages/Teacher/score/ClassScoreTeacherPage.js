@@ -31,6 +31,13 @@ const ClassScoreTeacherPage = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
+	const [teacherId, setTeacherId] = useState("");
+
+	useEffect(() => {
+		const storedId = localStorage.getItem("id");
+		setTeacherId(storedId);
+	}, [localStorage.getItem("id")]);
+
 	useEffect(() => {
 		const fetchStudents = async () => {
 			try {
@@ -52,9 +59,10 @@ const ClassScoreTeacherPage = () => {
 		fetchStudents();
 	}, [classId]);
 
+	console.log(teacherId);
 	const fetchSubjects = async () => {
 		try {
-			const response = await client.get("/api/subjects");
+			const response = await client.get(`/api/subjects/teachers/${teacherId}`);
 			const subjects = response.data;
 			setSubjects(subjects);
 			setSelectedSubject(subjects[0].id);

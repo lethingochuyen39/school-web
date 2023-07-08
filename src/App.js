@@ -27,6 +27,8 @@ import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
 import ScoreTeacherPage from "./pages/Teacher/score/ScoreTeacherPage";
 import ClassScoreTeacherPage from "./pages/Teacher/score/ClassScoreTeacherPage";
+import NewsTeacherPage from "./pages/Teacher/news/NewsTeacherPage";
+import NewsDetailPage from "./pages/Teacher/news/NewsDetail";
 
 function App() {
 	return (
@@ -81,6 +83,11 @@ function App() {
 								<Route
 									path="/teacher/class-score/:classId"
 									element={<ClassScoreTeacherPage />}
+								/>
+								<Route path="/teacher/news" element={<NewsTeacherPage />} />
+								<Route
+									path="/teacher/news-detail/:id"
+									element={<NewsDetailPage />}
 								/>
 							</Route>
 						</Route>
