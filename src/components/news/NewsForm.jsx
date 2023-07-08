@@ -8,6 +8,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Grid from "@mui/material/Grid";
 import { Alert, Switch, Typography } from "@mui/material";
 import client from "../../api/client";
+import { format } from "date-fns";
 const schema = {
 	title: {
 		presence: {
@@ -60,6 +61,12 @@ const NewsForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 		formData.append("content", news.content);
 		formData.append("isActive", news.isActive);
 
+		const formattedUpdatedAt = format(
+			new Date(),
+			"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+		);
+		formData.append("updatedAt", formattedUpdatedAt);
+
 		try {
 			if (isEditMode && news.id) {
 				if (!news.image) {
@@ -73,7 +80,6 @@ const NewsForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 						"Content-Type": "multipart/form-data",
 					},
 				});
-				await fetchData();
 			} else {
 				const errors = validate(news, schema);
 				if (errors) {
@@ -85,8 +91,8 @@ const NewsForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 						"Content-Type": "multipart/form-data",
 					},
 				});
-				await fetchData();
 			}
+			await fetchData();
 			setSuccessMessage("Thao tác thành công");
 			setErrorMessage("");
 		} catch (error) {

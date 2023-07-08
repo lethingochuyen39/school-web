@@ -5,12 +5,7 @@ import { Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import FolderIcon from "@mui/icons-material/Folder";
 const ScoreTeacherPage = () => {
-	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [isFormOpen, setIsFormOpen] = useState(false);
-	const [score, setScore] = useState(null);
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedClass, setSelectedClass] = useState(null);
 	const [classScores, setClassScores] = useState([]);
 	const colors = [
