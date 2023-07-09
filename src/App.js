@@ -29,6 +29,7 @@ import ScoreTeacherPage from "./pages/Teacher/score/ScoreTeacherPage";
 import ClassScoreTeacherPage from "./pages/Teacher/score/ClassScoreTeacherPage";
 import NewsTeacherPage from "./pages/Teacher/news/NewsTeacherPage";
 import NewsDetailPage from "./pages/Teacher/news/NewsDetail";
+import ScheduleTeacherPage from "./pages/Teacher/schedule/TeacherScheduleView";
 
 function App() {
 	return (
@@ -88,6 +89,10 @@ function App() {
 								<Route
 									path="/teacher/news-detail/:id"
 									element={<NewsDetailPage />}
+								/>
+								<Route
+									path="/teacher/schedule"
+									element={<ScheduleTeacherPage />}
 								/>
 							</Route>
 						</Route>

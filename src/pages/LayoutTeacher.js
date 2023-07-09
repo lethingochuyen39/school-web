@@ -24,7 +24,7 @@ function Footer(props) {
 			variant="body2"
 			color="text.secondary"
 			align="center"
-			marginBottom="10px"
+			marginBottom={2}
 			{...props}
 		>
 			{"Copyright © "}
@@ -178,7 +178,7 @@ export default function LayoutTeacher() {
 								? theme.palette.grey[100]
 								: theme.palette.grey[900],
 						flexGrow: 1,
-						height: "100vh",
+						minHeight: "100vh",
 						overflow: "auto",
 					}}
 				>
