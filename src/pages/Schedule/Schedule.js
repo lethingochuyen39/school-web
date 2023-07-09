@@ -182,7 +182,7 @@ const Schedule = () => {
 	);
 
 	const columns = [
-		{ field: "id", headerName: "ID", width: 50 },
+		{ field: "id", headerName: "ID", width: 70 },
 		{
 			field: "lesson",
 			headerName: "Tiết học",

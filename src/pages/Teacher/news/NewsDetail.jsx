@@ -181,6 +181,7 @@ const NewsDetailPage = () => {
 								overflow: "hidden",
 								wordBreak: "break-word",
 								lineHeight: "2rem",
+								textAlign: "justify",
 							}}
 						>
 							{news.content}

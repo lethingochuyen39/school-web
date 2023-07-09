@@ -1,4 +1,4 @@
-import ImageIcon from "@mui/icons-material/Image";
+// import ImageIcon from "@mui/icons-material/Image";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
@@ -96,12 +96,12 @@ export const mainNavbarItems = [
 			},
 		],
 	},
-	{
-		id: 12,
-		icon: <ImageIcon />,
-		label: "Quản lý loại điểm",
-		route: "home",
-	},
+	// {
+	// 	id: 12,
+	// 	icon: <ImageIcon />,
+	// 	label: "Quản lý loại điểm",
+	// 	route: "home",
+	// },
 	{
 		id: 13,
 		icon: <StackedBarChartIcon />,
