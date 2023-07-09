@@ -39,7 +39,7 @@ const Login = () => {
 			navigate("/admin/home");
 		}
 		if (role === "STUDENT" || role === "PARENT") {
-			navigate("/user/success");
+			navigate("/user/home");
 		}
 		if (role === "TEACHER") {
 			navigate("/teacher/home");
