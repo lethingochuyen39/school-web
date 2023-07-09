@@ -67,7 +67,6 @@ const TeacherForm = ({
     phone: isEditMode ? initialData.phone : "",
     status: isEditMode ? initialData.status : "",
   });
-
   const [showModal, setShowModal] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
@@ -75,7 +74,6 @@ const TeacherForm = ({
       setTeacher(initialData);
     }
   }, [isEditMode, initialData]);
-
   const handleChange = (event) => {
     setTeacher((prev) => ({
       ...prev,
@@ -133,100 +131,98 @@ const TeacherForm = ({
         <h2>{isEditMode ? "Cập nhật" : "Thêm mới"}</h2>
 
         <form onSubmit={handleSubmit}>
-          <>
-            <TextField
-              name="name"
-              label="Tên"
-              value={teacher.name}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("name")}
-              helperText={getErrorMessage("name")}
-            />
-            <TextField
-              name="dob"
-              label="Ngày sinh"
-              type="date"
-              value={teacher.dob}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("dob")}
-              helperText={getErrorMessage("dob")}
-            />
-            <TextField
-              name="gender"
-              label="Giới tính"
-              value={teacher.gender}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("gender")}
-              helperText={getErrorMessage("gender")}
-            />
-            <TextField
-              name="address"
-              label="Địa chỉ"
-              value={teacher.address}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("address")}
-              helperText={getErrorMessage("address")}
-            />
-            <TextField
-              name="email"
-              label="Email"
-              value={teacher.email}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("email")}
-              helperText={getErrorMessage("email")}
-            />
-            <TextField
-              name="phone"
-              label="Số điện thoại"
-              value={teacher.phone}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("phone")}
-              helperText={getErrorMessage("phone")}
-            />
-            <TextField
-              name="status"
-              label="Trạng thái"
-              value={teacher.status}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              focused
-              required
-              error={hasError("status")}
-              helperText={getErrorMessage("status")}
-            />
-          </>
+          <TextField
+            name="name"
+            label="Tên thống kê"
+            value={teacher.name}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("name")}
+            helperText={getErrorMessage("name")}
+          />
+          <TextField
+            name="dob"
+            label="Ngày sinh"
+            type="date"
+            value={teacher.dob}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("dob")}
+            helperText={getErrorMessage("dob")}
+          />
+          <TextField
+            name="gender"
+            label="Giới tính"
+            value={teacher.gender}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("gender")}
+            helperText={getErrorMessage("gender")}
+          />
+          <TextField
+            name="address"
+            label="Địa chỉ"
+            value={teacher.address}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("address")}
+            helperText={getErrorMessage("address")}
+          />
+          <TextField
+            name="email"
+            label="Email"
+            value={teacher.email}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("email")}
+            helperText={getErrorMessage("email")}
+          />
+          <TextField
+            name="phone"
+            label="Số điện thoại"
+            value={teacher.phone}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("phone")}
+            helperText={getErrorMessage("phone")}
+          />
+          <TextField
+            name="status"
+            label="Trạng thái"
+            value={teacher.status}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("status")}
+            helperText={getErrorMessage("status")}
+          />
           <Button type="submit" variant="contained" onClick={handleSubmit}>
             {isEditMode ? "Cập nhật" : "Thêm"}
           </Button>

@@ -1,14 +1,14 @@
-import Box from "@mui/material/Box";
-import React, { useCallback, useEffect, useState } from "react";
-import client from "../../api/client";
+import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import DataTable from "../../components/common/DataTable/DataTable";
-import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
-import { Button, Modal } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
 import CommonButton from "../../components/common/CommonButton/CommonButton";
+import Box from "@mui/material/Box";
+import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
+import DataTable from "../../components/common/DataTable/DataTable";
+import client from "../../api/client";
 import TeacherForm from "../../components/teacher/TeacherForm";
+import { Button, Modal } from "@mui/material";
 
 const Teacher = () => {
   const [data, setData] = useState([]);
@@ -40,7 +40,7 @@ const Teacher = () => {
 
   const handleAddTeacher = async (newTeacher) => {
     try {
-      await client.post("/api/teachers", newTeacher);
+      await client.post("/api/teachers/create", newTeacher);
       setIsModalOpen(true);
       await fetchData();
     } catch (error) {
@@ -81,7 +81,7 @@ const Teacher = () => {
 
   const handleUpdateTeacher = async (updatedTeacher) => {
     try {
-      await client.put(`/api/teachers/${updatedTeacher.id}`, updatedTeacher);
+      await client.put(`/api/teachers/update/${updatedTeacher.id}`, updatedTeacher);
       fetchData();
       setIsModalOpen(true);
     } catch (error) {
@@ -95,7 +95,7 @@ const Teacher = () => {
 
   const handleDelete = async (id) => {
     try {
-      await client.delete(`/api/teachers/${id}`);
+      await client.delete(`/api/teachers/delete/${id}`);
       fetchData();
     } catch (error) {
       console.error(error);
@@ -213,7 +213,7 @@ const Teacher = () => {
           handleUpdateTeacher={handleUpdateTeacher}
           handleClose={handleCloseTeacherForm}
           isEditMode={isEditMode}
-          initialData={setSelectedTeacher}
+          initialData={selectedTeacher}
           error={error}
         />
       )}

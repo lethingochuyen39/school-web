@@ -1,24 +1,27 @@
-import Box from "@mui/material/Box";
-import React, { useCallback, useEffect, useState } from "react";
-import client from "../../api/client";
+import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import DataTable from "../../components/common/DataTable/DataTable";
-import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
-import { Button, Modal } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import Input from "@mui/material/Input";
 import CommonButton from "../../components/common/CommonButton/CommonButton";
-import ClassForm from "../../components/class/ClassForm";
+import Box from "@mui/material/Box";
+import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
+import DataTable from "../../components/common/DataTable/DataTable";
+import client from "../../api/client";
+import { Button, Modal } from "@mui/material";
+import ClassesForm from "../../components/classes/ClassesForm";
 
-const Class = () => {
+const Classes = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [classes, setClasses] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClasses, setSelectedClasses] = useState(null);
-  const [academicYear, setAcademicYears] = useState([]);
-  const [teacher, setTeachers] = useState([]);
   const [error, setError] = useState("");
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [teachers, setTeachers] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
 
   const handleOpenForm = async () => {
     if (classes) {
@@ -30,10 +33,10 @@ const Class = () => {
     }
 
     try {
-      const responseAcademicYears = await client.get("/api/academic-years");
       const responseTeachers = await client.get("/api/teachers");
-      setAcademicYears(responseAcademicYears.data);
+      const responseAcademicYears = await client.get("/api/academic-years/all");
       setTeachers(responseTeachers.data);
+      setAcademicYears(responseAcademicYears.data);
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -43,22 +46,50 @@ const Class = () => {
     setIsFormOpen(true);
   };
 
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setClasses(null);
+  };
+
+  const fetchData = useCallback(async () => {
+    try {
+      let url = "/api/classes";
+      if (searchTerm) {
+        url += `?name=${searchTerm}`;
+      }
+      const response = await client.get(url);
+      setData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const handleAddClasses = async (newClasses) => {
+    console.log(newClasses);
     try {
       await client.post("/api/classes/create", newClasses);
-      setIsModalOpen(true);
+
       await fetchData();
     } catch (error) {
       console.error(error);
       if (error.response) {
-        setError(error.response.data.message);
+        setError(error.response.data);
       } else {
-        setError("Đã xảy ra lỗi khi cập nhật năm học.");
+        setError("Đã xảy ra lỗi khi cập nhật.");
       }
     }
   };
 
-  // hiển thị thông tin
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   const handleView = async (id) => {
     try {
       const response = await client.get(`/api/classes/findById/${id}`);
@@ -76,33 +107,27 @@ const Class = () => {
   };
 
   const handleEdit = (id) => {
-    const selectedClass = data.find((classes) => classes.id === id);
-    if (selectedClass) {
+    const selectedClasses = data.find((classes) => classes.id === id);
+    if (selectedClasses) {
       setIsEditMode(true);
-      setSelectedClasses(selectedClass);
+      setSelectedClasses(selectedClasses);
       setIsFormOpen(true);
     }
   };
-
-  const handleUpdateClasses = async (updateClass) => {
+  const handleUpdateClasses = async (id, updatedClasses) => {
     try {
-      await client.put(`/api/classes/update/${updateClass.id}`, updateClass);
-      fetchData();
-      setIsModalOpen(true);
+      await client.put(`/api/classes/update/${id}`, updatedClasses);
+
+      await fetchData();
     } catch (error) {
+      console.error(error);
       if (error.response) {
-        setError(error.response.data.message);
+        setError(error.response.data);
       } else {
-        setError("Đã xảy ra lỗi khi cập nhật năm học.");
+        setError("Đã xảy ra lỗi khi cập nhật.");
       }
     }
   };
-
-  const handleCloseForm = () => {
-    setIsFormOpen(false);
-    setClasses(null);
-  };
-
   const handleDelete = async (id) => {
     try {
       await client.delete(`/api/classes/delete/${id}`);
@@ -111,42 +136,6 @@ const Class = () => {
       console.error(error);
     }
   };
-
-  const fetchData = useCallback(async () => {
-    try {
-      let url = "/api/classes";
-
-      const response = await client.get(url);
-      setData(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  });
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "description", headerName: "Mô tả", width: 150 },
-    { field: "grade", headerName: "Khối", width: 150 },
-    { field: "name", headerName: "Lớp", width: 150 },
-    {
-      field: "academicYearId",
-      headerName: "Năm học",
-      width: 100,
-      valueGetter: (params) => params.row.academicYear?.name || "",
-    },
-    {
-      field: "teacherId",
-      headerName: "Giáo viên",
-      width: 100,
-      valueGetter: (params) => params.row.teacher?.name || "",
-    },
-  ];
 
   const getHeader = () => (
     <Box
@@ -178,34 +167,75 @@ const Class = () => {
           Thêm mới
         </CommonButton>
       </Box>
+      <Box
+        minWidth={{ xs: "100%", sm: 0, md: "500px" }}
+        marginRight={{ xs: 0, sm: "10px" }}
+        marginBottom={{ xs: "10px", sm: 0 }}
+        backgroundColor="#f5f5f5"
+        borderRadius="4px"
+        padding="4px"
+        display="flex"
+        alignItems="center"
+      >
+        <SearchIcon sx={{ marginRight: "15px" }} />
+        <Input
+          placeholder="Tìm kiếm theo tên... "
+          onChange={handleSearchChange}
+          value={searchTerm}
+          sx={{
+            width: { xs: "100%", sm: "auto", md: "100%" },
+            color: "rgba(0, 0, 0, 0.6)",
+            fontSize: "1.1rem",
+          }}
+          disableUnderline
+        />
+      </Box>
     </Box>
   );
 
-  const getContent = () => {
-    return (
-      <DataTable
-        initialRows={data}
-        columns={columns}
-        loading={loading}
-        handleView={handleView}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-      />
-    );
-  };
+  const columns = [
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "name", headerName: "Lớp", width: 100 },
+    { field: "description", headerName: "Mô tả", width: 100 },
+    { field: "grade", headerName: "Khối", width: 100 },
+    {
+      field: "teacher",
+      headerName: "Giáo viên",
+      width: 100,
+      valueGetter: (params) => params.row.teacher?.name || "",
+    },
+    
+    {
+      field: "academicYear",
+      headerName: "Năm học",
+      width: 250,
+      valueGetter: (params) => params.row.academicYear?.name || "",
+    },
+  ];
+
+  const getContent = () => (
+    <DataTable
+      initialRows={data}
+      columns={columns}
+      loading={loading}
+      handleView={handleView}
+      handleEdit={handleEdit}
+      handleDelete={handleDelete}
+    />
+  );
 
   return (
     <GridWrapper>
       {isFormOpen && (
-        <ClassForm
+        <ClassesForm
           handleAddClasses={handleAddClasses}
           handleUpdateClasses={handleUpdateClasses}
           handleClose={handleCloseForm}
           isEditMode={isEditMode}
           initialData={selectedClasses}
           error={error}
-          academicYearId={academicYear}
-          teacherId={teacher}
+          teachers={teachers}
+          academicYears={academicYears}
         />
       )}
       {classes && (
@@ -241,9 +271,10 @@ const Class = () => {
           </Box>
         </Modal>
       )}
+
       <BasicCard header={getHeader()} content={getContent()} />
     </GridWrapper>
   );
 };
 
-export default Class;
+export default Classes;
