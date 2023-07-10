@@ -34,6 +34,7 @@ import LayoutStudent from "./pages/LayoutStudent";
 import StudentHome from "./pages/Student/Home";
 import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
+import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
 
 function App() {
 	return (
@@ -108,6 +109,10 @@ function App() {
 								<Route
 									path="/user/news-detail/:id"
 									element={<NewsDetailStudentPage />}
+								/>
+								<Route
+									path="/user/schedule"
+									element={<StudentScheduleView />}
 								/>
 							</Route>
 						</Route>
