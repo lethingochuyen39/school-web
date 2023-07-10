@@ -13,15 +13,32 @@ import EastIcon from "@mui/icons-material/East";
 import EventIcon from "@mui/icons-material/Event";
 const NewsCard = ({ news }) => {
 	const handleClick = () => {
-		navigate(`/teacher/news-detail/${news.id}`);
+		const role = localStorage.getItem("role");
+		if (role === "STUDENT" || role === "PARENT") {
+			navigate(`/user/news-detail/${news.id}`);
+		}
+		if (role === "TEACHER") {
+			navigate(`/teacher/news-detail/${news.id}`);
+		}
 	};
 	const navigate = useNavigate();
 
 	return (
 		<Grid item xs={12}>
-			<Card sx={{ maxWidth: 500, height: 320, m: "0 auto" }}>
+			<Card
+				sx={{
+					maxWidth: 500,
+					height: 300,
+					m: "0 auto",
+					boxShadow: "1 2px 30px rgba(0, 0, 0, 0.12)",
+					border: 0.05,
+					borderRadius: 3,
+					margin: 1,
+					backgroundColor: "#ffff",
+				}}
+			>
 				<CardMedia
-					sx={{ height: 140 }}
+					sx={{ height: 100 }}
 					image={process.env.PUBLIC_URL + `/${news.imagePath}`}
 					title={news.title}
 				/>
@@ -41,8 +58,9 @@ const NewsCard = ({ news }) => {
 							lineHeight: "1.2rem",
 							mb: ".5rem",
 							mt: ".5rem",
+							height: "2.5rem",
+							overflow: "hidden",
 						}}
-						noWrap
 					>
 						{news.title}
 					</Typography>
@@ -53,7 +71,7 @@ const NewsCard = ({ news }) => {
 							overflow: "hidden",
 							height: "2.5rem",
 						}}
-						noWrap
+						// noWrap
 					>
 						{news.content}
 					</Typography>

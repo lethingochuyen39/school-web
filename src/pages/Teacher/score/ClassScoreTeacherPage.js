@@ -31,24 +31,30 @@ const ClassScoreTeacherPage = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
-	const [teacherId, setTeacherId] = useState("");
-
 	useEffect(() => {
-		const storedId = localStorage.getItem("id");
-		setTeacherId(storedId);
-	}, [localStorage.getItem("id")]);
-
-	useEffect(() => {
-		const fetchStudents = async () => {
+		const fetchInitialData = async () => {
 			try {
-				const response = await client.get(
-					`/api/student/classes/${classId}/students`
-				);
-				const updatedStudents = response.data.map((student) => ({
+				const teacherId = localStorage.getItem("id");
+				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
+					await Promise.all([
+						client.get(`/api/student/classes/${classId}/students`),
+						client.get(`/api/subjects/teachers/${teacherId}`),
+						client.get("/api/score-types"),
+					]);
+
+				const updatedStudents = studentsResponse.data.map((student) => ({
 					...student,
 					score: "",
 				}));
+
+				const subjects = subjectsResponse.data;
+				const scoreTypes = scoreTypesResponse.data;
+
 				setStudents(updatedStudents);
+				setSubjects(subjects);
+				setSelectedSubject(subjects[0].id);
+				setScoreTypes(scoreTypes);
+				setSelectedScoreType(scoreTypes[0].id);
 				setLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -56,36 +62,8 @@ const ClassScoreTeacherPage = () => {
 			}
 		};
 
-		fetchStudents();
+		fetchInitialData();
 	}, [classId]);
-
-	console.log(teacherId);
-	const fetchSubjects = async () => {
-		try {
-			const response = await client.get(`/api/subjects/teachers/${teacherId}`);
-			const subjects = response.data;
-			setSubjects(subjects);
-			setSelectedSubject(subjects[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const fetchScoreTypes = async () => {
-		try {
-			const response = await client.get("/api/score-types");
-			const scoreTypes = response.data;
-			setScoreTypes(scoreTypes);
-			setSelectedScoreType(scoreTypes[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	useEffect(() => {
-		fetchSubjects();
-		fetchScoreTypes();
-	}, []);
 
 	const handleScoreInput = (id, newScore) => {
 		const cleanedScore = newScore.trim();

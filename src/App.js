@@ -32,6 +32,8 @@ import NewsDetailPage from "./pages/Teacher/news/NewsDetail";
 import ScheduleTeacherPage from "./pages/Teacher/schedule/TeacherScheduleView";
 import LayoutStudent from "./pages/LayoutStudent";
 import StudentHome from "./pages/Student/Home";
+import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
+import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 
 function App() {
 	return (
@@ -102,11 +104,19 @@ function App() {
 						<Route element={<RoleAccess roles={["STUDENT", "PARENTS"]} />}>
 							<Route path="/user/" element={<LayoutStudent />}>
 								<Route path="/user/home" element={<StudentHome />} />
+								<Route path="/user/news" element={<NewsStudentPage />} />
+								<Route
+									path="/user/news-detail/:id"
+									element={<NewsDetailStudentPage />}
+								/>
 							</Route>
 						</Route>
 					</Routes>
 					{/* <Routes>
-						<Route path="/" element={<LayoutStudent />} />
+						<Route path="/" element={<LayoutStudent />}>
+							<Route path="/user/home" element={<StudentHome />} />
+							<Route path="/user/news" element={<NewsStudentPage />} />
+						</Route>
 					</Routes> */}
 				</AuthContextProvider>
 			</BrowserRouter>

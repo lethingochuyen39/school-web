@@ -13,11 +13,14 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import ScrollToTopButton from "../common/Scroll/ScrollToTopButton";
 
 const FooterContainer = styled(Container)(({ theme }) => ({
 	borderTop: `1px solid ${theme.palette.divider}`,
+	borderBottom: `1px solid ${theme.palette.divider}`,
 	marginTop: theme.spacing(3),
 	paddingTop: theme.spacing(1, 3),
+	backgroundColor: "#f5f5f5",
 }));
 
 const FooterGrid = styled(Grid)({
@@ -74,7 +77,7 @@ export default function FooterStudent() {
 				},
 				{
 					icon: <Phone />,
-					text: "0967 12 03 09 (Mr.An)",
+					text: "1900 02 10 39 (P.QLDT)",
 				},
 				{
 					icon: <Mail />,
@@ -86,7 +89,7 @@ export default function FooterStudent() {
 
 	return (
 		<React.Fragment>
-			<FooterContainer maxWidth="md" component="footer">
+			<FooterContainer component="footer">
 				<FooterGrid container justifyContent="space-evenly">
 					{footers.map((footer) => (
 						<Grid item xs={6} sx={{ paddingTop: 2 }} sm={3} key={footer.title}>
@@ -112,9 +115,6 @@ export default function FooterStudent() {
 						</Grid>
 					))}
 				</FooterGrid>
-			</FooterContainer>
-
-			<FooterContainer component="footer">
 				<Grid container justifyContent="flex-end">
 					<Typography variant="body2" color="text.secondary" align="center">
 						{"Copyright © "}
@@ -126,6 +126,8 @@ export default function FooterStudent() {
 					</Typography>
 				</Grid>
 			</FooterContainer>
+
+			<ScrollToTopButton />
 		</React.Fragment>
 	);
 }

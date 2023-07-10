@@ -21,7 +21,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
-const NewsDetailPage = () => {
+const NewsDetailStudentPage = () => {
 	const { id } = useParams();
 	const [news, setNews] = useState({});
 	const [recentNews, setRecentNews] = useState([]);
@@ -79,11 +79,11 @@ const NewsDetailPage = () => {
 	}, []);
 
 	const handleGoBack = () => {
-		navigate(`/teacher/news`);
+		navigate(`/user/news`);
 	};
 
 	const handleClick = (id) => {
-		navigate(`/teacher/news-detail/${id}`);
+		navigate(`/user/news-detail/${id}`);
 	};
 
 	const sliderSettings = {
@@ -218,8 +218,8 @@ const NewsDetailPage = () => {
 									mb: 2,
 									borderRadius: "20px",
 									display: "flex",
-									flexDirection: "row",
 									border: 0.05,
+									flexDirection: "row",
 									margin: 1,
 								}}
 							>
@@ -294,4 +294,4 @@ const NewsDetailPage = () => {
 	);
 };
 
-export default NewsDetailPage;
+export default NewsDetailStudentPage;

@@ -32,16 +32,28 @@ const ClassScorePage = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const fetchStudents = async () => {
+		const fetchInitialData = async () => {
 			try {
-				const response = await client.get(
-					`/api/student/classes/${classId}/students`
-				);
-				const updatedStudents = response.data.map((student) => ({
+				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
+					await Promise.all([
+						client.get(`/api/student/classes/${classId}/students`),
+						client.get(`/api/subjects`),
+						client.get("/api/score-types"),
+					]);
+
+				const updatedStudents = studentsResponse.data.map((student) => ({
 					...student,
 					score: "",
 				}));
+
+				const subjects = subjectsResponse.data;
+				const scoreTypes = scoreTypesResponse.data;
+
 				setStudents(updatedStudents);
+				setSubjects(subjects);
+				setSelectedSubject(subjects[0].id);
+				setScoreTypes(scoreTypes);
+				setSelectedScoreType(scoreTypes[0].id);
 				setLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -49,35 +61,56 @@ const ClassScorePage = () => {
 			}
 		};
 
-		fetchStudents();
+		fetchInitialData();
 	}, [classId]);
 
-	const fetchSubjects = async () => {
-		try {
-			const response = await client.get("/api/subjects");
-			const subjects = response.data;
-			setSubjects(subjects);
-			setSelectedSubject(subjects[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// useEffect(() => {
+	// 	const fetchStudents = async () => {
+	// 		try {
+	// 			const response = await client.get(
+	// 				`/api/student/classes/${classId}/students`
+	// 			);
+	// 			const updatedStudents = response.data.map((student) => ({
+	// 				...student,
+	// 				score: "",
+	// 			}));
+	// 			setStudents(updatedStudents);
+	// 			setLoading(false);
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 			setLoading(false);
+	// 		}
+	// 	};
 
-	const fetchScoreTypes = async () => {
-		try {
-			const response = await client.get("/api/score-types");
-			const scoreTypes = response.data;
-			setScoreTypes(scoreTypes);
-			setSelectedScoreType(scoreTypes[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// 	fetchStudents();
+	// }, [classId]);
 
-	useEffect(() => {
-		fetchSubjects();
-		fetchScoreTypes();
-	}, []);
+	// const fetchSubjects = async () => {
+	// 	try {
+	// 		const response = await client.get("/api/subjects");
+	// 		const subjects = response.data;
+	// 		setSubjects(subjects);
+	// 		setSelectedSubject(subjects[0].id);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+
+	// const fetchScoreTypes = async () => {
+	// 	try {
+	// 		const response = await client.get("/api/score-types");
+	// 		const scoreTypes = response.data;
+	// 		setScoreTypes(scoreTypes);
+	// 		setSelectedScoreType(scoreTypes[0].id);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+
+	// useEffect(() => {
+	// 	fetchSubjects();
+	// 	fetchScoreTypes();
+	// }, []);
 
 	const handleScoreInput = (id, newScore) => {
 		const cleanedScore = newScore.trim();

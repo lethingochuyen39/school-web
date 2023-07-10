@@ -124,7 +124,7 @@ const ScheduleTeacherPage = () => {
 				</Typography>
 			</Box>
 			<Box mb={2} sx={{ display: "flex", justifyContent: "flex-end" }}>
-				<FormControl fullWidth sx={{ minWidth: 200 }}>
+				<FormControl sx={{ minWidth: 200 }}>
 					<InputLabel id="class-select-label">Thời gian áp dụng</InputLabel>
 					<Select
 						labelId="class-select-label"

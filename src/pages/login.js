@@ -34,7 +34,6 @@ const Login = () => {
 
 	useEffect(() => {
 		const role = localStorage.getItem("role");
-		console.log(role);
 		if (role === "ADMIN") {
 			navigate("/admin/home");
 		}
