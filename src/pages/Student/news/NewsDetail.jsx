@@ -56,7 +56,10 @@ const NewsDetailStudentPage = () => {
 				const response = await client.get("/api/news");
 				const data = response.data;
 
-				data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+				const activeNews = response.data.filter((news) => news.isActive);
+				activeNews.sort(
+					(a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+				);
 
 				const formattedRecentNews = data.slice(0, 6).map((news) => {
 					const formattedDateTime = format(
