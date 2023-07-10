@@ -61,10 +61,6 @@ const ScheduleTable = () => {
 		setSelectedSubject(event.target.value);
 	};
 
-	// const handleTeacherChange = (event) => {
-	// 	setSelectedTeacher(event.target.value);
-	// };
-
 	const handleTeacherChange = (event) => {
 		const teacherId = event.target.value;
 		setSelectedTeacher(teacherId);
@@ -89,7 +85,6 @@ const ScheduleTable = () => {
 			.post("/api/schedules", scheduleData)
 			.then((response) => {
 				setRefreshSchedule(true);
-				console.log("Lịch học đã được thêm:", response.data);
 				setErrorMessage("");
 			})
 			.catch((error) => {

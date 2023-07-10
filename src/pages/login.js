@@ -34,12 +34,11 @@ const Login = () => {
 
 	useEffect(() => {
 		const role = localStorage.getItem("role");
-		console.log(role);
 		if (role === "ADMIN") {
 			navigate("/admin/home");
 		}
 		if (role === "STUDENT" || role === "PARENT") {
-			navigate("/user/success");
+			navigate("/user/home");
 		}
 		if (role === "TEACHER") {
 			navigate("/teacher/home");
