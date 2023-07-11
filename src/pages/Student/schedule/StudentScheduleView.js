@@ -164,8 +164,11 @@ const StudentScheduleView = () => {
 				/>
 				<Button
 					variant="contained"
-					color="success"
-					sx={{ fontWeight: "bold" }}
+					sx={{
+						fontWeight: "bold",
+						color: "white",
+						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
+					}}
 					onClick={handleExportExcel}
 				>
 					Export Excel

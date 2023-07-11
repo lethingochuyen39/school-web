@@ -32,8 +32,8 @@ const NewsPage = () => {
 			const totalNews = response.data.length;
 
 			const activeNews = response.data.filter((news) => news.isActive);
-
-			setTotalPages(Math.ceil(totalNews / perPage));
+			const totalActiveNews = activeNews.length;
+			setTotalPages(Math.ceil(totalActiveNews / perPage));
 
 			activeNews.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
@@ -74,6 +74,7 @@ const NewsPage = () => {
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
+		setCurrentPage(1);
 	};
 
 	return (
