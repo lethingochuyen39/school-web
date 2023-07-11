@@ -31,13 +31,13 @@ const schema = {
       message: "^Khối không được bỏ trống",
     },
   },
-  academicYear: {
+  academicYearId: {
     presence: {
       allowEmpty: false,
       message: "^Năm học không được bỏ trống",
     },
   },
-  teacher: {
+  teacherId: {
     presence: {
       allowEmpty: false,
       message: "^Giáo viên không được bỏ trống",
@@ -51,8 +51,8 @@ const ClassesForm = ({
   handleClose,
   isEditMode,
   initialData,
-  teachers,
   academicYears,
+  teachers,
 }) => {
   const [classes, setClasses] = useState({
     id: isEditMode ? initialData.id : "",
@@ -76,7 +76,7 @@ const ClassesForm = ({
         teacherId: initialData.teacher.id,
       });
     }
-  }, [isEditMode, initialData, teachers, academicYears]);
+  }, [isEditMode, initialData, academicYears, teachers]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -190,33 +190,6 @@ const ClassesForm = ({
               <FormControl
                 fullWidth
                 margin="normal"
-                error={hasError("academicYearId")}
-              >
-                <InputLabel id="academicYear-label">Năm học</InputLabel>
-                <Select
-                  labelId="academicYear-label"
-                  id="academicYear-select"
-                  name="academicYearId"
-                  value={classes.academicYearId}
-                  onChange={handleChange}
-                  label="Năm học"
-                >
-                  {academicYears.map((academicYear) => (
-                    <MenuItem key={academicYear.id} value={academicYear.id}>
-                      {academicYear.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {hasError("academicYearId") && (
-                  <FormHelperText>
-                    {getErrorMessage("academicYearId")}
-                  </FormHelperText>
-                )}
-              </FormControl>
-
-              <FormControl
-                fullWidth
-                margin="normal"
                 error={hasError("teacherId")}
               >
                 <InputLabel id="teacher-label">Giáo viên</InputLabel>
@@ -237,6 +210,33 @@ const ClassesForm = ({
                 {hasError("teacherId") && (
                   <FormHelperText>
                     {getErrorMessage("teacherId")}
+                  </FormHelperText>
+                )}
+              </FormControl>
+
+              <FormControl
+                fullWidth
+                margin="normal"
+                error={hasError("academicYearId")}
+              >
+                <InputLabel id="academicYear-label">Năm học</InputLabel>
+                <Select
+                  labelId="academicYear-label"
+                  id="academicYear-select"
+                  name="academicYearId"
+                  value={classes.academicYearId}
+                  onChange={handleChange}
+                  label="Năm học"
+                >
+                  {academicYears.map((academicYear) => (
+                    <MenuItem key={academicYear.id} value={academicYear.id}>
+                      {academicYear.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {hasError("academicYearId") && (
+                  <FormHelperText>
+                    {getErrorMessage("academicYearId")}
                   </FormHelperText>
                 )}
               </FormControl>
@@ -285,33 +285,6 @@ const ClassesForm = ({
               <FormControl
                 fullWidth
                 margin="normal"
-                error={hasError("academicYearId")}
-              >
-                <InputLabel id="academicYear-label">Năm học</InputLabel>
-                <Select
-                  labelId="academicYear-label"
-                  id="academicYear-select"
-                  name="academicYearId"
-                  value={classes.academicYearId}
-                  onChange={handleChange}
-                  label="Năm học"
-                >
-                  {academicYears.map((academicYear) => (
-                    <MenuItem key={academicYear.id} value={academicYear.id}>
-                      {academicYear.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {hasError("academicYearId") && (
-                  <FormHelperText>
-                    {getErrorMessage("academicYearId")}
-                  </FormHelperText>
-                )}
-              </FormControl>
-
-              <FormControl
-                fullWidth
-                margin="normal"
                 error={hasError("teacherId")}
               >
                 <InputLabel id="teacher-label">Giáo viên</InputLabel>
@@ -332,6 +305,33 @@ const ClassesForm = ({
                 {hasError("teacherId") && (
                   <FormHelperText>
                     {getErrorMessage("teacherId")}
+                  </FormHelperText>
+                )}
+              </FormControl>
+
+              <FormControl
+                fullWidth
+                margin="normal"
+                error={hasError("academicYearId")}
+              >
+                <InputLabel id="academicYear-label">Năm học</InputLabel>
+                <Select
+                  labelId="academicYear-label"
+                  id="academicYear-select"
+                  name="academicYearId"
+                  value={classes.academicYearId}
+                  onChange={handleChange}
+                  label="Năm học"
+                >
+                  {academicYears.map((academicYear) => (
+                    <MenuItem key={academicYear.id} value={academicYear.id}>
+                      {academicYear.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {hasError("academicYearId") && (
+                  <FormHelperText>
+                    {getErrorMessage("academicYearId")}
                   </FormHelperText>
                 )}
               </FormControl>

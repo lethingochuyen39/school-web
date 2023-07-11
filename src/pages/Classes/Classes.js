@@ -33,10 +33,10 @@ const Classes = () => {
     }
 
     try {
-      const responseTeachers = await client.get("/api/teachers");
-      const responseAcademicYears = await client.get("/api/academic-years/all");
-      setTeachers(responseTeachers.data);
-      setAcademicYears(responseAcademicYears.data);
+      const responseTeacher = await client.get("/api/teachers");
+      const responseAcademicYear = await client.get("/api/academic-years");
+      setTeachers(responseTeacher.data);
+      setAcademicYears(responseAcademicYear.data);
     } catch (error) {
       console.error(error);
       if (error.response) {
