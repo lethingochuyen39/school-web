@@ -127,7 +127,7 @@ export default function HeaderStudent() {
 							<HeaderLink
 								variant="button"
 								color="text.primary"
-								href="/user/home"
+								href="/user/schedule"
 								sx={{ my: 1, mx: 1, textDecoration: "none" }}
 							>
 								Thời khóa biểu
