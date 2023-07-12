@@ -22,24 +22,38 @@ const ClassScorePage = () => {
 	const [students, setStudents] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { classId } = useParams();
-	const [error, setError] = useState(null);
 	const [selectedSubject, setSelectedSubject] = useState("");
 	const [selectedScoreType, setSelectedScoreType] = useState("");
 	const [subjects, setSubjects] = useState([]);
 	const [scoreTypes, setScoreTypes] = useState([]);
-	const [hasError, setHasError] = useState(false);
-	const [isAddedSuccessfully, setIsAddedSuccessfully] = useState(false);
+	const [errors, setErrors] = useState({});
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const fetchStudents = async () => {
+		const fetchInitialData = async () => {
 			try {
-				const response = await client.get(`/api/classes/${classId}/students`);
-				const updatedStudents = response.data.map((student) => ({
+				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
+					await Promise.all([
+						client.get(`/api/student/classes/${classId}/students`),
+						client.get(`/api/subjects`),
+						client.get("/api/score-types"),
+					]);
+
+				const updatedStudents = studentsResponse.data.map((student) => ({
 					...student,
 					score: "",
 				}));
+
+				const subjects = subjectsResponse.data;
+				const scoreTypes = scoreTypesResponse.data;
+
 				setStudents(updatedStudents);
+				setSubjects(subjects);
+				setSelectedSubject(subjects[0].id);
+				setScoreTypes(scoreTypes);
+				setSelectedScoreType(scoreTypes[0].id);
 				setLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -47,35 +61,56 @@ const ClassScorePage = () => {
 			}
 		};
 
-		fetchStudents();
+		fetchInitialData();
 	}, [classId]);
 
-	const fetchSubjects = async () => {
-		try {
-			const response = await client.get("/api/subjects");
-			const subjects = response.data;
-			setSubjects(subjects);
-			setSelectedSubject(subjects[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// useEffect(() => {
+	// 	const fetchStudents = async () => {
+	// 		try {
+	// 			const response = await client.get(
+	// 				`/api/student/classes/${classId}/students`
+	// 			);
+	// 			const updatedStudents = response.data.map((student) => ({
+	// 				...student,
+	// 				score: "",
+	// 			}));
+	// 			setStudents(updatedStudents);
+	// 			setLoading(false);
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 			setLoading(false);
+	// 		}
+	// 	};
 
-	const fetchScoreTypes = async () => {
-		try {
-			const response = await client.get("/api/score-types");
-			const scoreTypes = response.data;
-			setScoreTypes(scoreTypes);
-			setSelectedScoreType(scoreTypes[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// 	fetchStudents();
+	// }, [classId]);
 
-	useEffect(() => {
-		fetchSubjects();
-		fetchScoreTypes();
-	}, []);
+	// const fetchSubjects = async () => {
+	// 	try {
+	// 		const response = await client.get("/api/subjects");
+	// 		const subjects = response.data;
+	// 		setSubjects(subjects);
+	// 		setSelectedSubject(subjects[0].id);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+
+	// const fetchScoreTypes = async () => {
+	// 	try {
+	// 		const response = await client.get("/api/score-types");
+	// 		const scoreTypes = response.data;
+	// 		setScoreTypes(scoreTypes);
+	// 		setSelectedScoreType(scoreTypes[0].id);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+
+	// useEffect(() => {
+	// 	fetchSubjects();
+	// 	fetchScoreTypes();
+	// }, []);
 
 	const handleScoreInput = (id, newScore) => {
 		const cleanedScore = newScore.trim();
@@ -83,31 +118,43 @@ const ClassScorePage = () => {
 		const isValid = /^\d*\.?\d*$/.test(cleanedScore);
 
 		if (!isValid) {
-			const newError = { id, message: "Điểm phải là một số dương" };
-			setError(newError);
+			const newError = { message: "Điểm phải là một số dương" };
+			setErrors((prevErrors) => ({
+				...prevErrors,
+				[id]: newError,
+			}));
 		} else {
 			const parsedScore = parseFloat(cleanedScore);
 			if (parsedScore < 0 || parsedScore > 10) {
-				const newError = { id, message: "Điểm phải là số từ 0 đến 10" };
-				setError(newError);
+				const newError = { message: "Điểm phải là số từ 0 đến 10" };
+				setErrors((prevErrors) => ({
+					...prevErrors,
+					[id]: newError,
+				}));
 			} else {
-				setError(null);
-				const updatedStudents = students.map((student) => {
-					if (student.id === id) {
-						return {
-							...student,
-							score: cleanedScore || "",
-						};
-					}
-					return student;
+				setErrors((prevErrors) => {
+					const updatedErrors = { ...prevErrors };
+					delete updatedErrors[id];
+					return updatedErrors;
 				});
-				setStudents(updatedStudents);
 			}
 		}
+
+		setStudents((prevStudents) => {
+			return prevStudents.map((student) => {
+				if (student.id === id) {
+					return {
+						...student,
+						score: cleanedScore || "",
+					};
+				}
+				return student;
+			});
+		});
 	};
 
 	const renderErrorMessage = (id) => {
-		const errorObj = error && error.id === id ? error : null;
+		const errorObj = errors[id];
 		if (errorObj) {
 			return (
 				<Alert severity="error">
@@ -128,6 +175,10 @@ const ClassScorePage = () => {
 	};
 
 	const handleSaveScores = async () => {
+		if (Object.keys(errors).length > 0) {
+			setErrorMessage("Vui lòng kiểm tra lại điểm nhập vào");
+			return;
+		}
 		for (const row of students) {
 			if (row.score !== "") {
 				const scoreToAdd = {
@@ -139,17 +190,22 @@ const ClassScorePage = () => {
 
 				try {
 					await client.post("/api/scores", scoreToAdd);
-					setHasError(false);
-					setIsAddedSuccessfully(true);
-					setError(null);
+					setErrors({});
+					setSuccessMessage("Thao tác thành công");
+					setErrorMessage("");
 				} catch (error) {
-					console.error("Lỗi khi lưu điểm:", error);
-					setHasError(true);
-					setIsAddedSuccessfully(false);
+					if (error.response && error.response.data) {
+						setErrorMessage(error.response.data);
+					} else {
+						setErrorMessage("Có lỗi xảy ra");
+					}
+					setSuccessMessage("");
+					setErrors({ [row.id]: { message: "Lỗi khi lưu điểm" } });
 				}
 			}
 		}
 	};
+
 	const handleGoBack = () => {
 		navigate(-1);
 	};
@@ -175,6 +231,7 @@ const ClassScorePage = () => {
 			disableActions: true,
 		},
 	];
+
 	const getHeader = () => (
 		<>
 			<IconButton onClick={handleGoBack}>
@@ -240,10 +297,16 @@ const ClassScorePage = () => {
 				display="flex"
 				justifyContent="center"
 				alignItems="center"
-				fontSize="1.5rem"
+				fontSize="2rem"
 				fontWeight="bold"
+				sx={{
+					fontWeight: "bold",
+					textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+					color: "#FF4500",
+					textAlign: "center",
+				}}
 			>
-				Nhập điểm lớp mã - {classId}
+				Nhập điểm lớp
 			</Box>
 
 			<Box
@@ -266,28 +329,28 @@ const ClassScorePage = () => {
 				</Button>
 			</Box>
 			<Stack sx={{ width: "100%" }} spacing={2}>
-				{hasError ? (
+				{errorMessage && (
 					<Alert severity="error">
 						<AlertTitle>Error</AlertTitle>
-						Đã có lỗi xảy ra khi thêm bảng điểm —{" "}
-						<strong>vui lòng thử lại sau!</strong>
+						{errorMessage}
 					</Alert>
-				) : isAddedSuccessfully ? (
+				)}
+				{successMessage && (
 					<Alert severity="success">
 						<AlertTitle>Success</AlertTitle>
-						Cập nhật danh sách điểm thành công!
+						{successMessage}
 					</Alert>
-				) : null}
+				)}
 			</Stack>
 			<DataTable
 				initialRows={students}
 				columns={columns}
 				loading={loading}
-				handleEdit={handleScoreInput}
 				hiddenActions={["view", "edit", "delete"]}
 			/>
 		</>
 	);
+
 	return (
 		<GridWrapper>
 			<BasicCard header={getHeader()} content={getContent()} />

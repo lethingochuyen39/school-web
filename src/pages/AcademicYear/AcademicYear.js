@@ -8,7 +8,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
 import AddForm from "../../components/academicYear/AddForm";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 const AcademicYear = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -17,7 +17,6 @@ const AcademicYear = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedAcademicYear, setSelectedAcademicYear] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenAddForm = () => {
@@ -35,21 +34,6 @@ const AcademicYear = () => {
 	const handleCloseAddForm = () => {
 		setIsAddFormOpen(false);
 		setAcademicYear(null);
-	};
-
-	const handleAddAcademicYear = async (newAcademicYear) => {
-		try {
-			await client.post("/api/academic-years", newAcademicYear);
-			setIsModalOpen(true);
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data.message);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật năm học.");
-			}
-		}
 	};
 
 	// hiển thị thông tin
@@ -75,32 +59,6 @@ const AcademicYear = () => {
 			setIsEditMode(true);
 			setSelectedAcademicYear(selectedYear);
 			setIsAddFormOpen(true);
-		}
-	};
-
-	const handleUpdateAcademicYear = async (updatedAcademicYear) => {
-		try {
-			await client.put(
-				`/api/academic-years/${updatedAcademicYear.id}`,
-				updatedAcademicYear
-			);
-			fetchData();
-			setIsModalOpen(true);
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data.message);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật năm học.");
-			}
-		}
-	};
-
-	const handleDelete = async (id) => {
-		try {
-			await client.delete(`/api/academic-years/${id}`);
-			fetchData();
-		} catch (error) {
-			console.error(error);
 		}
 	};
 
@@ -134,7 +92,6 @@ const AcademicYear = () => {
 			justifyContent="space-between"
 			alignItems="center"
 			paddingLeft="20px"
-			paddingBottom="20px"
 			paddingTop="10px"
 			paddingRight="10px"
 			flexWrap="wrap"
@@ -198,7 +155,8 @@ const AcademicYear = () => {
 				loading={loading}
 				handleView={handleView}
 				handleEdit={handleEdit}
-				handleDelete={handleDelete}
+				// handleDelete={handleDelete}
+				hiddenActions={["delete"]}
 			/>
 		);
 	};
@@ -207,12 +165,10 @@ const AcademicYear = () => {
 		<GridWrapper>
 			{isAddFormOpen && (
 				<AddForm
-					handleAddAcademicYear={handleAddAcademicYear}
-					handleUpdateAcademicYear={handleUpdateAcademicYear}
 					handleClose={handleCloseAddForm}
 					isEditMode={isEditMode}
 					initialData={selectedAcademicYear}
-					error={error}
+					fetchData={fetchData}
 				/>
 			)}
 
@@ -235,11 +191,34 @@ const AcademicYear = () => {
 							p: 2,
 						}}
 					>
-						<h2 id="modal-title">Thông tin năm học</h2>
-						<p id="modal-description">ID: {academicYear.id}</p>
-						<p>Tên năm học: {academicYear.name}</p>
-						<p>Ngày bắt đầu: {academicYear.startDate}</p>
-						<p>Ngày kết thúc: {academicYear.endDate}</p>
+						<Typography
+							id="modal-title"
+							variant="h4"
+							sx={{
+								mb: 2,
+								fontWeight: "bold",
+								textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+								color: "#FF4500",
+								textAlign: "center",
+							}}
+						>
+							Thông tin năm học
+						</Typography>
+						<Typography variant="body1" id="modal-description">
+							<b>ID:</b>
+							{academicYear.id}
+						</Typography>
+						<Typography variant="body1">
+							<b>Tên năm học:</b> {academicYear.name}
+						</Typography>
+						<Typography variant="body1">
+							<b>Ngày bắt đầu: </b>
+							{academicYear.startDate}
+						</Typography>
+						<Typography variant="body1" sx={{ mb: 2 }}>
+							<b>Ngày kết thúc:</b> {academicYear.endDate}
+						</Typography>
+
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>

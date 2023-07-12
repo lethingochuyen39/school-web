@@ -54,13 +54,13 @@ const DataTable = ({
 		</>
 	);
 
-	const renderCellCheckbox = (params) => (
-		<input
-			type="checkbox"
-			checked={params.value}
-			onChange={(event) => event.stopPropagation()}
-		/>
-	);
+	// const renderCellCheckbox = (params) => (
+	// 	<input
+	// 		type="checkbox"
+	// 		checked={params.value}
+	// 		onChange={(event) => event.stopPropagation()}
+	// 	/>
+	// );
 
 	const [selectedRows, setSelectedRows] = useState([]);
 	const handleSelectionModelChange = (newSelection) => {
@@ -68,13 +68,13 @@ const DataTable = ({
 	};
 
 	const columnsWithActions = [
-		{
-			field: "checkbox",
-			headerName: "",
-			width: 50,
-			sortable: false,
-			renderCell: renderCellCheckbox,
-		},
+		// {
+		// 	field: "checkbox",
+		// 	headerName: "",
+		// 	width: 50,
+		// 	sortable: false,
+		// renderCell: renderCellCheckbox,
+		// },
 		...columns,
 		{
 			field: "actions",
@@ -86,16 +86,16 @@ const DataTable = ({
 	// Kiểm tra nếu tất cả các hành động đều bị ẩn thì không hiển thị cột chức năng
 	const shouldHideActionsColumn = hiddenActions.length === 3;
 	return (
-		<div style={{ height: 400, width: "100%" }}>
+		<div style={{ height: 450, width: "100%", marginBottom: "10px" }}>
 			<DataGrid
 				rows={rows}
 				columns={shouldHideActionsColumn ? columns : columnsWithActions}
 				loading={loading}
 				onSelectionModelChange={handleSelectionModelChange}
 				disableSelectionOnClick
-				pagination
+				pagination={true}
 				pageSize={10}
-				rowsPerPageOptions={[10, 25, 50]}
+				// rowsPerPageOptions={[25, 50, 100]}
 			/>
 		</div>
 	);

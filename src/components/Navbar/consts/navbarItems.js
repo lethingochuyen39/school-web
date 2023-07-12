@@ -1,4 +1,4 @@
-import ImageIcon from "@mui/icons-material/Image";
+// import ImageIcon from "@mui/icons-material/Image";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
@@ -52,7 +52,7 @@ export const mainNavbarItems = [
 		id: 6,
 		icon: <FiberNewIcon />,
 		label: "Quản lý tin tức",
-		route: "home",
+		route: "news",
 	},
 	{
 		id: 7,
@@ -76,7 +76,7 @@ export const mainNavbarItems = [
 		id: 10,
 		icon: <SnippetFolderIcon />,
 		label: "Quản lý tài liệu",
-		route: "login",
+		route: "document",
 	},
 	{
 		id: 11,
@@ -96,29 +96,29 @@ export const mainNavbarItems = [
 			},
 		],
 	},
-	{
-		id: 12,
-		icon: <ImageIcon />,
-		label: "Quản lý loại điểm",
-		route: "home",
-	},
+	// {
+	// 	id: 12,
+	// 	icon: <ImageIcon />,
+	// 	label: "Quản lý loại điểm",
+	// 	route: "home",
+	// },
 	{
 		id: 13,
 		icon: <StackedBarChartIcon />,
 		label: "Quản lý thống kê",
-		route: "home",
+		route: "metric",
 	},
 	{
 		id: 14,
 		icon: <AssessmentIcon />,
 		label: "Quản lý báo cáo",
-		route: "home",
+		route: "evaluationRecord",
 	},
 	{
 		id: 15,
 		icon: <StarsIcon />,
 		label: "Quản lý hạng kiểm",
-		route: "home",
+		route: "reportCard",
 	},
 	{
 		id: 16,

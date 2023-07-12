@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import AuthContext from "../../src/api/AuthContext";
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,15 +13,16 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Cookies from "universal-cookie";
+import { useNavigate } from "react-router-dom";
+// import Cookies from "universal-cookie";
 const Login = () => {
 	const { login } = useContext(AuthContext);
-
+	const navigate = useNavigate();
 	const defaultTheme = createTheme();
 
 	const loginSubmit = async (event) => {
-		const cookies = new Cookies();
-		cookies.remove("token");
+		// const cookies = new Cookies();
+		// cookies.remove("token");
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		let payload = {
@@ -31,6 +31,19 @@ const Login = () => {
 		};
 		await login(payload);
 	};
+
+	useEffect(() => {
+		const role = localStorage.getItem("role");
+		if (role === "ADMIN") {
+			navigate("/admin/home");
+		}
+		if (role === "STUDENT" || role === "PARENT") {
+			navigate("/user/home");
+		}
+		if (role === "TEACHER") {
+			navigate("/teacher/home");
+		}
+	}, []);
 
 	return (
 		<>

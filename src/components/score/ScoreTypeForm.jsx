@@ -4,7 +4,8 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
-
+import { Alert, Typography } from "@mui/material";
+import client from "../../api/client";
 const schema = {
 	name: {
 		presence: {
@@ -22,15 +23,13 @@ const schema = {
 			allowEmpty: false,
 			message: "^Vui lòng nhập hệ số.",
 		},
+		numericality: {
+			greaterThanOrEqualTo: 1,
+			message: "^Loại điểm phải lớn hơn 0",
+		},
 	},
 };
-const ScoreTypeForm = ({
-	handleAddScoreType,
-	handleUpdateScoreType,
-	handleClose,
-	isEditMode,
-	initialData,
-}) => {
+const ScoreTypeForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 	const [scoreType, setScoreType] = useState({
 		id: isEditMode ? initialData.id : "",
 		name: isEditMode ? initialData.name : "",
@@ -38,15 +37,25 @@ const ScoreTypeForm = ({
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 	useEffect(() => {
 		if (isEditMode && initialData) {
 			setScoreType(initialData);
 		}
 	}, [isEditMode, initialData]);
+
 	const handleChange = (event) => {
+		const { name, value } = event.target;
 		setScoreType((prev) => ({
 			...prev,
-			[event.target.name]: event.target.value,
+			[name]: value,
+		}));
+
+		const errors = validate({ ...scoreType, [name]: value }, schema);
+		setError((prevError) => ({
+			...prevError,
+			[name]: errors ? errors[name] : null,
 		}));
 	};
 
@@ -61,14 +70,20 @@ const ScoreTypeForm = ({
 			}
 
 			if (isEditMode) {
-				await handleUpdateScoreType(scoreType);
+				await client.put(`/api/score-types/${scoreType.id}`, scoreType);
 			} else {
-				await handleAddScoreType(scoreType);
+				await client.post("/api/score-types", scoreType);
 			}
-
-			handleClose();
+			await fetchData();
+			setSuccessMessage("Thao tác thành công");
+			setErrorMessage("");
 		} catch (error) {
-			setError(error);
+			if (error.response && error.response.data) {
+				setErrorMessage(error.response.data);
+			} else {
+				setErrorMessage("Có lỗi xảy ra");
+			}
+			setSuccessMessage("");
 		}
 	};
 
@@ -97,9 +112,33 @@ const ScoreTypeForm = ({
 					border: "2px solid #000",
 					boxShadow: 24,
 					p: 4,
+					maxWidth: "90%",
+					maxHeight: "90%",
+					overflow: "auto",
 				}}
 			>
-				<h2>{isEditMode ? "Cập nhật loại điểm" : "Thêm mới loại điểm"}</h2>
+				<Typography
+					variant="h4"
+					sx={{
+						mb: 2,
+						fontWeight: "bold",
+						textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+						color: "#FF4500",
+						textAlign: "center",
+					}}
+				>
+					{isEditMode ? "Cập nhật loại điểm" : "Thêm mới loại điểm"}
+				</Typography>
+				{successMessage && (
+					<Alert severity="success" onClose={() => setSuccessMessage("")}>
+						{successMessage}
+					</Alert>
+				)}
+				{errorMessage && (
+					<Alert severity="error" onClose={() => setErrorMessage("")}>
+						{errorMessage}
+					</Alert>
+				)}
 
 				<form onSubmit={handleSubmit}>
 					<TextField
