@@ -2,40 +2,18 @@ import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
-import CommonButton from "../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
-import ScoreTypeForm from "../../components/score/ScoreTypeForm";
 import { Button, Modal, Typography } from "@mui/material";
 const ScoreType = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [scoreType, setScoreType] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [isEditMode, setIsEditMode] = useState(false);
-	const [selectedScoreType, setselectedScoreType] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
 
-	const handleOpenForm = () => {
-		if (scoreType) {
-			setIsEditMode(true);
-			setselectedScoreType(scoreType);
-		} else {
-			setIsEditMode(false);
-			setselectedScoreType(null);
-		}
-		setIsFormOpen(true);
-	};
-
-	const handleCloseForm = () => {
-		setIsFormOpen(false);
-		setScoreType(null);
-	};
-
-	// hiển thị thông tin
 	const handleView = async (id) => {
 		try {
 			const response = await client.get(`/api/score-types/${id}`);
@@ -50,15 +28,6 @@ const ScoreType = () => {
 	const closeModal = () => {
 		setIsModalOpen(false);
 		setScoreType(null);
-	};
-
-	const handleEdit = (id) => {
-		const selectedScoreType = data.find((year) => year.id === id);
-		if (selectedScoreType) {
-			setIsEditMode(true);
-			setselectedScoreType(selectedScoreType);
-			setIsFormOpen(true);
-		}
 	};
 
 	const fetchData = useCallback(async () => {
@@ -96,25 +65,7 @@ const ScoreType = () => {
 			flexWrap="wrap"
 		>
 			<Box
-				display="flex"
-				alignItems="center"
-				marginTop={{ xs: "10px", sm: 0 }}
-				marginRight={{ xs: "10px" }}
-			>
-				<CommonButton
-					variant="contained"
-					sx={{
-						color: "white",
-						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-					}}
-					onClick={handleOpenForm}
-					size="large"
-				>
-					Thêm mới
-				</CommonButton>
-			</Box>
-			<Box
-				minWidth={{ xs: "100%", sm: 0, md: "500px" }}
+				minWidth={{ xs: "100%", sm: "250px", md: "500px" }}
 				marginRight={{ xs: 0, sm: "10px" }}
 				marginBottom={{ xs: "10px", sm: 0 }}
 				backgroundColor="#f5f5f5"
@@ -129,7 +80,7 @@ const ScoreType = () => {
 					onChange={handleSearchChange}
 					value={searchTerm}
 					sx={{
-						width: { xs: "100%", sm: "auto", md: "100%" },
+						width: { xs: "100%", sm: "100%", md: "100%" },
 						color: "rgba(0, 0, 0, 0.6)",
 						fontSize: "1.1rem",
 					}}
@@ -141,7 +92,8 @@ const ScoreType = () => {
 
 	const columns = [
 		{ field: "id", headerName: "ID", width: 100 },
-		{ field: "name", headerName: "Tên", width: 250 },
+		{ field: "name", headerName: "Tên loại điểm", width: 200 },
+		{ field: "description", headerName: "Mô tả", width: 200 },
 		{ field: "coefficient", headerName: "Hệ số", width: 100 },
 	];
 
@@ -152,24 +104,13 @@ const ScoreType = () => {
 				columns={columns}
 				loading={loading}
 				handleView={handleView}
-				handleEdit={handleEdit}
-				// handleDelete={handleDelete}
-				hiddenActions={["delete"]}
+				hiddenActions={["delete", "edit"]}
 			/>
 		);
 	};
 
 	return (
 		<GridWrapper>
-			{isFormOpen && (
-				<ScoreTypeForm
-					handleClose={handleCloseForm}
-					isEditMode={isEditMode}
-					initialData={selectedScoreType}
-					fetchData={fetchData}
-				/>
-			)}
-
 			{scoreType && (
 				<Modal
 					open={isModalOpen}
@@ -207,6 +148,9 @@ const ScoreType = () => {
 						</Typography>
 						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 							<b>Tên loại điểm: </b> {scoreType.name}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Mô tả loại điểm: </b> {scoreType.description}
 						</Typography>
 						<Typography
 							variant="body1"

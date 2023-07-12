@@ -155,16 +155,6 @@ export default function DocumentStudentPage() {
 																url={`/api/documents/${documents.id}/download`}
 																fileName={documents.fileName}
 															/>
-															<a
-																href={
-																	`${process.env.REACT_APP_BASE_URL}/uploads/documents/` +
-																	`${documents.fileName}`
-																}
-																target="_blank"
-																rel="noopener noreferrer"
-															>
-																Xem file
-															</a>
 														</CardContent>
 														<CardMedia
 															component="img"

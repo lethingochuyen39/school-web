@@ -34,6 +34,12 @@ const schema = {
 			message: "^Vui lòng chọn loại điểm",
 		},
 	},
+	classId: {
+		presence: {
+			allowEmpty: false,
+			message: "^Vui lòng chọn lớp",
+		},
+	},
 	score: {
 		presence: {
 			allowEmpty: false,
@@ -45,6 +51,12 @@ const schema = {
 			message: "^Điểm phải nằm trong khoảng từ 0 đến 10",
 		},
 	},
+	semester: {
+		presence: {
+			allowEmpty: false,
+			message: "^Vui lòng chọn học kì",
+		},
+	},
 };
 
 const ScoreForm = ({
@@ -54,6 +66,7 @@ const ScoreForm = ({
 	students,
 	subjects,
 	scoreTypes,
+	classes,
 	fetchData,
 }) => {
 	const [score, setScore] = useState({
@@ -61,6 +74,8 @@ const ScoreForm = ({
 		studentId: isEditMode ? initialData.student.id : "",
 		subjectId: isEditMode ? initialData.subject.id : "",
 		scoreTypeId: isEditMode ? initialData.scoreType.id : "",
+		classId: isEditMode ? initialData.classes.id : "",
+		semester: isEditMode ? initialData.semester : "",
 		score: isEditMode ? initialData.score : "",
 	});
 
@@ -75,10 +90,12 @@ const ScoreForm = ({
 				studentId: initialData.student.id,
 				subjectId: initialData.subject.id,
 				scoreTypeId: initialData.scoreType.id,
+				classId: initialData.classes.id,
+				semester: initialData.semester,
 				score: initialData.score,
 			});
 		}
-	}, [isEditMode, initialData, students, subjects, scoreTypes]);
+	}, [isEditMode, initialData, students, subjects, scoreTypes, classes]);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -144,11 +161,13 @@ const ScoreForm = ({
 					left: "50%",
 					transform: "translate(-50%, -50%)",
 					width: 500,
-					maxHeight: "90%",
 					bgcolor: "background.paper",
 					border: "2px solid #000",
 					boxShadow: 24,
 					p: 4,
+					maxHeight: "90%",
+					maxWidth: "90%",
+					overflow: "auto",
 				}}
 			>
 				<Typography
@@ -193,16 +212,71 @@ const ScoreForm = ({
 							<FormControl
 								fullWidth
 								margin="normal"
+								size="small"
+								error={hasError("semester")}
+							>
+								<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+								<Select
+									labelId="semester-label"
+									id="semester-select"
+									name="semester"
+									value={score.semester}
+									onChange={handleChange}
+									label="Chọn Học kì"
+									required
+								>
+									<MenuItem value={1}>Học kì 1</MenuItem>
+									<MenuItem value={2}>Học kì 2</MenuItem>
+								</Select>
+								{hasError("semester") && (
+									<FormHelperText>{getErrorMessage("semester")}</FormHelperText>
+								)}
+							</FormControl>
+
+							<FormControl
+								fullWidth
+								size="small"
+								margin="normal"
+								error={hasError("classId")}
+							>
+								<InputLabel id="class-label">Chọn Lớp học</InputLabel>
+								<Select
+									labelId="class-label"
+									id="class-select"
+									name="classId"
+									size="small"
+									value={score.classId}
+									onChange={handleChange}
+									label="Chọn Lớp học"
+									required
+								>
+									{classes.map((classes) => (
+										<MenuItem key={classes.id} value={classes.id}>
+											Mã số:{classes.id} - {classes.name} (năm học:
+											{classes.academicYear.name})
+										</MenuItem>
+									))}
+								</Select>
+								{hasError("studentId") && (
+									<FormHelperText>
+										{getErrorMessage("studentId")}
+									</FormHelperText>
+								)}
+							</FormControl>
+							<FormControl
+								fullWidth
+								size="small"
+								margin="normal"
 								error={hasError("studentId")}
 							>
-								<InputLabel id="student-label">Học sinh</InputLabel>
+								<InputLabel id="student-label">Chọn Học sinh</InputLabel>
 								<Select
 									labelId="student-label"
 									id="student-select"
 									name="studentId"
 									value={score.studentId}
 									onChange={handleChange}
-									label="Học sinh"
+									label="Chọn Học sinh"
 									required
 								>
 									{students.map((student) => (
@@ -220,17 +294,18 @@ const ScoreForm = ({
 
 							<FormControl
 								fullWidth
+								size="small"
 								margin="normal"
 								error={hasError("subjectId")}
 							>
-								<InputLabel id="subject-label">Môn học</InputLabel>
+								<InputLabel id="subject-label">Chọn Môn học</InputLabel>
 								<Select
 									labelId="subject-label"
 									id="subject-select"
 									name="subjectId"
 									value={score.subjectId}
 									onChange={handleChange}
-									label="Môn học"
+									label="Chọn Môn học"
 								>
 									{subjects.map((subject) => (
 										<MenuItem key={subject.id} value={subject.id}>
@@ -247,17 +322,18 @@ const ScoreForm = ({
 
 							<FormControl
 								fullWidth
+								size="small"
 								margin="normal"
 								error={hasError("scoreTypeId")}
 							>
-								<InputLabel id="scoreType-label">Loại điểm</InputLabel>
+								<InputLabel id="scoreType-label">Chọn Loại điểm</InputLabel>
 								<Select
 									labelId="scoreType-label"
 									id="scoreType-select"
 									name="scoreTypeId"
 									value={score.scoreTypeId}
 									onChange={handleChange}
-									label="Loại điểm"
+									label="Chọn Loại điểm"
 								>
 									{scoreTypes.map((scoreType) => (
 										<MenuItem key={scoreType.id} value={scoreType.id}>
@@ -275,6 +351,7 @@ const ScoreForm = ({
 							<TextField
 								type="number"
 								name="score"
+								size="small"
 								label="Điểm"
 								value={score.score}
 								onChange={handleChange}
@@ -287,10 +364,16 @@ const ScoreForm = ({
 							/>
 						</>
 					)}
-					<Button type="submit" variant="contained" onClick={handleSubmit}>
+
+					<Button
+						type="submit"
+						variant="contained"
+						onClick={handleSubmit}
+						sx={{ mt: 2 }}
+					>
 						{isEditMode ? "Cập nhật" : "Thêm"}
 					</Button>
-					<Button onClick={handleCloseModal} color="error">
+					<Button onClick={handleCloseModal} color="error" sx={{ mt: 2 }}>
 						Hủy
 					</Button>
 				</form>
