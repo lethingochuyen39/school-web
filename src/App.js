@@ -36,6 +36,7 @@ import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
 import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
+import ScoreView from "./pages/Student/score/ScoreView";
 
 function App() {
 	return (
@@ -119,6 +120,7 @@ function App() {
 									path="/user/document"
 									element={<DocumentStudentPage />}
 								/>
+								<Route path="/user/score" element={<ScoreView />} />
 							</Route>
 						</Route>
 					</Routes>

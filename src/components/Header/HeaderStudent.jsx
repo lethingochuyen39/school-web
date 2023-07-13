@@ -136,7 +136,7 @@ export default function HeaderStudent() {
 							<HeaderLink
 								variant="button"
 								color="text.primary"
-								href="#"
+								href="/user/score"
 								sx={{ my: 1, mx: 1.5, textDecoration: "none" }}
 							>
 								Bảng điểm

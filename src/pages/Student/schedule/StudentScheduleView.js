@@ -11,6 +11,11 @@ import {
 	Typography,
 	TextField,
 	Button,
+	Grid,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
 } from "@mui/material";
 import client from "../../../api/client";
 import * as XLSX from "xlsx";
@@ -19,10 +24,32 @@ const StudentScheduleView = () => {
 	const [scheduleData, setScheduleData] = useState([]);
 	const [dayOfWeekData, setDayOfWeekData] = useState([]);
 	const [filteredClassesData, setFilteredClassesData] = useState([]);
+
+	const [classes, setClasses] = useState([]);
+	const [selectedClass, setSelectedClass] = useState("");
+
+	const handleChange = (event) => {
+		setSelectedClass(event.target.value);
+	};
+
+	useEffect(() => {
+		if (classes.length > 0) {
+			setSelectedClass(classes[0].id);
+		}
+	}, [classes]);
+
 	const fetchStudentClass = async (studentId) => {
 		try {
-			const response = await client.get(`/api/student/${studentId}/class`);
-			return response.data;
+			const responseClasses = await client.get(
+				`/api/student/${studentId}/Allclass`
+			);
+			setClasses(responseClasses.data);
+			const selectedClassId = parseInt(selectedClass);
+			const studentClass = responseClasses.data.find(
+				(classItem) => classItem.id === selectedClassId
+			);
+
+			setFilteredClassesData(studentClass);
 		} catch (error) {
 			console.error("Lỗi khi lấy thông tin lớp học:", error);
 			return null;
@@ -40,7 +67,7 @@ const StudentScheduleView = () => {
 					await Promise.all([
 						client.get("/api/lessons"),
 						client.get("/api/dayofweek"),
-						client.get(`/api/schedules/class/${studentClass.id}`),
+						client.get(`/api/schedules/class/${selectedClass}`),
 					]);
 
 				const tietData = tietResponse.data;
@@ -99,7 +126,7 @@ const StudentScheduleView = () => {
 		};
 
 		fetchScheduleData();
-	}, []);
+	}, [selectedClass]);
 	const handleExportExcel = () => {
 		// Tạo danh sách dữ liệu từ bảng thời khóa biểu
 		const data = scheduleData.map((row) => {
@@ -147,33 +174,60 @@ const StudentScheduleView = () => {
 						textAlign: "center",
 					}}
 				>
-					Thời Khóa Biểu {filteredClassesData[0]?.name}
+					Thời Khóa Biểu {filteredClassesData?.name}
 				</Typography>
 			</Box>
+			<Grid container justifyContent="center" spacing={2} sx={{ mb: 2, mt: 2 }}>
+				<Grid item xs={12} md={6}>
+					<FormControl fullWidth size="small">
+						<InputLabel id="class-label">Chọn Lớp học</InputLabel>
+						<Select
+							labelId="class-label"
+							id="class-select"
+							name="classId"
+							size="small"
+							value={selectedClass}
+							onChange={handleChange}
+							label="Chọn Lớp học"
+							required
+						>
+							{classes.map((classItem) => (
+								<MenuItem key={classItem.id} value={classItem.id}>
+									{classItem.name}- năm học: {classItem.academicYear.name}, Áp
+									dụng TKB từ {classItem.academicYear.startDate} đến{" "}
+									{classItem.academicYear.endDate}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Grid>
 
-			<Box mb={2} sx={{ display: "flex", justifyContent: "flex-end" }}>
-				<TextField
-					id="outlined-read-only-input"
-					label="Thời gian áp dụng"
-					defaultValue="Thời gian áp dụng"
-					sx={{ minWidth: 330, paddingRight: 2 }}
-					InputProps={{
-						readOnly: true,
-						value: `Áp dụng TKB từ ${filteredClassesData[0]?.academicYear.startDate} đến ${filteredClassesData[0]?.academicYear.endDate}`,
-					}}
-				/>
-				<Button
-					variant="contained"
-					sx={{
-						fontWeight: "bold",
-						color: "white",
-						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-					}}
-					onClick={handleExportExcel}
-				>
-					Export Excel
-				</Button>
-			</Box>
+				<Grid item xs={12} md={6}>
+					<Box mb={2} sx={{ display: "flex", justifyContent: "flex-end" }}>
+						{/* <TextField
+							id="outlined-read-only-input"
+							label="Thời gian áp dụng"
+							defaultValue="Thời gian áp dụng"
+							sx={{ minWidth: 330, paddingRight: 2 }}
+							InputProps={{
+								readOnly: true,
+								value: `Áp dụng TKB từ ${filteredClassesData?.academicYear?.startDate} đến ${filteredClassesData?.academicYear?.endDate}`,
+							}}
+						/> */}
+						<Button
+							variant="contained"
+							sx={{
+								fontWeight: "bold",
+								color: "white",
+								backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
+							}}
+							onClick={handleExportExcel}
+						>
+							Export Excel
+						</Button>
+					</Box>
+				</Grid>
+			</Grid>
 
 			<TableContainer component={Paper}>
 				<Table sx={{ minWidth: 650 }} aria-label="simple table">
