@@ -119,7 +119,7 @@ export default function HeaderStudent() {
 									</Link>
 								</MenuItem>
 								<MenuItem onClick={handleMenuClose}>
-									<Link href="/path2" color="inherit" underline="none">
+									<Link href="/user/document" color="inherit" underline="none">
 										Tài liệu tham khảo
 									</Link>
 								</MenuItem>
@@ -136,7 +136,7 @@ export default function HeaderStudent() {
 							<HeaderLink
 								variant="button"
 								color="text.primary"
-								href="#"
+								href="/user/score"
 								sx={{ my: 1, mx: 1.5, textDecoration: "none" }}
 							>
 								Bảng điểm

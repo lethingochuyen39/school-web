@@ -228,7 +228,7 @@ const DocumentForm = ({
 									type="file"
 									id="file-upload"
 									name="file"
-									accept=".pdf,.doc,.docx,excel.exe"
+									accept=".pdf,.doc,.docx,.xlsx"
 									style={{ display: "none" }}
 									onChange={handleFileChange}
 								/>
