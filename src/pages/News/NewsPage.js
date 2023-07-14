@@ -9,6 +9,7 @@ import {
 	TextField,
 	InputAdornment,
 	Box,
+	LinearProgress,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -22,6 +23,8 @@ const NewsPage = () => {
 	const [totalPages, setTotalPages] = useState(0);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [noResults, setNoResults] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
 	const fetchData = useCallback(async () => {
 		try {
 			let url = "/api/news";
@@ -59,8 +62,11 @@ const NewsPage = () => {
 			} else {
 				setNoResults(false);
 			}
+
+			setIsLoading(false);
 		} catch (error) {
 			console.error(error);
+			setIsLoading(false);
 		}
 	}, [searchTerm, news, currentPage, perPage]);
 
