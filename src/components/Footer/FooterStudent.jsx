@@ -15,14 +15,14 @@ import { IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ScrollToTopButton from "../common/Scroll/ScrollToTopButton";
 
-const FooterContainer = styled(Container)(({ theme }) => ({
+const FooterContainer = styled("footer")(({ theme }) => ({
 	borderTop: `1px solid ${theme.palette.divider}`,
 	borderBottom: `1px solid ${theme.palette.divider}`,
 	marginTop: theme.spacing(3),
 	paddingTop: theme.spacing(1, 3),
 	backgroundColor: "#f5f5f5",
+	width: "100%",
 }));
-
 const FooterGrid = styled(Grid)({
 	"& ul": {
 		margin: 3,
@@ -77,7 +77,7 @@ export default function FooterStudent() {
 				},
 				{
 					icon: <Phone />,
-					text: "1900 02 10 39 (P.QLDT)",
+					text: "1900 02 10 39 (P.DT)",
 				},
 				{
 					icon: <Mail />,
