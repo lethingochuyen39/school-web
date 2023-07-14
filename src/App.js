@@ -11,13 +11,15 @@ import Score from "./pages/Score/Score";
 import LayoutAdmin from "./pages/LayoutAdmin";
 import ScoreType from "./pages/ScoreType/ScoreType";
 import ClassScorePage from "./pages/Score/ClassScorePage";
+import Classes from "./pages/Classes/Classes";
+import Subject from "./pages/Subject/Subject";
+import Teacher from "./pages/Teacher/Teacher";
 import Document from "./pages/Document/Document";
 import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
 import ScheduleView from "./pages/Schedule/ScheduleView";
 import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/success";
-import Class from "./pages/Class/Class";
 import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
@@ -36,6 +38,10 @@ import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
 import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
+import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
+import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
+import ScoreView from "./pages/Student/score/ScoreView";
+
 
 function App() {
 	return (
@@ -45,6 +51,7 @@ function App() {
 					<Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/" element={<Login />} />
+
 						<Route element={<RoleAccess roles={["ADMIN"]} />}>
 							<Route path="/admin/" element={<LayoutAdmin />}>
 								<Route path="/admin/home" element={<Home />} />
@@ -56,7 +63,7 @@ function App() {
 									path="/admin/class-score/:classId"
 									element={<ClassScorePage />}
 								/>
-								<Route path="/admin/classes" element={<Class />} />
+								<Route path="/admin/classes" element={<Classes />} />
 
 								<Route path="/admin/document" element={<Document />} />
 								<Route path="/admin/news" element={<News />} />
@@ -66,6 +73,9 @@ function App() {
 									path="/admin/class-schedule/:classId"
 									element={<ScheduleAdd />}
 								/>
+								<Route path="/admin/classes" element={<Classes />} />
+								<Route path="/admin/subject" element={<Subject />} />
+								<Route path="/admin/teacher" element={<Teacher />} />
 								<Route
 									path="/admin/schedule-update/:scheduleId"
 									element={<UpdateSchedulePage />}
@@ -113,15 +123,18 @@ function App() {
 									path="/user/news-detail/:id"
 									element={<NewsDetailStudentPage />}
 								/>
+								<Route
+									path="/user/schedule"
+									element={<StudentScheduleView />}
+								/>
+								<Route
+									path="/user/document"
+									element={<DocumentStudentPage />}
+								/>
+								<Route path="/user/score" element={<ScoreView />} />
 							</Route>
 						</Route>
 					</Routes>
-					{/* <Routes>
-						<Route path="/" element={<LayoutStudent />}>
-							<Route path="/user/home" element={<StudentHome />} />
-							<Route path="/user/news" element={<NewsStudentPage />} />
-						</Route>
-					</Routes> */}
 				</AuthContextProvider>
 			</BrowserRouter>
 		</ThemeProvider>

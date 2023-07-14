@@ -26,6 +26,7 @@ const Score = () => {
 	const [scoreTypes, setScoreTypes] = useState([]);
 	const [selectedClass, setSelectedClass] = useState(null);
 	const [classScores, setClassScores] = useState([]);
+	const [classes, setClasses] = useState([]);
 
 	const navigate = useNavigate();
 	const handleOpenForm = async () => {
@@ -41,9 +42,12 @@ const Score = () => {
 			const responseStudents = await client.get("/api/student/allStudent");
 			const responseSubjects = await client.get("/api/subjects");
 			const responseScoreType = await client.get("/api/score-types");
+			const responseClasses = await client.get("/api/classes");
+
 			setStudents(responseStudents.data);
 			setSubjects(responseSubjects.data);
 			setScoreTypes(responseScoreType.data);
+			setClasses(responseClasses.data);
 		} catch (error) {
 			console.error(error);
 			if (error.response) {
@@ -98,7 +102,7 @@ const Score = () => {
 	};
 
 	const handleEdit = (id) => {
-		const selectedScore = data.find((year) => year.id === id);
+		const selectedScore = data.find((item) => item.id === id);
 		if (selectedScore) {
 			setIsEditMode(true);
 			setselectedScore(selectedScore);
@@ -189,7 +193,7 @@ const Score = () => {
 					onChange={handleSearchChange}
 					value={searchTerm}
 					sx={{
-						width: { xs: "100%", sm: "auto", md: "100%" },
+						width: { xs: "100%", sm: "100%", md: "100%" },
 						color: "rgba(0, 0, 0, 0.6)",
 						fontSize: "1.1rem",
 					}}
@@ -200,7 +204,19 @@ const Score = () => {
 	);
 
 	const columns = [
-		{ field: "id", headerName: "ID", width: 100 },
+		{ field: "id", headerName: "ID", width: 50 },
+
+		{
+			field: "classes",
+			headerName: "Lớp học",
+			width: 100,
+			valueGetter: (params) => params.row.classes?.name || "",
+		},
+		{
+			field: "semester",
+			headerName: "Học kì",
+			width: 60,
+		},
 		{
 			field: "student",
 			headerName: "Học sinh",
@@ -216,9 +232,10 @@ const Score = () => {
 		{
 			field: "scoreType",
 			headerName: "Loại điểm",
-			width: 250,
+			width: 100,
 			valueGetter: (params) => params.row.scoreType?.name || "",
 		},
+
 		{ field: "score", headerName: "Điểm", width: 100 },
 	];
 
@@ -244,6 +261,7 @@ const Score = () => {
 					students={students}
 					subjects={subjects}
 					scoreTypes={scoreTypes}
+					classes={classes}
 					fetchData={fetchData}
 				/>
 			)}
@@ -340,6 +358,9 @@ const Score = () => {
 							<b>ID:</b> {score.id}
 						</Typography>
 						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Lớp: </b> {score.classes.name}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 							<b>Học sinh:</b> {score.student.name}
 						</Typography>
 						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
@@ -347,6 +368,9 @@ const Score = () => {
 						</Typography>
 						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 							<b>Loại điểm: </b> {score.scoreType.name}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Học kì:</b> {score.semester}
 						</Typography>
 						<Typography
 							variant="body1"

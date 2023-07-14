@@ -26,6 +26,7 @@ const ClassScorePage = () => {
 	const [selectedScoreType, setSelectedScoreType] = useState("");
 	const [subjects, setSubjects] = useState([]);
 	const [scoreTypes, setScoreTypes] = useState([]);
+	const [semester, setSemester] = useState(1);
 	const [errors, setErrors] = useState({});
 	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
@@ -63,54 +64,6 @@ const ClassScorePage = () => {
 
 		fetchInitialData();
 	}, [classId]);
-
-	// useEffect(() => {
-	// 	const fetchStudents = async () => {
-	// 		try {
-	// 			const response = await client.get(
-	// 				`/api/student/classes/${classId}/students`
-	// 			);
-	// 			const updatedStudents = response.data.map((student) => ({
-	// 				...student,
-	// 				score: "",
-	// 			}));
-	// 			setStudents(updatedStudents);
-	// 			setLoading(false);
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 			setLoading(false);
-	// 		}
-	// 	};
-
-	// 	fetchStudents();
-	// }, [classId]);
-
-	// const fetchSubjects = async () => {
-	// 	try {
-	// 		const response = await client.get("/api/subjects");
-	// 		const subjects = response.data;
-	// 		setSubjects(subjects);
-	// 		setSelectedSubject(subjects[0].id);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// };
-
-	// const fetchScoreTypes = async () => {
-	// 	try {
-	// 		const response = await client.get("/api/score-types");
-	// 		const scoreTypes = response.data;
-	// 		setScoreTypes(scoreTypes);
-	// 		setSelectedScoreType(scoreTypes[0].id);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	fetchSubjects();
-	// 	fetchScoreTypes();
-	// }, []);
 
 	const handleScoreInput = (id, newScore) => {
 		const cleanedScore = newScore.trim();
@@ -169,38 +122,43 @@ const ClassScorePage = () => {
 	const handleSubjectChange = (event) => {
 		setSelectedSubject(event.target.value);
 	};
+	const handlesemesterChange = (event) => {
+		setSemester(event.target.value);
+	};
 
 	const handleScoreTypeChange = (event) => {
 		setSelectedScoreType(event.target.value);
 	};
 
 	const handleSaveScores = async () => {
-		if (Object.keys(errors).length > 0) {
-			setErrorMessage("Vui lòng kiểm tra lại điểm nhập vào");
-			return;
-		}
+		setErrors({});
 		for (const row of students) {
 			if (row.score !== "") {
 				const scoreToAdd = {
 					studentId: row.id,
 					subjectId: selectedSubject,
 					scoreTypeId: selectedScoreType,
+					classId: classId,
+					semester: semester,
 					score: row.score,
 				};
 
 				try {
 					await client.post("/api/scores", scoreToAdd);
-					setErrors({});
+
+					setErrors((prevErrors) => {
+						const updatedErrors = { ...prevErrors };
+						delete updatedErrors[row.id];
+						return updatedErrors;
+					});
 					setSuccessMessage("Thao tác thành công");
 					setErrorMessage("");
 				} catch (error) {
-					if (error.response && error.response.data) {
-						setErrorMessage(error.response.data);
-					} else {
-						setErrorMessage("Có lỗi xảy ra");
-					}
 					setSuccessMessage("");
-					setErrors({ [row.id]: { message: "Lỗi khi lưu điểm" } });
+					setErrors((prevErrors) => ({
+						...prevErrors,
+						[row.id]: { message: error.response.data || "Lỗi khi lưu điểm" },
+					}));
 				}
 			}
 		}
@@ -216,7 +174,7 @@ const ClassScorePage = () => {
 		{
 			field: "score",
 			headerName: "Điểm",
-			width: 500,
+			width: 1000,
 			renderCell: (params) => (
 				<>
 					<input
@@ -245,6 +203,22 @@ const ClassScorePage = () => {
 				padding="5px"
 				flexWrap="wrap"
 			>
+				<FormControl fullWidth margin="normal" size="small">
+					<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+					<Select
+						labelId="semester-label"
+						id="semester-select"
+						name="semester"
+						value={semester}
+						onChange={handlesemesterChange}
+						label="Chọn Học kì"
+						required
+						defaultValue={1}
+					>
+						<MenuItem value={1}>Học kì 1</MenuItem>
+						<MenuItem value={2}>Học kì 2</MenuItem>
+					</Select>
+				</FormControl>
 				<Box width="calc(50% - 10px)" marginRight="10px">
 					<FormControl fullWidth margin="normal">
 						<InputLabel id="subject-label">Chọn môn học</InputLabel>

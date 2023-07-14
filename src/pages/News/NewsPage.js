@@ -9,6 +9,7 @@ import {
 	TextField,
 	InputAdornment,
 	Box,
+	LinearProgress,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -22,6 +23,8 @@ const NewsPage = () => {
 	const [totalPages, setTotalPages] = useState(0);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [noResults, setNoResults] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
 	const fetchData = useCallback(async () => {
 		try {
 			let url = "/api/news";
@@ -32,8 +35,8 @@ const NewsPage = () => {
 			const totalNews = response.data.length;
 
 			const activeNews = response.data.filter((news) => news.isActive);
-
-			setTotalPages(Math.ceil(totalNews / perPage));
+			const totalActiveNews = activeNews.length;
+			setTotalPages(Math.ceil(totalActiveNews / perPage));
 
 			activeNews.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
@@ -59,8 +62,11 @@ const NewsPage = () => {
 			} else {
 				setNoResults(false);
 			}
+
+			setIsLoading(false);
 		} catch (error) {
 			console.error(error);
+			setIsLoading(false);
 		}
 	}, [searchTerm, news, currentPage, perPage]);
 
@@ -74,6 +80,7 @@ const NewsPage = () => {
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
+		setCurrentPage(1);
 	};
 
 	return (

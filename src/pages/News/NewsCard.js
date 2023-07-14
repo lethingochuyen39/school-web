@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Card,
 	CardMedia,
@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import EastIcon from "@mui/icons-material/East";
 import EventIcon from "@mui/icons-material/Event";
+import client from "../../api/client";
 const NewsCard = ({ news }) => {
 	const handleClick = () => {
 		const role = localStorage.getItem("role");
@@ -22,6 +23,28 @@ const NewsCard = ({ news }) => {
 		}
 	};
 	const navigate = useNavigate();
+
+	const [imageSrc, setImageSrc] = useState("");
+
+	useEffect(() => {
+		const fetchImage = async () => {
+			try {
+				const response = await client.get("/api/images", {
+					params: {
+						path: news.imagePath,
+					},
+					responseType: "blob",
+				});
+
+				const imageUrl = URL.createObjectURL(response.data);
+				setImageSrc(imageUrl);
+			} catch (error) {
+				console.error("Error fetching image:", error);
+			}
+		};
+
+		fetchImage();
+	}, [news.imagePath]);
 
 	return (
 		<Grid item xs={12}>
@@ -38,8 +61,9 @@ const NewsCard = ({ news }) => {
 				}}
 			>
 				<CardMedia
+					component="img"
 					sx={{ height: 100 }}
-					image={process.env.PUBLIC_URL + `/${news.imagePath}`}
+					src={imageSrc}
 					title={news.title}
 				/>
 				<CardContent sx={{ paddingTop: "0.5rem" }}>
