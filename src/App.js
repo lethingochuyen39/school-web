@@ -25,6 +25,7 @@ import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
 import Metric from "./pages/Metric/Metric";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
+import ForgotPass from "./pages/forgotpassword";
 
 function App() {
 	return (
@@ -83,6 +84,7 @@ function App() {
 								<Route element={<Success />} path="/user/success" />
 							</Route>
 						</Route>
+						<Route path="/forgotpassword" element={<ForgotPass />} />
 					</Routes>
 				</AuthContextProvider>
 			</BrowserRouter>
