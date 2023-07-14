@@ -55,7 +55,7 @@ const ReportCard = () => {
     try {
       let url = "/api/report_cards";
       if (searchTerm) {
-        url += `?studentName=${searchTerm}`;
+        url += `?violate=${searchTerm}`;
       }
       const response = await client.get(url);
       setData(response.data);
@@ -179,7 +179,7 @@ const ReportCard = () => {
       >
         <SearchIcon sx={{ marginRight: "15px" }} />
         <Input
-          placeholder="Tìm kiếm theo tên học sinh... "
+          placeholder="Tìm kiếm theo vi phạm... "
           onChange={handleSearchChange}
           value={searchTerm}
           sx={{
@@ -198,14 +198,16 @@ const ReportCard = () => {
     {
       field: "student",
       headerName: "Học sinh",
-      width: 100,
+      width: 150,
       valueGetter: (params) => params.row.student?.name || "",
     },
-    { field: "averageScore", headerName: "Điểm trung bình", width: 100 },
+    { field: "violate", headerName: "Vi phạm", width: 150 },
+    { field: "description", headerName: "Mô tả", width: 150 },
+    { field: "date", headerName: "Ngày", width: 150 },
     {
       field: "academicYear",
       headerName: "Năm học",
-      width: 250,
+      width: 100,
       valueGetter: (params) => params.row.academicYear?.name || "",
     },
   ];
@@ -254,10 +256,12 @@ const ReportCard = () => {
               p: 2,
             }}
           >
-            <h2 id="modal-title">Thông tin hạng kiểm</h2>
+            <h2 id="modal-title">Thông tin hạnh kiểm</h2>
             <p id="modal-description">ID: {reportCard.id}</p>
             <p>Học sinh: {reportCard.student.name}</p>
-            <p>Điểm trung bình: {reportCard.averageScore}</p>
+            <p>Vi phạm: {reportCard.violate}</p>
+            <p>Mô tả: {reportCard.description}</p>
+            <p>Ngày: {reportCard.date}</p>
             <p>Năm học: {reportCard.academicYear.name}</p>
 
             <Button variant="contained" onClick={closeModal}>

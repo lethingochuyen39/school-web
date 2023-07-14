@@ -19,15 +19,32 @@ const schema = {
       message: "^Vui lòng chọn học sinh",
     },
   },
-  averageScore: {
+  violate: {
     presence: {
       allowEmpty: false,
-      message: "^Vui lòng nhập điểm trung bình",
+      message: "^Vi phạm không được bỏ trống",
     },
-    numericality: {
-      greaterThanOrEqualTo: 0,
-      lessThanOrEqualTo: 10,
-      message: "^Điểm trung bình phải nằm trong khoảng từ 0 đến 10",
+    length: {
+      minimum: 1,
+      maximum: 255,
+      message: "^Vi phạm phải có từ 1 đến 255 ký tự",
+    },
+  },
+  description: {
+    presence: {
+      allowEmpty: false,
+      message: "^Mô tả không được bỏ trống",
+    },
+    length: {
+      minimum: 1,
+      maximum: 255,
+      message: "^Mô tả phải có từ 1 đến 255 ký tự",
+    },
+  },
+  date: {
+    presence: {
+      allowEmpty: false,
+      message: "^Ngày không được bỏ trống",
     },
   },
   academicYearId: {
@@ -50,7 +67,9 @@ const ReportCardForm = ({
   const [reportCard, setReportCard] = useState({
     id: isEditMode ? initialData.id : "",
     studentId: isEditMode ? initialData.student.id : "",
-    averageScore: isEditMode ? initialData.averageScore : "",
+    violate: isEditMode ? initialData.violate : "",
+    description: isEditMode ? initialData.description : "",
+    date: isEditMode ? initialData.date : "",
     academicYearId: isEditMode ? initialData.academicYear.id : "",
   });
 
@@ -61,7 +80,9 @@ const ReportCardForm = ({
       setReportCard({
         id: initialData.id,
         studentId: initialData.student.id,
-        averageScore: initialData.averageScore,
+        violate: initialData.violate,
+        description: initialData.description,
+        date: initialData.date,
         academicYearId: initialData.academicYear.id,
       });
     }
@@ -79,7 +100,9 @@ const ReportCardForm = ({
 
       if (isEditMode) {
         const updatedReportCard = {
-          averageScore: reportCard.averageScore,
+          violate: reportCard.violate,
+          description: reportCard.description,
+          date: reportCard.date,
         };
         await handleUpdateReportCard(reportCard.id, updatedReportCard);
       } else {
@@ -128,23 +151,49 @@ const ReportCardForm = ({
           p: 4,
         }}
       >
-        <h2>{isEditMode ? "Cập nhật hạng kiểm" : "Thêm hạng kiểm"}</h2>
+        <h2>{isEditMode ? "Cập nhật hạnh kiểm" : "Thêm hạnh kiểm"}</h2>
 
         <form onSubmit={handleSubmit}>
           {isEditMode ? (
-            <TextField
-              type="number"
-              name="averageScore"
-              label="Điểm trung bình"
-              value={reportCard.averageScore}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              required
-              error={hasError("averageScore")}
-              helperText={getErrorMessage("averageScore")}
-            />
+            <>
+              <TextField
+                name="violate"
+                label="Vi phạm"
+                value={reportCard.violate}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("violate")}
+                helperText={getErrorMessage("violate")}
+              />
+              <TextField
+                name="description"
+                label="Mô tả"
+                value={reportCard.description}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("description")}
+                helperText={getErrorMessage("description")}
+              />
+              <TextField
+                name="date"
+                label="Ngày"
+                type="date"
+                value={reportCard.date}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("date")}
+                helperText={getErrorMessage("date")}
+              />
+            </>
           ) : (
             <>
               <FormControl
@@ -176,17 +225,41 @@ const ReportCardForm = ({
               </FormControl>
 
               <TextField
-                type="number"
-                name="averageScore"
-                label="Điểm trung bình"
-                value={reportCard.averageScore}
+                name="violate"
+                label="Vi phạm"
+                value={reportCard.violate}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
                 variant="outlined"
-                required
-                error={hasError("averageScore")}
-                helperText={getErrorMessage("averageScore")}
+                focused
+                error={hasError("violate")}
+                helperText={getErrorMessage("violate")}
+              />
+              <TextField
+                name="description"
+                label="Mô tả"
+                value={reportCard.description}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("description")}
+                helperText={getErrorMessage("description")}
+              />
+              <TextField
+                name="date"
+                label="Ngày"
+                type="date"
+                value={reportCard.date}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("date")}
+                helperText={getErrorMessage("date")}
               />
 
               <FormControl

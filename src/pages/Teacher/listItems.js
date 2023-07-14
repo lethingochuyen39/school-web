@@ -60,16 +60,16 @@ export const mainListItems = (
 		</ListItemButton>
 		<ListItemButton component={Link} to="/teacher/evaluationRecords">
 			<ListItemIcon>
-				<NewspaperIcon />
+				<LibraryBooksIcon />
 			</ListItemIcon>
-			<ListItemText primary="Bảng đánh giá" />
+			<ListItemText primary="Đánh giá" />
 		</ListItemButton>
 		<ListItemButton component={Link} to="/teacher/reportCards">
 			<ListItemIcon>
-				<NewspaperIcon />
+				<LibraryBooksIcon />
 			</ListItemIcon>
 			<ListItemText
-				primary="Nhập Điểm Trung Bình"
+				primary="Vi phạm"
 				primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
 			/>
 		</ListItemButton>
