@@ -28,6 +28,31 @@ const NewsDetailStudentPage = () => {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
 
+	const [imageSrc, setImageSrc] = useState("");
+
+	useEffect(() => {
+		const fetchImage = async () => {
+			if (!news.imagePath) {
+				return;
+			}
+			try {
+				const response = await client.get("/api/images", {
+					params: {
+						path: news.imagePath,
+					},
+					responseType: "blob",
+				});
+
+				const imageUrl = URL.createObjectURL(response.data);
+				setImageSrc(imageUrl);
+			} catch (error) {
+				console.error("Error fetching image:", error);
+			}
+		};
+
+		fetchImage();
+	}, [news.imagePath]);
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -61,18 +86,35 @@ const NewsDetailStudentPage = () => {
 					(a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
 				);
 
-				const formattedRecentNews = data.slice(0, 6).map((news) => {
-					const formattedDateTime = format(
-						new Date(news.updatedAt),
-						"yy-MM-dd HH:mm"
-					);
-					return {
-						...news,
-						formattedDateTime,
-					};
+				const formattedRecentNews = data.slice(0, 6).map(async (news) => {
+					try {
+						const response = await client.get("/api/images", {
+							params: {
+								path: news.imagePath,
+							},
+							responseType: "blob",
+						});
+
+						const imageUrl = URL.createObjectURL(response.data);
+
+						const formattedDateTime = format(
+							new Date(news.updatedAt),
+							"yy-MM-dd HH:mm"
+						);
+
+						return {
+							...news,
+							imageUrl,
+							formattedDateTime,
+						};
+					} catch (error) {
+						console.error("Error fetching image:", error);
+						return null;
+					}
 				});
 
-				setRecentNews(formattedRecentNews);
+				const recentNewsData = await Promise.all(formattedRecentNews);
+				setRecentNews(recentNewsData.filter((news) => news !== null));
 			} catch (error) {
 				console.error(error);
 			}
@@ -120,7 +162,7 @@ const NewsDetailStudentPage = () => {
 						{news.imagePath ? (
 							<img
 								alt={news.imageName}
-								src={process.env.PUBLIC_URL + `/${news.imagePath}`}
+								src={imageSrc}
 								style={{
 									zIndex: "-1",
 									maxHeight: "350px",
@@ -209,7 +251,6 @@ const NewsDetailStudentPage = () => {
 							sx={{ color: "#1a237e", fontSize: "1.5rem", fontWeight: "600" }}
 						/>
 					</Divider>
-
 					<Slider {...sliderSettings}>
 						{recentNews.map((recent) => (
 							<Card
@@ -227,8 +268,9 @@ const NewsDetailStudentPage = () => {
 								}}
 							>
 								<CardMedia
+									component="img"
 									sx={{ height: 150, maxWidth: "100%" }}
-									image={process.env.PUBLIC_URL + `/${recent.imagePath}`}
+									src={recent.imageUrl}
 									title={recent.title}
 								/>
 								<CardContent
