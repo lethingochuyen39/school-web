@@ -34,6 +34,10 @@ import LayoutStudent from "./pages/LayoutStudent";
 import StudentHome from "./pages/Student/Home";
 import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
+import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
+import ClassReportCardTeacherPage from "./pages/Teacher/reportCard/ClassReportCardTeacherPage";
+import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
+import ClassEvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/ClassEvaluationRecordTeacherPage";
 
 function App() {
 	return (
@@ -88,6 +92,16 @@ function App() {
 								<Route
 									path="/teacher/class-score/:classId"
 									element={<ClassScoreTeacherPage />}
+								/>
+								<Route path="/teacher/reportCards" element={<ReportCardTeacherPage />} />
+								<Route
+									path="/teacher/class-reportCards/:classId"
+									element={<ClassReportCardTeacherPage />}
+								/>
+								<Route path="/teacher/evaluationRecords" element={<EvaluationRecordTeacherPage />} />
+								<Route
+									path="/teacher/class-evaluationRecords/:classId"
+									element={<ClassEvaluationRecordTeacherPage />}
 								/>
 								<Route path="/teacher/news" element={<NewsTeacherPage />} />
 								<Route

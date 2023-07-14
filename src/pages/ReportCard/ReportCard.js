@@ -33,7 +33,7 @@ const ReportCard = () => {
     }
 
     try {
-      const responseStudents = await client.get("/allStudent");
+      const responseStudents = await client.get("/api/student/allStudent");
       const responseAcademicYears = await client.get("/api/academic-years/all");
       setStudents(responseStudents.data);
       setAcademicYears(responseAcademicYears.data);

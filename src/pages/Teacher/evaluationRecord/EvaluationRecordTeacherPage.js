@@ -4,10 +4,10 @@ import client from "../../../api/client";
 import { Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import FolderIcon from "@mui/icons-material/Folder";
-const ReportCardTeacherPage = () => {
+const EvaluationRecordTeacherPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [selectedClass, setSelectedClass] = useState(null);
-	const [classReportCards, setClassReportCards] = useState([]);
+	const [classEvaluationRecords, setClassEvaluationRecords] = useState([]);
 	const colors = [
 		"rgba(76, 175, 80, 0.15)",
 		"rgba(255, 87, 34, 0.15)",
@@ -16,7 +16,7 @@ const ReportCardTeacherPage = () => {
 		"rgba(255, 193, 7, 0.15)",
 		"rgba(233, 30, 99, 0.15)",
 	];
-	const numClasses = classReportCards.length;
+	const numClasses = classEvaluationRecords.length;
 	const navigate = useNavigate();
 
 	const fetchDataStudents = useCallback(async (classId) => {
@@ -25,8 +25,8 @@ const ReportCardTeacherPage = () => {
 				`/api/student/classes/${classId}/students`
 			);
 			const students = response.data;
-			setClassReportCards((prevClassReportCards) => {
-				const updatedClassReportCards = prevClassReportCards.map((classItem) => {
+			setClassEvaluationRecords((prevClassEvaluationRecords) => {
+				const updatedClassEvaluationRecords = prevClassEvaluationRecords.map((classItem) => {
 					if (classItem.id === classId) {
 						return {
 							...classItem,
@@ -35,7 +35,7 @@ const ReportCardTeacherPage = () => {
 					}
 					return classItem;
 				});
-				return updatedClassReportCards;
+				return updatedClassEvaluationRecords;
 			});
 		} catch (error) {
 			console.error(error);
@@ -54,7 +54,7 @@ const ReportCardTeacherPage = () => {
 			try {
 				const response = await client.get(`/api/teachers/${teacherId}/classes`);
 				const classData = response.data;
-				setClassReportCards(classData);
+				setClassEvaluationRecords(classData);
 				classData.forEach((classItem) => {
 					fetchDataStudents(classItem.id);
 				});
@@ -72,7 +72,7 @@ const ReportCardTeacherPage = () => {
 
 	const handleClassClick = (classId) => {
 		setSelectedClass(classId);
-		navigate(`/teacher/class-reportCards/${classId}`);
+		navigate(`/teacher/class-evaluationRecords/${classId}`);
 	};
 
 	return (
@@ -89,7 +89,7 @@ const ReportCardTeacherPage = () => {
 					justifyContent: "space-around",
 				}}
 			>
-				{classReportCards.map((classItem, index) => (
+				{classEvaluationRecords.map((classItem, index) => (
 					<Paper
 						key={classItem.id}
 						elevation={3}
@@ -120,4 +120,4 @@ const ReportCardTeacherPage = () => {
 	);
 };
 
-export default ReportCardTeacherPage;
+export default EvaluationRecordTeacherPage;
