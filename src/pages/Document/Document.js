@@ -255,9 +255,9 @@ const Document = () => {
 							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Mô tả:</b> {document.description}
 							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							{/* <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Đường dẫn:</b> {document.filePath}
-							</Typography>
+							</Typography> */}
 							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tạo bởi UserId:</b> {document.uploadedBy.id} - <b>Email: </b>
 								{document.uploadedBy.email}
