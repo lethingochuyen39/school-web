@@ -29,7 +29,13 @@ const schema = {
 	},
 };
 
-const NewsForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
+const NewsForm = ({
+	handleClose,
+	isEditMode,
+	initialData,
+	fetchData,
+	imageUrls,
+}) => {
 	const [news, setNews] = useState({
 		id: initialData ? initialData.id : "",
 		title: initialData ? initialData.title : "",
@@ -225,7 +231,7 @@ const NewsForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 						>
 							{news.imageURL && (
 								<img
-									src={process.env.PUBLIC_URL + `/${news.imageURL}`}
+									src={imageUrls[news.id]}
 									alt="Hình ảnh"
 									style={{ width: "60%", height: "auto" }}
 								/>
