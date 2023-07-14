@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
-import BasicCard from "../../components/common/BasicCard/BasicCard";
+import BasicCard from "../../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
-import CommonButton from "../../components/common/CommonButton/CommonButton";
+import CommonButton from "../../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
-import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
-import DataTable from "../../components/common/DataTable/DataTable";
-import client from "../../api/client";
+import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
+import DataTable from "../../../components/common/DataTable/DataTable";
+import client from "../../../api/client";
 import { Button, Modal } from "@mui/material";
-import EvaluationRecordForm from "../../components/evaluationRecord/EvaluationRecordForm";
+import EvaluationRecordForm from "../../../components/evaluationRecord/EvaluationRecordForm";
 
-const EvaluationRecord = () => {
+const EvaluationRecordTeacherPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -53,7 +53,7 @@ const EvaluationRecord = () => {
     try {
       let url = "/api/evaluation_records";
       if (searchTerm) {
-        url += `?studentName=${searchTerm}`;
+        url += `?achievement=${searchTerm}`;
       }
       const response = await client.get(url);
       setData(response.data);
@@ -103,40 +103,6 @@ const EvaluationRecord = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setEvaluationRecord(null);
-  };
-
-  const handleEdit = (id) => {
-    const selectedEvaluationRecord = data.find((year) => year.id === id);
-    if (selectedEvaluationRecord) {
-      setIsEditMode(true);
-      setSelectedEvaluationRecord(selectedEvaluationRecord);
-      setIsFormOpen(true);
-    }
-  };
-  const handleUpdateEvaluationRecord = async (id, updatedEvaluationRecord) => {
-    try {
-      await client.put(
-        `/api/evaluation_records/update/${id}`,
-        updatedEvaluationRecord
-      );
-      setIsModalOpen(true);
-      await fetchData();
-    } catch (error) {
-      console.error(error);
-      if (error.response) {
-        setError(error.response.data);
-      } else {
-        setError("Đã xảy ra lỗi khi cập nhật bảng đánh giá.");
-      }
-    }
-  };
-  const handleDelete = async (id) => {
-    try {
-      await client.delete(`/api/evaluation_records/delete/${id}`);
-      fetchData();
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const getHeader = () => (
@@ -214,8 +180,7 @@ const EvaluationRecord = () => {
       columns={columns}
       loading={loading}
       handleView={handleView}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
+      hiddenActions={["delete", "edit"]}
     />
   );
 
@@ -224,7 +189,6 @@ const EvaluationRecord = () => {
       {isFormOpen && (
         <EvaluationRecordForm
           handleAddEvaluationRecord={handleAddEvaluationRecord}
-          handleUpdateEvaluationRecord={handleUpdateEvaluationRecord}
           handleClose={handleCloseForm}
           isEditMode={isEditMode}
           initialData={selectedEvaluationRecord}
@@ -269,4 +233,4 @@ const EvaluationRecord = () => {
   );
 };
 
-export default EvaluationRecord;
+export default EvaluationRecordTeacherPage;

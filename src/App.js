@@ -36,9 +36,12 @@ import LayoutStudent from "./pages/LayoutStudent";
 import StudentHome from "./pages/Student/Home";
 import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
+import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
+import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
 import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
 import ScoreView from "./pages/Student/score/ScoreView";
+
 
 function App() {
 	return (
@@ -98,6 +101,8 @@ function App() {
 									path="/teacher/class-score/:classId"
 									element={<ClassScoreTeacherPage />}
 								/>
+								<Route path="/teacher/reportCards" element={<ReportCardTeacherPage />} />
+								<Route path="/teacher/evaluationRecords" element={<EvaluationRecordTeacherPage />} />
 								<Route path="/teacher/news" element={<NewsTeacherPage />} />
 								<Route
 									path="/teacher/news-detail/:id"

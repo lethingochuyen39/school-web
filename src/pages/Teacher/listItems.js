@@ -58,6 +58,21 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Tin tức" />
 		</ListItemButton>
+		<ListItemButton component={Link} to="/teacher/evaluationRecords">
+			<ListItemIcon>
+				<LibraryBooksIcon />
+			</ListItemIcon>
+			<ListItemText primary="Đánh giá" />
+		</ListItemButton>
+		<ListItemButton component={Link} to="/teacher/reportCards">
+			<ListItemIcon>
+				<LibraryBooksIcon />
+			</ListItemIcon>
+			<ListItemText
+				primary="Vi phạm"
+				primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+			/>
+		</ListItemButton>
 	</React.Fragment>
 );
 

@@ -1,40 +1,42 @@
 import React, { useState, useEffect, useCallback } from "react";
-import BasicCard from "../../components/common/BasicCard/BasicCard";
+import BasicCard from "../../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
-import CommonButton from "../../components/common/CommonButton/CommonButton";
+import CommonButton from "../../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
-import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
-import DataTable from "../../components/common/DataTable/DataTable";
-import client from "../../api/client";
+import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
+import DataTable from "../../../components/common/DataTable/DataTable";
+import client from "../../../api/client";
 import { Button, Modal } from "@mui/material";
-import EvaluationRecordForm from "../../components/evaluationRecord/EvaluationRecordForm";
+import ReportCardForm from "../../../components/reportCard/ReportCardForm";
 
-const EvaluationRecord = () => {
+const ReportCardTeacherPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [evaluationRecord, setEvaluationRecord] = useState(null);
+  const [reportCard, setReportCard] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedEvaluationRecord, setSelectedEvaluationRecord] =
-    useState(null);
+  const [selectedReportCard, setSelectedReportCard] = useState(null);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
 
   const handleOpenForm = async () => {
-    if (evaluationRecord) {
+    if (reportCard) {
       setIsEditMode(true);
-      setSelectedEvaluationRecord(evaluationRecord);
+      setSelectedReportCard(reportCard);
     } else {
       setIsEditMode(false);
-      setSelectedEvaluationRecord(null);
+      setSelectedReportCard(null);
     }
 
     try {
       const responseStudents = await client.get("/api/student/allStudent");
+      const responseAcademicYears = await client.get("/api/academic-years/all");
       setStudents(responseStudents.data);
+      setAcademicYears(responseAcademicYears.data);
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -46,14 +48,14 @@ const EvaluationRecord = () => {
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-    setEvaluationRecord(null);
+    setReportCard(null);
   };
 
   const fetchData = useCallback(async () => {
     try {
-      let url = "/api/evaluation_records";
+      let url = "/api/report_cards";
       if (searchTerm) {
-        url += `?studentName=${searchTerm}`;
+        url += `?violate=${searchTerm}`;
       }
       const response = await client.get(url);
       setData(response.data);
@@ -68,17 +70,18 @@ const EvaluationRecord = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAddEvaluationRecord = async (newEvaluationRecord) => {
+  const handleAddReportCard = async (newReportCard) => {
+    console.log(newReportCard);
     try {
-      await client.post("/api/evaluation_records/create", newEvaluationRecord);
-      setIsModalOpen(true);
+      await client.post("/api/report_cards/create", newReportCard);
+
       await fetchData();
     } catch (error) {
       console.error(error);
       if (error.response) {
         setError(error.response.data);
       } else {
-        setError("Đã xảy ra lỗi khi cập nhật bảng đánh giá.");
+        setError("Đã xảy ra lỗi khi cập nhật hạng kiểm.");
       }
     }
   };
@@ -89,11 +92,9 @@ const EvaluationRecord = () => {
 
   const handleView = async (id) => {
     try {
-      const response = await client.get(
-        `/api/evaluation_records/findById/${id}`
-      );
+      const response = await client.get(`/api/report_cards/findById/${id}`);
       const data = response.data;
-      setEvaluationRecord(data);
+      setReportCard(data);
       setIsModalOpen(true);
     } catch (error) {
       console.error(error);
@@ -102,41 +103,7 @@ const EvaluationRecord = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEvaluationRecord(null);
-  };
-
-  const handleEdit = (id) => {
-    const selectedEvaluationRecord = data.find((year) => year.id === id);
-    if (selectedEvaluationRecord) {
-      setIsEditMode(true);
-      setSelectedEvaluationRecord(selectedEvaluationRecord);
-      setIsFormOpen(true);
-    }
-  };
-  const handleUpdateEvaluationRecord = async (id, updatedEvaluationRecord) => {
-    try {
-      await client.put(
-        `/api/evaluation_records/update/${id}`,
-        updatedEvaluationRecord
-      );
-      setIsModalOpen(true);
-      await fetchData();
-    } catch (error) {
-      console.error(error);
-      if (error.response) {
-        setError(error.response.data);
-      } else {
-        setError("Đã xảy ra lỗi khi cập nhật bảng đánh giá.");
-      }
-    }
-  };
-  const handleDelete = async (id) => {
-    try {
-      await client.delete(`/api/evaluation_records/delete/${id}`);
-      fetchData();
-    } catch (error) {
-      console.error(error);
-    }
+    setReportCard(null);
   };
 
   const getHeader = () => (
@@ -181,7 +148,7 @@ const EvaluationRecord = () => {
       >
         <SearchIcon sx={{ marginRight: "15px" }} />
         <Input
-          placeholder="Tìm kiếm theo tên bảng đánh giá... "
+          placeholder="Tìm kiếm theo vi phạm... "
           onChange={handleSearchChange}
           value={searchTerm}
           sx={{
@@ -200,12 +167,18 @@ const EvaluationRecord = () => {
     {
       field: "student",
       headerName: "Học sinh",
-      width: 100,
+      width: 150,
       valueGetter: (params) => params.row.student?.name || "",
     },
-    { field: "disciplineReason", headerName: "Lí do", width: 100 },
-    { field: "achievement", headerName: "Thành tựu", width: 100 },
-    { field: "date", headerName: "Ngày", width: 100 },
+    { field: "violate", headerName: "Vi phạm", width: 150 },
+    { field: "description", headerName: "Mô tả", width: 150 },
+    { field: "date", headerName: "Ngày", width: 150 },
+    {
+      field: "academicYear",
+      headerName: "Năm học",
+      width: 100,
+      valueGetter: (params) => params.row.academicYear?.name || "",
+    },
   ];
 
   const getContent = () => (
@@ -214,25 +187,24 @@ const EvaluationRecord = () => {
       columns={columns}
       loading={loading}
       handleView={handleView}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
+      hiddenActions={["delete", "edit"]}
     />
   );
 
   return (
     <GridWrapper>
       {isFormOpen && (
-        <EvaluationRecordForm
-          handleAddEvaluationRecord={handleAddEvaluationRecord}
-          handleUpdateEvaluationRecord={handleUpdateEvaluationRecord}
+        <ReportCardForm
+          handleAddReportCard={handleAddReportCard}
           handleClose={handleCloseForm}
           isEditMode={isEditMode}
-          initialData={selectedEvaluationRecord}
+          initialData={selectedReportCard}
           error={error}
           students={students}
+          academicYears={academicYears}
         />
       )}
-      {evaluationRecord && (
+      {reportCard && (
         <Modal
           open={isModalOpen}
           onClose={closeModal}
@@ -251,12 +223,14 @@ const EvaluationRecord = () => {
               p: 2,
             }}
           >
-            <h2 id="modal-title">Thông tin bảng đánh giá</h2>
-            <p id="modal-description">ID: {evaluationRecord.id}</p>
-            <p>Học sinh: {evaluationRecord.student.name}</p>
-            <p>Lí do: {evaluationRecord.disciplineReason}</p>
-            <p>Thành tựu: {evaluationRecord.achievement}</p>
-            <p>Ngày: {evaluationRecord.date}</p>
+            <h2 id="modal-title">Thông tin hạnh kiểm</h2>
+            <p id="modal-description">ID: {reportCard.id}</p>
+            <p>Học sinh: {reportCard.student.name}</p>
+            <p>Vi phạm: {reportCard.violate}</p>
+            <p>Mô tả: {reportCard.description}</p>
+            <p>Ngày: {reportCard.date}</p>
+            <p>Năm học: {reportCard.academicYear.name}</p>
+
             <Button variant="contained" onClick={closeModal}>
               Đóng
             </Button>
@@ -269,4 +243,4 @@ const EvaluationRecord = () => {
   );
 };
 
-export default EvaluationRecord;
+export default ReportCardTeacherPage;
