@@ -23,14 +23,31 @@ import { saveAs } from "file-saver";
 const StudentScheduleView = () => {
 	const [scheduleData, setScheduleData] = useState([]);
 	const [dayOfWeekData, setDayOfWeekData] = useState([]);
-	const [filteredClassesData, setFilteredClassesData] = useState([]);
 
 	const [classes, setClasses] = useState([]);
 	const [selectedClass, setSelectedClass] = useState("");
 
+	const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
+
 	const handleChange = (event) => {
 		setSelectedClass(event.target.value);
 	};
+	useEffect(() => {
+		const fetchInitialData = async () => {
+			try {
+				const studentId = localStorage.getItem("id");
+				const responseClasses = await client.get(
+					`/api/student/${studentId}/Allclass`
+				);
+				setClasses(responseClasses.data);
+				setIsInitialDataLoaded(true);
+			} catch (error) {
+				console.error("Lỗi:", error);
+			}
+		};
+
+		fetchInitialData();
+	}, []);
 
 	useEffect(() => {
 		if (classes.length > 0) {
@@ -38,108 +55,104 @@ const StudentScheduleView = () => {
 		}
 	}, [classes]);
 
-	const fetchStudentClass = async (studentId) => {
-		try {
-			const responseClasses = await client.get(
-				`/api/student/${studentId}/Allclass`
-			);
-			setClasses(responseClasses.data);
-			const selectedClassId = parseInt(selectedClass);
-			const studentClass = responseClasses.data.find(
-				(classItem) => classItem.id === selectedClassId
-			);
-
-			setFilteredClassesData(studentClass);
-		} catch (error) {
-			console.error("Lỗi khi lấy thông tin lớp học:", error);
-			return null;
-		}
-	};
+	// const fetchStudentClass = async (studentId) => {
+	// 	try {
+	// 		const responseClasses = await client.get(
+	// 			`/api/student/${studentId}/Allclass`
+	// 		);
+	// 		setClasses(responseClasses.data);
+	// 	} catch (error) {
+	// 		console.error("Lỗi khi lấy thông tin lớp học:", error);
+	// 		return null;
+	// 	}
+	// };
 
 	useEffect(() => {
-		const fetchScheduleData = async () => {
-			try {
-				const studentId = localStorage.getItem("id");
-				const studentClass = await fetchStudentClass(studentId);
-				setFilteredClassesData([studentClass]);
+		if (isInitialDataLoaded) {
+			const fetchScheduleData = async () => {
+				try {
+					const [tietResponse, dayOfWeekResponse, tkbResponse] =
+						await Promise.all([
+							client.get("/api/lessons"),
+							client.get("/api/dayofweek"),
+							client.get(`/api/schedules/class/${selectedClass}`),
+						]);
 
-				const [tietResponse, dayOfWeekResponse, tkbResponse] =
-					await Promise.all([
-						client.get("/api/lessons"),
-						client.get("/api/dayofweek"),
-						client.get(`/api/schedules/class/${selectedClass}`),
-					]);
+					const tietData = tietResponse.data;
+					const fetchedDayOfWeekData = dayOfWeekResponse.data;
+					const tkbData = tkbResponse.data;
 
-				const tietData = tietResponse.data;
-				const fetchedDayOfWeekData = dayOfWeekResponse.data;
-				const tkbData = tkbResponse.data;
+					const scheduleRows = tietData.map((t) => {
+						const scheduleRow = {
+							tietId: t.id,
+							tietName: t.name,
+							startTime: t.startTime,
+							endTime: t.endTime,
+						};
 
-				const scheduleRows = tietData.map((t) => {
-					const scheduleRow = {
-						tietId: t.id,
-						tietName: t.name,
-						startTime: t.startTime,
-						endTime: t.endTime,
-					};
+						fetchedDayOfWeekData.forEach((d) => {
+							const findMon = tkbData.find(
+								(m) =>
+									m.lesson.id === t.id &&
+									m.dayOfWeek.id === d.id &&
+									m.status === "Active"
+							);
 
-					fetchedDayOfWeekData.forEach((d) => {
-						const findMon = tkbData.find(
-							(m) =>
-								m.lesson.id === t.id &&
-								m.dayOfWeek.id === d.id &&
-								m.status === "Active"
-						);
+							if (findMon) {
+								scheduleRow[d.id] = {
+									subjectId: findMon.subject.id,
+									subjectName: findMon.subject.name,
+									classId: findMon.classes.id,
+									className: findMon.classes.name,
+									teacherId: findMon.teacher.id,
+									teacherName: findMon.teacher.name,
+									startTime: findMon.startTime,
+									endTime: findMon.endTime,
+								};
+							} else {
+								scheduleRow[d.id] = {
+									subjectId: "",
+									subjectName: "",
+									teacherId: "",
+									teacherName: "",
+									startTime: "",
+									endTime: "",
+									classId: "",
+									className: "",
+								};
+							}
+						});
 
-						if (findMon) {
-							scheduleRow[d.id] = {
-								subjectId: findMon.subject.id,
-								subjectName: findMon.subject.name,
-								classId: findMon.classes.id,
-								className: findMon.classes.name,
-								teacherId: findMon.teacher.id,
-								teacherName: findMon.teacher.name,
-								startTime: findMon.startTime,
-								endTime: findMon.endTime,
-							};
-						} else {
-							scheduleRow[d.id] = {
-								subjectId: "",
-								subjectName: "",
-								teacherId: "",
-								teacherName: "",
-								startTime: "",
-								endTime: "",
-								classId: "",
-								className: "",
-							};
-						}
+						return scheduleRow;
 					});
 
-					return scheduleRow;
-				});
+					setScheduleData(scheduleRows);
+					setDayOfWeekData(fetchedDayOfWeekData);
+				} catch (error) {
+					console.error("Lôi:", error);
+				}
+			};
 
-				setScheduleData(scheduleRows);
-				setDayOfWeekData(fetchedDayOfWeekData);
-			} catch (error) {
-				console.error("Lôi:", error);
-			}
-		};
+			fetchScheduleData();
+		}
+	}, [selectedClass, isInitialDataLoaded]);
 
-		fetchScheduleData();
-	}, [selectedClass]);
 	const handleExportExcel = () => {
-		// Tạo danh sách dữ liệu từ bảng thời khóa biểu
-		const data = scheduleData.map((row) => {
-			const rowData = [
-				row.tietName,
-				...dayOfWeekData.map((d) => {
-					const subjectName = row[d.id]?.subjectName || "-";
-					const teacherName = row[d.id]?.teacherName || "-";
-					return `${subjectName} - ${teacherName}`;
-				}),
-			];
-			return rowData;
-		});
+		const dayOfWeekRow = ["Thứ", ...dayOfWeekData.map((d) => d.name)];
+		const data = [
+			dayOfWeekRow,
+			...scheduleData.map((row) => {
+				const rowData = [
+					row.tietName,
+					...dayOfWeekData.map((d) => {
+						const subjectName = row[d.id]?.subjectName || "-";
+						const teacherName = row[d.id]?.teacherName || "-";
+						return `${subjectName} - ${teacherName}`;
+					}),
+				];
+				return rowData;
+			}),
+		];
 
 		// Tạo workbook mới
 		const workbook = XLSX.utils.book_new();
@@ -174,7 +187,7 @@ const StudentScheduleView = () => {
 						textAlign: "center",
 					}}
 				>
-					Thời Khóa Biểu {filteredClassesData?.name}
+					Thời Khóa Biểu
 				</Typography>
 			</Box>
 			<Grid container justifyContent="center" spacing={2} sx={{ mb: 2, mt: 2 }}>
@@ -204,16 +217,6 @@ const StudentScheduleView = () => {
 
 				<Grid item xs={12} md={6}>
 					<Box mb={2} sx={{ display: "flex", justifyContent: "flex-end" }}>
-						{/* <TextField
-							id="outlined-read-only-input"
-							label="Thời gian áp dụng"
-							defaultValue="Thời gian áp dụng"
-							sx={{ minWidth: 330, paddingRight: 2 }}
-							InputProps={{
-								readOnly: true,
-								value: `Áp dụng TKB từ ${filteredClassesData?.academicYear?.startDate} đến ${filteredClassesData?.academicYear?.endDate}`,
-							}}
-						/> */}
 						<Button
 							variant="contained"
 							sx={{
