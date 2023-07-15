@@ -8,19 +8,69 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
-import { Button, Modal, Switch, Typography } from "@mui/material";
+import {
+	Alert,
+	Button,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Modal,
+	Select,
+	Snackbar,
+	Switch,
+	Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 const Schedule = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [schedule, setSchedule] = useState(null);
-	const [selectedSchedule, setSelectedSchedule] = useState(null);
+	const [selectedSchedule, setSelectedSchedule] = useState({});
 	const [searchTerm, setSearchTerm] = useState("");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [classSchedule, setClassSchedule] = useState([]);
 	const [selectedClass, setSelectedClass] = useState(null);
-	const [isEditMode, setIsEditMode] = useState(false);
-	const [selectedScore, setselectedScore] = useState(null);
+
+	const [teachers, setTeachers] = useState([]);
+	const [subjects, setSubjects] = useState([]);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [successUpdateMessage, setSuccessUpdateMessage] = useState("");
+	const [errorUpdateMessage, setErrorUpdateMessage] = useState("");
+
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState("");
+	const [snackbarSeverity, setSnackbarSeverity] = useState("");
+
+	const fetchTeachers = useCallback(async () => {
+		try {
+			const response = await client.get("/api/teachers");
+			setTeachers(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	}, []);
+
+	const fetchTeacherSubjects = async (teacherId) => {
+		try {
+			if (selectedSchedule?.teacher?.id) {
+				const response = await client.get(
+					`/api/subjects/teachers/${teacherId}`
+				);
+				setSubjects(response.data);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		if (selectedSchedule) {
+			fetchTeacherSubjects(selectedSchedule?.teacher?.id);
+		}
+		fetchTeachers();
+	}, [fetchTeachers, selectedSchedule]);
+
 	const navigate = useNavigate();
 
 	const handleClassClick = (classId) => {
@@ -44,6 +94,7 @@ const Schedule = () => {
 
 	useEffect(() => {
 		fetchData();
+		setSelectedSchedule(null);
 	}, [fetchData]);
 	const handleOpenClassScheduleModal = async () => {
 		try {
@@ -55,8 +106,36 @@ const Schedule = () => {
 		}
 	};
 
+	const handleSnackbarClose = () => {
+		setSnackbarOpen(false);
+	};
+
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
+	};
+
+	const handleSubjectChange = (event) => {
+		const subjectId = event.target.value;
+		const selectedSubject = subjects.find(
+			(subject) => subject.id === subjectId
+		);
+		const updatedSchedule = {
+			...selectedSchedule,
+			subject: selectedSubject,
+		};
+		setSelectedSchedule(updatedSchedule);
+	};
+
+	const handleTeacherChange = (event) => {
+		const teacherId = event.target.value;
+		const selectedTeacher = teachers.find(
+			(teacher) => teacher.id === teacherId
+		);
+		const updatedSchedule = {
+			...selectedSchedule,
+			teacher: selectedTeacher,
+		};
+		setSelectedSchedule(updatedSchedule);
 	};
 
 	const handleView = async (id) => {
@@ -78,9 +157,8 @@ const Schedule = () => {
 	const handleEdit = (scheduleId) => {
 		const selectedSchedule = data.find((item) => item.id === scheduleId);
 		if (selectedSchedule) {
-			setIsEditMode(true);
 			setSelectedSchedule(selectedSchedule);
-			navigate(`/admin/schedule-update/${scheduleId}`);
+			setIsEditModalOpen(true);
 		}
 	};
 
@@ -110,9 +188,55 @@ const Schedule = () => {
 				}
 				return prevSchedule;
 			});
+
+			setSnackbarMessage("Cập nhật trạng thái thành công!");
+			setSnackbarSeverity("success");
+			setSnackbarOpen(true);
 		} catch (error) {
 			console.error(error);
+			setSnackbarMessage(error.response.data);
+			setSnackbarSeverity("error");
+			setSnackbarOpen(true);
 		}
+	};
+
+	const handleUpdate = async () => {
+		try {
+			const updatedSchedule = {
+				...selectedSchedule,
+				dayOfWeekId: selectedSchedule.dayOfWeek?.id,
+				lessonId: selectedSchedule.lesson?.id,
+				subjectId: selectedSchedule.subject?.id,
+				classId: selectedSchedule.classes?.id,
+				teacherId: selectedSchedule.teacher?.id,
+				status: selectedSchedule.status,
+			};
+
+			console.log(updatedSchedule);
+			await client.put(
+				`/api/schedules/${selectedSchedule.id}`,
+				updatedSchedule
+			);
+
+			setData((prevData) => {
+				const updatedData = prevData.map((item) =>
+					item.id === selectedSchedule.id ? selectedSchedule : item
+				);
+				return updatedData;
+			});
+			setSuccessUpdateMessage("Thời khóa biểu đã được cập nhật thành công!");
+			setErrorUpdateMessage("");
+		} catch (error) {
+			setErrorUpdateMessage(error.response.data);
+			setSuccessUpdateMessage("");
+			console.error(error);
+		}
+	};
+
+	const closeEditModal = () => {
+		setSuccessUpdateMessage("");
+		setErrorUpdateMessage("");
+		setIsEditModalOpen(false);
 	};
 
 	const handleDelete = async (id) => {
@@ -229,19 +353,142 @@ const Schedule = () => {
 	];
 
 	const getContent = () => (
-		<DataTable
-			initialRows={data}
-			columns={columns}
-			loading={loading}
-			handleView={handleView}
-			handleEdit={handleEdit}
-			handleDelete={handleDelete}
-			// hiddenActions={["delete"]}
-		/>
+		<>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={5000}
+				onClose={handleSnackbarClose}
+			>
+				<Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
+			<DataTable
+				initialRows={data}
+				columns={columns}
+				loading={loading}
+				handleView={handleView}
+				handleEdit={handleEdit}
+				handleDelete={handleDelete}
+				// hiddenActions={["delete"]}
+			/>
+		</>
 	);
 
 	return (
 		<GridWrapper>
+			{isEditModalOpen && (
+				<Modal
+					open={isEditModalOpen}
+					onClose={closeEditModal}
+					aria-labelledby="modal-title"
+					aria-describedby="modal-description"
+				>
+					<Box
+						sx={{
+							position: "fixed",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+							width: 400,
+							bgcolor: "background.paper",
+							borderRadius: 4,
+							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
+						}}
+					>
+						<Typography
+							id="modal-title"
+							variant="h4"
+							sx={{
+								mb: 2,
+								fontWeight: "bold",
+								textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+								color: "#FF4500",
+								textAlign: "center",
+							}}
+						>
+							Chỉnh sửa thời khóa biểu
+						</Typography>
+						{successUpdateMessage && (
+							<Alert
+								severity="success"
+								onClose={() => setSuccessUpdateMessage("")}
+							>
+								{successUpdateMessage}
+							</Alert>
+						)}
+						{/* Thông báo lỗi */}
+						{errorUpdateMessage && (
+							<Alert severity="error" onClose={() => setErrorUpdateMessage("")}>
+								{errorUpdateMessage}
+							</Alert>
+						)}
+						<FormControl fullWidth margin="normal">
+							<InputLabel id="teacher-label">Chọn giáo viên</InputLabel>
+							<Select
+								labelId="teacher-label"
+								id="teacher-select"
+								name="teacherId"
+								value={selectedSchedule?.teacher?.id || ""}
+								onChange={handleTeacherChange}
+								label="Chọn giáo viên"
+							>
+								{teachers.map((teacher) => (
+									<MenuItem key={teacher.id} value={teacher.id}>
+										{teacher.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+						<FormControl fullWidth margin="normal">
+							<InputLabel id="subject-label">Chọn môn học</InputLabel>
+							<Select
+								labelId="subject-label"
+								id="subject-select"
+								name="subjectId"
+								value={selectedSchedule?.subject?.id || ""}
+								onChange={handleSubjectChange}
+								label="Chọn môn học"
+							>
+								{subjects.map((subject) => (
+									<MenuItem key={subject.id} value={subject.id}>
+										{subject.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+
+						<Button
+							variant="contained"
+							onClick={handleUpdate}
+							sx={{
+								fontSize: "1rem",
+								width: "100px",
+								marginTop: "10px",
+								marginBottom: "20px",
+							}}
+						>
+							Cập nhật
+						</Button>
+						<Button
+							color="error"
+							sx={{
+								fontSize: "1rem",
+								width: "100px",
+								marginTop: "10px",
+								marginBottom: "20px",
+							}}
+							onClick={closeEditModal}
+						>
+							Đóng
+						</Button>
+					</Box>
+				</Modal>
+			)}
+
 			{classSchedule && (
 				<Modal
 					open={isModalOpen}
