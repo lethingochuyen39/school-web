@@ -136,18 +136,23 @@ const StudentScheduleView = () => {
 			fetchScheduleData();
 		}
 	}, [selectedClass, isInitialDataLoaded]);
+
 	const handleExportExcel = () => {
-		const data = scheduleData.map((row) => {
-			const rowData = [
-				row.tietName,
-				...dayOfWeekData.map((d) => {
-					const subjectName = row[d.id]?.subjectName || "-";
-					const teacherName = row[d.id]?.teacherName || "-";
-					return `${subjectName} - ${teacherName}`;
-				}),
-			];
-			return rowData;
-		});
+		const dayOfWeekRow = ["Thứ", ...dayOfWeekData.map((d) => d.name)];
+		const data = [
+			dayOfWeekRow,
+			...scheduleData.map((row) => {
+				const rowData = [
+					row.tietName,
+					...dayOfWeekData.map((d) => {
+						const subjectName = row[d.id]?.subjectName || "-";
+						const teacherName = row[d.id]?.teacherName || "-";
+						return `${subjectName} - ${teacherName}`;
+					}),
+				];
+				return rowData;
+			}),
+		];
 
 		// Tạo workbook mới
 		const workbook = XLSX.utils.book_new();
