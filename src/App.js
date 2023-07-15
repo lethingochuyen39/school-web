@@ -41,7 +41,7 @@ import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/Evalua
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
 import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
 import ScoreView from "./pages/Student/score/ScoreView";
-
+import ReportCardView from "./pages/Student/reportCard/ReportCardView";
 
 function App() {
 	return (
@@ -132,6 +132,7 @@ function App() {
 									element={<DocumentStudentPage />}
 								/>
 								<Route path="/user/score" element={<ScoreView />} />
+								<Route path="/user/reportCard" element={<ReportCardView />} />
 							</Route>
 						</Route>
 					</Routes>
