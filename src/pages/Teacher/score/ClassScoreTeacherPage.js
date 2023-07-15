@@ -26,6 +26,7 @@ const ClassScoreTeacherPage = () => {
 	const [selectedScoreType, setSelectedScoreType] = useState("");
 	const [subjects, setSubjects] = useState([]);
 	const [scoreTypes, setScoreTypes] = useState([]);
+	const [semester, setSemester] = useState(1);
 	const [errors, setErrors] = useState({});
 	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
@@ -126,6 +127,9 @@ const ClassScoreTeacherPage = () => {
 	const handleScoreTypeChange = (event) => {
 		setSelectedScoreType(event.target.value);
 	};
+	const handlesemesterChange = (event) => {
+		setSemester(event.target.value);
+	};
 
 	const handleSaveScores = async () => {
 		if (Object.keys(errors).length > 0) {
@@ -138,12 +142,18 @@ const ClassScoreTeacherPage = () => {
 					studentId: row.id,
 					subjectId: selectedSubject,
 					scoreTypeId: selectedScoreType,
+					classId: classId,
+					semester: semester,
 					score: row.score,
 				};
 
 				try {
 					await client.post("/api/scores", scoreToAdd);
-					setErrors({});
+					setErrors((prevErrors) => {
+						const updatedErrors = { ...prevErrors };
+						delete updatedErrors[row.id];
+						return updatedErrors;
+					});
 					setSuccessMessage("Thao tác thành công");
 					setErrorMessage("");
 				} catch (error) {
@@ -153,7 +163,10 @@ const ClassScoreTeacherPage = () => {
 						setErrorMessage("Có lỗi xảy ra");
 					}
 					setSuccessMessage("");
-					setErrors({ [row.id]: { message: "Lỗi khi lưu điểm" } });
+					setErrors((prevErrors) => ({
+						...prevErrors,
+						[row.id]: { message: error.response.data || "Lỗi khi lưu điểm" },
+					}));
 				}
 			}
 		}
@@ -198,6 +211,22 @@ const ClassScoreTeacherPage = () => {
 				padding="5px"
 				flexWrap="wrap"
 			>
+				<FormControl fullWidth margin="normal" size="small">
+					<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+					<Select
+						labelId="semester-label"
+						id="semester-select"
+						name="semester"
+						value={semester}
+						onChange={handlesemesterChange}
+						label="Chọn Học kì"
+						required
+						defaultValue={1}
+					>
+						<MenuItem value={1}>Học kì 1</MenuItem>
+						<MenuItem value={2}>Học kì 2</MenuItem>
+					</Select>
+				</FormControl>
 				<Box width="calc(50% - 10px)" marginRight="10px">
 					<FormControl fullWidth margin="normal">
 						<InputLabel id="subject-label">Chọn môn học</InputLabel>

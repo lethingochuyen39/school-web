@@ -12,16 +12,18 @@ import {
 	Select,
 	MenuItem,
 	Grid,
+	Typography,
 } from "@mui/material";
 import client from "../../../api/client";
 
-const ScoreView = ({ classId, refresh, setRefresh }) => {
+const ScoreView = ({ refresh, setRefresh }) => {
 	const [scoreData, setScoreData] = useState([]);
 	const [scoreTypes, setScoreTypes] = useState([]);
 	const [subjects, setSubjects] = useState([]);
 	const [semester, setSemester] = useState(1);
 	const [classes, setClasses] = useState([]);
 	const [selectedClass, setSelectedClass] = useState("");
+	const averageScores = {};
 
 	const handleSemesterChange = (event) => {
 		setSemester(event.target.value);
@@ -51,10 +53,11 @@ const ScoreView = ({ classId, refresh, setRefresh }) => {
 				const scoreResponse = await client.get(
 					`/api/scores/semester?classId=${selectedClass}&semester=${semester}&studentId=${studentId}`
 				);
-
+				const fetchedSubjects = subjectResponse.data.filter(
+					(subject) => subject.name !== "SHDC" && subject.name !== "Thể dục"
+				);
 				const fetchedScoreData = scoreResponse.data;
 				const fetchedScoreTypes = scoreTypeResponse.data;
-				const fetchedSubjects = subjectResponse.data;
 
 				const scoreRows = fetchedSubjects.map((subject) => {
 					const scoreRow = {
@@ -78,7 +81,39 @@ const ScoreView = ({ classId, refresh, setRefresh }) => {
 					return scoreRow;
 				});
 
-				setScoreData(scoreRows);
+				fetchedSubjects.forEach((subject) => {
+					let sum = 0;
+					let totalCoefficient = 0;
+					let numScoreTypes = 0;
+
+					fetchedScoreTypes.forEach((scoreType) => {
+						const findScore = fetchedScoreData.find(
+							(score) =>
+								score.subject.id === subject.id &&
+								score.scoreType.id === scoreType.id
+						);
+
+						if (findScore) {
+							sum += findScore.score * scoreType.coefficient;
+							totalCoefficient += scoreType.coefficient;
+							numScoreTypes++;
+						}
+					});
+
+					const average =
+						totalCoefficient > 0 && numScoreTypes >= 6
+							? (sum / totalCoefficient).toFixed(2)
+							: null;
+					averageScores[subject.id] = average;
+				});
+
+				setScoreData(
+					scoreRows.map((scoreRow) => ({
+						...scoreRow,
+						average: averageScores[scoreRow.subjectId],
+					}))
+				);
+
 				setScoreTypes(fetchedScoreTypes);
 				setSubjects(fetchedSubjects);
 			} catch (error) {
@@ -87,7 +122,7 @@ const ScoreView = ({ classId, refresh, setRefresh }) => {
 		};
 
 		fetchScoreData();
-	}, [classId, selectedClass, semester, refresh]);
+	}, [, selectedClass, semester, refresh]);
 
 	useEffect(() => {
 		if (refresh) {
@@ -100,18 +135,18 @@ const ScoreView = ({ classId, refresh, setRefresh }) => {
 			<Grid container justifyContent="center" spacing={2} sx={{ mb: 2, mt: 2 }}>
 				<Grid item xs={12} md={6}>
 					<FormControl fullWidth size="small">
-						<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+						<InputLabel id="semester-label">Chọn Học kỳ</InputLabel>
 						<Select
 							labelId="semester-label"
 							id="semester-select"
 							name="semester"
 							value={semester}
 							onChange={handleSemesterChange}
-							label="Chọn Học kì"
+							label="Chọn Học kỳ"
 							required
 						>
-							<MenuItem value={1}>Học kì 1</MenuItem>
-							<MenuItem value={2}>Học kì 2</MenuItem>
+							<MenuItem value={1}>Học kỳ 1</MenuItem>
+							<MenuItem value={2}>Học kỳ 2</MenuItem>
 						</Select>
 					</FormControl>
 				</Grid>
@@ -169,8 +204,21 @@ const ScoreView = ({ classId, refresh, setRefresh }) => {
 									{scoreType.name}
 								</TableCell>
 							))}
+							<TableCell
+								align="center"
+								sx={{
+									fontWeight: "bold",
+									color: "#FFFFFF",
+									backgroundColor: "#0097a7",
+									textAlign: "center",
+									border: "1px solid black",
+								}}
+							>
+								ĐTB
+							</TableCell>
 						</TableRow>
 					</TableHead>
+
 					<TableBody>
 						{scoreData.map((row, i) => (
 							<TableRow
@@ -203,11 +251,31 @@ const ScoreView = ({ classId, refresh, setRefresh }) => {
 										{row[scoreType.id]}
 									</TableCell>
 								))}
+
+								<TableCell
+									align="center"
+									sx={{
+										fontWeight: "bold",
+										border: "1px solid black",
+									}}
+								>
+									{row.average !== null ? row.average : "-"}
+								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
 				</Table>
 			</TableContainer>
+			<Typography
+				style={{
+					color: "red",
+					fontWeight: "bold",
+					fontStyle: "italic",
+					marginTop: "10px",
+				}}
+			>
+				Vị trí "-" là thông tin chưa được công bố. Chi tiết liên hệ nhà trường
+			</Typography>
 		</>
 	);
 };

@@ -54,7 +54,7 @@ const schema = {
 	semester: {
 		presence: {
 			allowEmpty: false,
-			message: "^Vui lòng chọn học kì",
+			message: "^Vui lòng chọn học kỳ",
 		},
 	},
 };
@@ -83,6 +83,9 @@ const ScoreForm = ({
 	const [error, setError] = useState(null);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+
+	const [filteredStudents, setFilteredStudents] = useState([]);
+
 	useEffect(() => {
 		if (isEditMode && initialData) {
 			setScore({
@@ -152,6 +155,25 @@ const ScoreForm = ({
 		}));
 	};
 
+	useEffect(() => {
+		if (score.classId) {
+			const fetchStudents = async () => {
+				try {
+					const response = await client.get(
+						`/api/student/classes/${score.classId}/students`
+					);
+					const filteredStudents = response.data;
+					setFilteredStudents(filteredStudents);
+					console.log(filteredStudents);
+				} catch (error) {
+					console.error("Lỗi khi lấy danh sách học sinh:", error);
+				}
+			};
+
+			fetchStudents();
+		}
+	}, [score.classId]);
+
 	return (
 		<Modal open={showModal} onClose={handleCloseModal}>
 			<Box
@@ -215,18 +237,18 @@ const ScoreForm = ({
 								size="small"
 								error={hasError("semester")}
 							>
-								<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+								<InputLabel id="semester-label">Chọn Học kỳ</InputLabel>
 								<Select
 									labelId="semester-label"
 									id="semester-select"
 									name="semester"
 									value={score.semester}
 									onChange={handleChange}
-									label="Chọn Học kì"
+									label="Chọn Học kỳ"
 									required
 								>
-									<MenuItem value={1}>Học kì 1</MenuItem>
-									<MenuItem value={2}>Học kì 2</MenuItem>
+									<MenuItem value={1}>Học kỳ 1</MenuItem>
+									<MenuItem value={2}>Học kỳ 2</MenuItem>
 								</Select>
 								{hasError("semester") && (
 									<FormHelperText>{getErrorMessage("semester")}</FormHelperText>
@@ -279,9 +301,9 @@ const ScoreForm = ({
 									label="Chọn Học sinh"
 									required
 								>
-									{students.map((student) => (
+									{filteredStudents.map((student) => (
 										<MenuItem key={student.id} value={student.id}>
-											{student.name}
+											Mã: {student.id} - {student.name}
 										</MenuItem>
 									))}
 								</Select>
@@ -309,7 +331,7 @@ const ScoreForm = ({
 								>
 									{subjects.map((subject) => (
 										<MenuItem key={subject.id} value={subject.id}>
-											{subject.name}
+											Mã:{subject.id} - {subject.name}
 										</MenuItem>
 									))}
 								</Select>

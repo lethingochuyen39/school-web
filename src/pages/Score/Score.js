@@ -45,7 +45,11 @@ const Score = () => {
 			const responseClasses = await client.get("/api/classes");
 
 			setStudents(responseStudents.data);
-			setSubjects(responseSubjects.data);
+			const filteredSubjects = responseSubjects.data.filter(
+				(subject) => subject.name !== "SHDC"
+			);
+			setSubjects(filteredSubjects);
+			// setSubjects(responseSubjects.data);
 			setScoreTypes(responseScoreType.data);
 			setClasses(responseClasses.data);
 		} catch (error) {
@@ -214,7 +218,7 @@ const Score = () => {
 		},
 		{
 			field: "semester",
-			headerName: "Học kì",
+			headerName: "Học kỳ",
 			width: 60,
 		},
 		{
@@ -370,7 +374,7 @@ const Score = () => {
 							<b>Loại điểm: </b> {score.scoreType.name}
 						</Typography>
 						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-							<b>Học kì:</b> {score.semester}
+							<b>Học kỳ:</b> {score.semester}
 						</Typography>
 						<Typography
 							variant="body1"
