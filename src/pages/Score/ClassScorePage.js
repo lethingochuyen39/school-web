@@ -204,19 +204,19 @@ const ClassScorePage = () => {
 				flexWrap="wrap"
 			>
 				<FormControl fullWidth margin="normal" size="small">
-					<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+					<InputLabel id="semester-label">Chọn Học kỳ</InputLabel>
 					<Select
 						labelId="semester-label"
 						id="semester-select"
 						name="semester"
 						value={semester}
 						onChange={handlesemesterChange}
-						label="Chọn Học kì"
+						label="Chọn Học kỳ"
 						required
 						defaultValue={1}
 					>
-						<MenuItem value={1}>Học kì 1</MenuItem>
-						<MenuItem value={2}>Học kì 2</MenuItem>
+						<MenuItem value={1}>Học kỳ 1</MenuItem>
+						<MenuItem value={2}>Học kỳ 2</MenuItem>
 					</Select>
 				</FormControl>
 				<Box width="calc(50% - 10px)" marginRight="10px">
