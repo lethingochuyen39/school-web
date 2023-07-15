@@ -48,6 +48,7 @@ const NewsForm = ({
 	const [error, setError] = useState(null);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const [imageKey, setImageKey] = useState(Date.now());
 
 	useEffect(() => {
 		if (isEditMode && initialData) {
@@ -101,6 +102,7 @@ const NewsForm = ({
 			await fetchData();
 			setSuccessMessage("Thao tác thành công");
 			setErrorMessage("");
+			setImageKey(Date.now());
 		} catch (error) {
 			setErrorMessage(error.response.data);
 			setSuccessMessage("");
@@ -132,6 +134,7 @@ const NewsForm = ({
 			...prev,
 			image: image,
 		}));
+		setImageKey(Date.now());
 	};
 
 	const handleSwitchChange = (event) => {
@@ -231,9 +234,10 @@ const NewsForm = ({
 						>
 							{news.imageURL && (
 								<img
+									key={imageKey}
 									src={imageUrls[news.id]}
 									alt="Hình ảnh"
-									style={{ width: "60%", height: "auto" }}
+									style={{ width: "50%", height: "150px" }}
 								/>
 							)}
 						</Grid>
@@ -259,6 +263,7 @@ const NewsForm = ({
 								</Button>
 								<input
 									type="file"
+									key={imageKey}
 									id="image-upload"
 									name="image"
 									accept=".jpg,.png,.jfif,."
