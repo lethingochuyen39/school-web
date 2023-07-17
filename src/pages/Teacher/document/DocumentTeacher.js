@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import BasicCard from "../../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
@@ -12,7 +12,6 @@ import { Button, Modal } from "@mui/material";
 import DocumentForm from "../../../components/document/DocumentForm";
 import Typography from "@mui/material/Typography";
 import FileDownloader from "../../Document/FileDownloader";
-import AuthContext from "../../../api/AuthContext";
 
 const DocumentTeacherPage = () => {
 	const [data, setData] = useState([]);
@@ -22,7 +21,6 @@ const DocumentTeacherPage = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedDocument, setSelectedDocument] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenForm = async () => {
@@ -61,22 +59,22 @@ const DocumentTeacherPage = () => {
 		fetchData();
 	}, [fetchData]);
 
-	const handleAddDocument = async (newDocument) => {
-		try {
-			await client.post("/api/documents", newDocument, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật.");
-			}
-		}
-	};
+	// const handleAddDocument = async (newDocument) => {
+	// 	try {
+	// 		await client.post("/api/documents", newDocument, {
+	// 			headers: {
+	// 				"Content-Type": "multipart/form-data",
+	// 			},
+	// 		});
+	// 		await fetchData();
+	// 	} catch (error) {
+	// 		if (error.response) {
+	// 			setError(error.response.data);
+	// 		} else {
+	// 			setError("Đã xảy ra lỗi khi cập nhật.");
+	// 		}
+	// 	}
+	// };
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
@@ -98,7 +96,6 @@ const DocumentTeacherPage = () => {
 		setDocument(null);
 	};
 
-	const { userId } = useContext(AuthContext);
 	const [uploadedById, setUploadedById] = useState("");
 
 	useEffect(() => {
@@ -190,7 +187,6 @@ const DocumentTeacherPage = () => {
 			loading={loading}
 			handleView={handleView}
 			hiddenActions={["delete", "edit"]}
-			fetchData={fetchData}
 		/>
 	);
 
@@ -198,11 +194,10 @@ const DocumentTeacherPage = () => {
 		<GridWrapper>
 			{isFormOpen && (
 				<DocumentForm
-					handleAddDocument={handleAddDocument}
 					handleClose={handleCloseForm}
 					isEditMode={isEditMode}
 					initialData={selectedDocument}
-					error={error}
+					fetchData={fetchData}
 					uploadedById={uploadedById}
 				/>
 			)}
@@ -243,29 +238,29 @@ const DocumentTeacherPage = () => {
 							>
 								Thông tin Tài liệu
 							</Typography>
-							<Typography variant="body1" id="modal-description">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>ID:</b> {document.id}
 							</Typography>
-							<Typography variant="body1">
-								<b>tên file:</b> {document.fileName}
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Tên file:</b> {document.fileName}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tiêu đề:</b> {document.title}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Mô tả:</b> {document.description}
 							</Typography>
-							<Typography variant="body1" noWrap>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Đường dẫn:</b> {document.filePath}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tạo bởi UserId:</b> {document.uploadedBy.id} - <b>Email: </b>
 								{document.uploadedBy.email}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày thêm:</b> {document.uploadedAt}
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Ngày cập nhật:</b> {document.updatedAt}
 							</Typography>
 						</>

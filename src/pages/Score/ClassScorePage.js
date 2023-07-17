@@ -22,24 +22,39 @@ const ClassScorePage = () => {
 	const [students, setStudents] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { classId } = useParams();
-	const [error, setError] = useState(null);
 	const [selectedSubject, setSelectedSubject] = useState("");
 	const [selectedScoreType, setSelectedScoreType] = useState("");
 	const [subjects, setSubjects] = useState([]);
 	const [scoreTypes, setScoreTypes] = useState([]);
-	const [hasError, setHasError] = useState(false);
-	const [isAddedSuccessfully, setIsAddedSuccessfully] = useState(false);
+	const [semester, setSemester] = useState(1);
+	const [errors, setErrors] = useState({});
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const fetchStudents = async () => {
+		const fetchInitialData = async () => {
 			try {
-				const response = await client.get(`/api/classes/${classId}/students`);
-				const updatedStudents = response.data.map((student) => ({
+				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
+					await Promise.all([
+						client.get(`/api/student/classes/${classId}/students`),
+						client.get(`/api/subjects`),
+						client.get("/api/score-types"),
+					]);
+
+				const updatedStudents = studentsResponse.data.map((student) => ({
 					...student,
 					score: "",
 				}));
+
+				const subjects = subjectsResponse.data;
+				const scoreTypes = scoreTypesResponse.data;
+
 				setStudents(updatedStudents);
+				setSubjects(subjects);
+				setSelectedSubject(subjects[0].id);
+				setScoreTypes(scoreTypes);
+				setSelectedScoreType(scoreTypes[0].id);
 				setLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -47,35 +62,8 @@ const ClassScorePage = () => {
 			}
 		};
 
-		fetchStudents();
+		fetchInitialData();
 	}, [classId]);
-
-	const fetchSubjects = async () => {
-		try {
-			const response = await client.get("/api/subjects");
-			const subjects = response.data;
-			setSubjects(subjects);
-			setSelectedSubject(subjects[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const fetchScoreTypes = async () => {
-		try {
-			const response = await client.get("/api/score-types");
-			const scoreTypes = response.data;
-			setScoreTypes(scoreTypes);
-			setSelectedScoreType(scoreTypes[0].id);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	useEffect(() => {
-		fetchSubjects();
-		fetchScoreTypes();
-	}, []);
 
 	const handleScoreInput = (id, newScore) => {
 		const cleanedScore = newScore.trim();
@@ -83,31 +71,43 @@ const ClassScorePage = () => {
 		const isValid = /^\d*\.?\d*$/.test(cleanedScore);
 
 		if (!isValid) {
-			const newError = { id, message: "Điểm phải là một số dương" };
-			setError(newError);
+			const newError = { message: "Điểm phải là một số dương" };
+			setErrors((prevErrors) => ({
+				...prevErrors,
+				[id]: newError,
+			}));
 		} else {
 			const parsedScore = parseFloat(cleanedScore);
 			if (parsedScore < 0 || parsedScore > 10) {
-				const newError = { id, message: "Điểm phải là số từ 0 đến 10" };
-				setError(newError);
+				const newError = { message: "Điểm phải là số từ 0 đến 10" };
+				setErrors((prevErrors) => ({
+					...prevErrors,
+					[id]: newError,
+				}));
 			} else {
-				setError(null);
-				const updatedStudents = students.map((student) => {
-					if (student.id === id) {
-						return {
-							...student,
-							score: cleanedScore || "",
-						};
-					}
-					return student;
+				setErrors((prevErrors) => {
+					const updatedErrors = { ...prevErrors };
+					delete updatedErrors[id];
+					return updatedErrors;
 				});
-				setStudents(updatedStudents);
 			}
 		}
+
+		setStudents((prevStudents) => {
+			return prevStudents.map((student) => {
+				if (student.id === id) {
+					return {
+						...student,
+						score: cleanedScore || "",
+					};
+				}
+				return student;
+			});
+		});
 	};
 
 	const renderErrorMessage = (id) => {
-		const errorObj = error && error.id === id ? error : null;
+		const errorObj = errors[id];
 		if (errorObj) {
 			return (
 				<Alert severity="error">
@@ -122,34 +122,48 @@ const ClassScorePage = () => {
 	const handleSubjectChange = (event) => {
 		setSelectedSubject(event.target.value);
 	};
+	const handlesemesterChange = (event) => {
+		setSemester(event.target.value);
+	};
 
 	const handleScoreTypeChange = (event) => {
 		setSelectedScoreType(event.target.value);
 	};
 
 	const handleSaveScores = async () => {
+		setErrors({});
 		for (const row of students) {
 			if (row.score !== "") {
 				const scoreToAdd = {
 					studentId: row.id,
 					subjectId: selectedSubject,
 					scoreTypeId: selectedScoreType,
+					classId: classId,
+					semester: semester,
 					score: row.score,
 				};
 
 				try {
 					await client.post("/api/scores", scoreToAdd);
-					setHasError(false);
-					setIsAddedSuccessfully(true);
-					setError(null);
+
+					setErrors((prevErrors) => {
+						const updatedErrors = { ...prevErrors };
+						delete updatedErrors[row.id];
+						return updatedErrors;
+					});
+					setSuccessMessage("Thao tác thành công");
+					setErrorMessage("");
 				} catch (error) {
-					console.error("Lỗi khi lưu điểm:", error);
-					setHasError(true);
-					setIsAddedSuccessfully(false);
+					setSuccessMessage("");
+					setErrors((prevErrors) => ({
+						...prevErrors,
+						[row.id]: { message: error.response.data || "Lỗi khi lưu điểm" },
+					}));
 				}
 			}
 		}
 	};
+
 	const handleGoBack = () => {
 		navigate(-1);
 	};
@@ -160,7 +174,7 @@ const ClassScorePage = () => {
 		{
 			field: "score",
 			headerName: "Điểm",
-			width: 500,
+			width: 1000,
 			renderCell: (params) => (
 				<>
 					<input
@@ -175,6 +189,7 @@ const ClassScorePage = () => {
 			disableActions: true,
 		},
 	];
+
 	const getHeader = () => (
 		<>
 			<IconButton onClick={handleGoBack}>
@@ -188,6 +203,22 @@ const ClassScorePage = () => {
 				padding="5px"
 				flexWrap="wrap"
 			>
+				<FormControl fullWidth margin="normal" size="small">
+					<InputLabel id="semester-label">Chọn Học kỳ</InputLabel>
+					<Select
+						labelId="semester-label"
+						id="semester-select"
+						name="semester"
+						value={semester}
+						onChange={handlesemesterChange}
+						label="Chọn Học kỳ"
+						required
+						defaultValue={1}
+					>
+						<MenuItem value={1}>Học kỳ 1</MenuItem>
+						<MenuItem value={2}>Học kỳ 2</MenuItem>
+					</Select>
+				</FormControl>
 				<Box width="calc(50% - 10px)" marginRight="10px">
 					<FormControl fullWidth margin="normal">
 						<InputLabel id="subject-label">Chọn môn học</InputLabel>
@@ -243,14 +274,13 @@ const ClassScorePage = () => {
 				fontSize="2rem"
 				fontWeight="bold"
 				sx={{
-					mb: 2,
 					fontWeight: "bold",
 					textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
 					color: "#FF4500",
 					textAlign: "center",
 				}}
 			>
-				Nhập điểm lớp ID - {classId}
+				Nhập điểm lớp
 			</Box>
 
 			<Box
@@ -273,28 +303,28 @@ const ClassScorePage = () => {
 				</Button>
 			</Box>
 			<Stack sx={{ width: "100%" }} spacing={2}>
-				{hasError ? (
+				{errorMessage && (
 					<Alert severity="error">
 						<AlertTitle>Error</AlertTitle>
-						Đã có lỗi xảy ra khi thêm bảng điểm —{" "}
-						<strong>vui lòng thử lại sau!</strong>
+						{errorMessage}
 					</Alert>
-				) : isAddedSuccessfully ? (
+				)}
+				{successMessage && (
 					<Alert severity="success">
 						<AlertTitle>Success</AlertTitle>
-						Cập nhật danh sách điểm thành công!
+						{successMessage}
 					</Alert>
-				) : null}
+				)}
 			</Stack>
 			<DataTable
 				initialRows={students}
 				columns={columns}
 				loading={loading}
-				handleEdit={handleScoreInput}
 				hiddenActions={["view", "edit", "delete"]}
 			/>
 		</>
 	);
+
 	return (
 		<GridWrapper>
 			<BasicCard header={getHeader()} content={getContent()} />

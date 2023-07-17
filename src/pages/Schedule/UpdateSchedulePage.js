@@ -33,33 +33,28 @@ const UpdateSchedulePage = () => {
 		const fetchSchedule = async () => {
 			try {
 				setIsLoading(true);
-				const response = await client.get(`/api/schedules/${scheduleId}`);
-				const { subjectId, teacherId, ...rest } = response.data;
+				const [scheduleResponse, subjectsResponse, teachersResponse] =
+					await Promise.all([
+						client.get(`/api/schedules/${scheduleId}`),
+						client.get("/api/subjects"),
+						client.get("/api/teachers"),
+					]);
+
+				const { subjectId, teacherId, ...rest } = scheduleResponse.data;
 				setSchedule(rest);
-				setSelectedSubject(rest.subjectId || "");
-				setSelectedTeacher(rest.teacherId || "");
+				setSelectedSubject(rest.subjectId || subjectsResponse.data[0].id);
+				setSelectedTeacher(rest.teacherId || teachersResponse.data[0].id);
 				setStatus(rest.status || "");
+
+				setSubjects(subjectsResponse.data);
+				setTeachers(teachersResponse.data);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
-		const fetchSubjectsAndTeachers = async () => {
-			try {
-				const [subjectsResponse, teachersResponse] = await Promise.all([
-					client.get("/api/subjects"),
-					client.get("/api/teachers"),
-				]);
-				setSubjects(subjectsResponse.data);
-				setTeachers(teachersResponse.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
 		fetchSchedule();
-		fetchSubjectsAndTeachers();
 	}, [scheduleId]);
 
 	const handleSubjectChange = (event) => {
@@ -136,7 +131,7 @@ const UpdateSchedulePage = () => {
 					labelId="subject-label"
 					id="subject-select"
 					name="subjectId"
-					value={selectedSubject || ""}
+					value={selectedSubject}
 					onChange={handleSubjectChange}
 					label="Chọn môn học"
 				>
@@ -154,7 +149,7 @@ const UpdateSchedulePage = () => {
 					labelId="teacher-label"
 					id="teacher-select"
 					name="teacherId"
-					value={selectedTeacher || ""}
+					value={selectedTeacher}
 					onChange={handleTeacherChange}
 					label="Chọn giáo viên"
 				>

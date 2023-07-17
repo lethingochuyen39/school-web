@@ -17,7 +17,6 @@ const AcademicYear = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedAcademicYear, setSelectedAcademicYear] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const handleOpenAddForm = () => {
@@ -35,21 +34,6 @@ const AcademicYear = () => {
 	const handleCloseAddForm = () => {
 		setIsAddFormOpen(false);
 		setAcademicYear(null);
-	};
-
-	const handleAddAcademicYear = async (newAcademicYear) => {
-		try {
-			await client.post("/api/academic-years", newAcademicYear);
-			setIsModalOpen(true);
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data.message);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật năm học.");
-			}
-		}
 	};
 
 	// hiển thị thông tin
@@ -75,32 +59,6 @@ const AcademicYear = () => {
 			setIsEditMode(true);
 			setSelectedAcademicYear(selectedYear);
 			setIsAddFormOpen(true);
-		}
-	};
-
-	const handleUpdateAcademicYear = async (updatedAcademicYear) => {
-		try {
-			await client.put(
-				`/api/academic-years/${updatedAcademicYear.id}`,
-				updatedAcademicYear
-			);
-			fetchData();
-			setIsModalOpen(true);
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data.message);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật năm học.");
-			}
-		}
-	};
-
-	const handleDelete = async (id) => {
-		try {
-			await client.delete(`/api/academic-years/${id}`);
-			fetchData();
-		} catch (error) {
-			console.error(error);
 		}
 	};
 
@@ -197,7 +155,8 @@ const AcademicYear = () => {
 				loading={loading}
 				handleView={handleView}
 				handleEdit={handleEdit}
-				handleDelete={handleDelete}
+				// handleDelete={handleDelete}
+				hiddenActions={["delete"]}
 			/>
 		);
 	};
@@ -206,12 +165,10 @@ const AcademicYear = () => {
 		<GridWrapper>
 			{isAddFormOpen && (
 				<AddForm
-					handleAddAcademicYear={handleAddAcademicYear}
-					handleUpdateAcademicYear={handleUpdateAcademicYear}
 					handleClose={handleCloseAddForm}
 					isEditMode={isEditMode}
 					initialData={selectedAcademicYear}
-					error={error}
+					fetchData={fetchData}
 				/>
 			)}
 
@@ -258,7 +215,7 @@ const AcademicYear = () => {
 							<b>Ngày bắt đầu: </b>
 							{academicYear.startDate}
 						</Typography>
-						<Typography variant="body1">
+						<Typography variant="body1" sx={{ mb: 2 }}>
 							<b>Ngày kết thúc:</b> {academicYear.endDate}
 						</Typography>
 

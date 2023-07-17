@@ -4,8 +4,8 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
-import { Typography } from "@mui/material";
-
+import { Alert, Typography } from "@mui/material";
+import client from "../../api/client";
 const schema = {
 	endDate: {
 		presence: {
@@ -31,13 +31,7 @@ const schema = {
 		},
 	},
 };
-const AddForm = ({
-	handleAddAcademicYear,
-	handleUpdateAcademicYear,
-	handleClose,
-	isEditMode,
-	initialData,
-}) => {
+const AddForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 	const [academicYear, setAcademicYear] = useState({
 		id: isEditMode ? initialData.id : "",
 		name: isEditMode ? initialData.name : "",
@@ -46,15 +40,26 @@ const AddForm = ({
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
+
 	useEffect(() => {
 		if (isEditMode && initialData) {
 			setAcademicYear(initialData);
 		}
 	}, [isEditMode, initialData]);
+
 	const handleChange = (event) => {
+		const { name, value } = event.target;
 		setAcademicYear((prev) => ({
 			...prev,
-			[event.target.name]: event.target.value,
+			[name]: value,
+		}));
+
+		const errors = validate({ ...academicYear, [name]: value }, schema);
+		setError((prevError) => ({
+			...prevError,
+			[name]: errors ? errors[name] : null,
 		}));
 	};
 
@@ -68,13 +73,26 @@ const AddForm = ({
 				return;
 			}
 			if (isEditMode) {
-				await handleUpdateAcademicYear(academicYear);
+				await client.put(
+					`/api/academic-years/${academicYear.id}`,
+					academicYear
+				);
 			} else {
-				await handleAddAcademicYear(academicYear);
+				await client.post("/api/academic-years", academicYear);
 			}
-			handleClose();
+			await fetchData();
+
+			console.log("Data from API:", academicYear);
+			setSuccessMessage("Thao tác thành công");
+			setErrorMessage("");
 		} catch (error) {
 			console.log(error);
+			if (error.response && error.response.data) {
+				setErrorMessage(error.response.data);
+			} else {
+				setErrorMessage("Có lỗi xảy ra");
+			}
+			setSuccessMessage("");
 		}
 	};
 
@@ -103,6 +121,9 @@ const AddForm = ({
 					border: "2px solid #000",
 					boxShadow: 24,
 					p: 4,
+					maxWidth: "90%",
+					maxHeight: "80%",
+					overflow: "auto",
 				}}
 			>
 				<Typography
@@ -118,6 +139,17 @@ const AddForm = ({
 				>
 					{isEditMode ? "Cập nhật năm học" : "Thêm mới năm học"}
 				</Typography>
+
+				{successMessage && (
+					<Alert severity="success" onClose={() => setSuccessMessage("")}>
+						{successMessage}
+					</Alert>
+				)}
+				{errorMessage && (
+					<Alert severity="error" onClose={() => setErrorMessage("")}>
+						{errorMessage}
+					</Alert>
+				)}
 
 				<form onSubmit={handleSubmit}>
 					<TextField

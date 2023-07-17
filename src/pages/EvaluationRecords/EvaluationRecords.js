@@ -33,7 +33,7 @@ const EvaluationRecord = () => {
     }
 
     try {
-      const responseStudents = await client.get("/allStudent");
+      const responseStudents = await client.get("/api/student/allStudent");
       setStudents(responseStudents.data);
     } catch (error) {
       console.error(error);

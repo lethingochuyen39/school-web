@@ -6,8 +6,9 @@ import Box from "@mui/material/Box";
 import validate from "validate.js";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Grid from "@mui/material/Grid";
-import { FormHelperText, Switch, Typography } from "@mui/material";
-
+import { Alert, Switch, Typography } from "@mui/material";
+import client from "../../api/client";
+import { format } from "date-fns";
 const schema = {
 	title: {
 		presence: {
@@ -29,11 +30,11 @@ const schema = {
 };
 
 const NewsForm = ({
-	handleAddNews,
-	handleUpdateNews,
 	handleClose,
 	isEditMode,
 	initialData,
+	fetchData,
+	imageUrls,
 }) => {
 	const [news, setNews] = useState({
 		id: initialData ? initialData.id : "",
@@ -45,6 +46,9 @@ const NewsForm = ({
 	});
 	const [showModal, setShowModal] = useState(true);
 	const [error, setError] = useState(null);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
+	const [imageKey, setImageKey] = useState(Date.now());
 
 	useEffect(() => {
 		if (isEditMode && initialData) {
@@ -64,33 +68,44 @@ const NewsForm = ({
 		formData.append("content", news.content);
 		formData.append("isActive", news.isActive);
 
+		const formattedUpdatedAt = format(
+			new Date(),
+			"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+		);
+		formData.append("updatedAt", formattedUpdatedAt);
+
 		try {
 			if (isEditMode && news.id) {
 				if (!news.image) {
 					formData.delete("image");
 				}
-				await handleUpdateNews(formData);
+				if (!formData) {
+					formData = { isActive: news.isActive };
+				}
+				await client.put(`/api/news/edit/${news.id}`, formData, {
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				});
 			} else {
 				const errors = validate(news, schema);
 				if (errors) {
 					setError(errors);
 					return;
 				}
-				await handleAddNews(formData);
+				await client.post("/api/news", news, {
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				});
 			}
-			handleClose();
+			await fetchData();
+			setSuccessMessage("Thao tác thành công");
+			setErrorMessage("");
+			setImageKey(Date.now());
 		} catch (error) {
-			if (error.response) {
-				if (error.response.status === 400 || error.response.status === 500) {
-					const errorMessage =
-						error.response.data && error.response.data.message
-							? error.response.data.message
-							: "Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.";
-					setError(errorMessage);
-				}
-			} else {
-				setError("Đã xảy ra lỗi không xác định.");
-			}
+			setErrorMessage(error.response.data);
+			setSuccessMessage("");
 		}
 	};
 
@@ -105,6 +120,12 @@ const NewsForm = ({
 			...prev,
 			[name]: value,
 		}));
+
+		const errors = validate({ ...news, [name]: value }, schema);
+		setError((prevError) => ({
+			...prevError,
+			[name]: errors ? errors[name] : null,
+		}));
 	};
 
 	const handleImageChange = (event) => {
@@ -113,6 +134,7 @@ const NewsForm = ({
 			...prev,
 			image: image,
 		}));
+		setImageKey(Date.now());
 	};
 
 	const handleSwitchChange = (event) => {
@@ -139,7 +161,7 @@ const NewsForm = ({
 					top: "50%",
 					left: "50%",
 					transform: "translate(-50%, -50%)",
-					width: 400,
+					width: 500,
 					bgcolor: "background.paper",
 					border: "2px solid #000",
 					boxShadow: 24,
@@ -161,6 +183,17 @@ const NewsForm = ({
 				>
 					{isEditMode ? "Cập nhật tin tức" : "Thêm tin tức"}
 				</Typography>
+
+				{successMessage && (
+					<Alert severity="success" onClose={() => setSuccessMessage("")}>
+						{successMessage}
+					</Alert>
+				)}
+				{errorMessage && (
+					<Alert severity="error" onClose={() => setErrorMessage("")}>
+						{errorMessage}
+					</Alert>
+				)}
 
 				<form onSubmit={handleSubmit}>
 					<TextField
@@ -188,6 +221,9 @@ const NewsForm = ({
 						margin="normal"
 						variant="outlined"
 						sx={{ mb: 2 }}
+						multiline
+						error={hasError("content")}
+						helperText={getErrorMessage("content")}
 					/>
 
 					<Grid container spacing={2}>
@@ -198,9 +234,10 @@ const NewsForm = ({
 						>
 							{news.imageURL && (
 								<img
-									src={process.env.PUBLIC_URL + `/${news.imageURL}`}
+									key={imageKey}
+									src={imageUrls[news.id]}
 									alt="Hình ảnh"
-									style={{ width: "60%", height: "auto" }}
+									style={{ width: "50%", height: "150px" }}
 								/>
 							)}
 						</Grid>
@@ -226,6 +263,7 @@ const NewsForm = ({
 								</Button>
 								<input
 									type="file"
+									key={imageKey}
 									id="image-upload"
 									name="image"
 									accept=".jpg,.png,.jfif,."
