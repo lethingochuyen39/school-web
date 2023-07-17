@@ -114,11 +114,6 @@ export default function HeaderStudent() {
 									</Link>
 								</MenuItem>
 								<MenuItem onClick={handleMenuClose}>
-									<Link href="/path3" color="inherit" underline="none">
-										Thống kê
-									</Link>
-								</MenuItem>
-								<MenuItem onClick={handleMenuClose}>
 									<Link href="/user/document" color="inherit" underline="none">
 										Tài liệu tham khảo
 									</Link>

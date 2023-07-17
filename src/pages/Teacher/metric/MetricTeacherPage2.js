@@ -7,55 +7,74 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../../components/common/DataTable/DataTable";
 import client from "../../../api/client";
+import MetricForm from "../../../components/metric/MetricForm";
 import { Button, Modal } from "@mui/material";
-import ReportCardForm from "../../../components/reportCard/ReportCardForm";
 
-const ReportCardTeacherPage = () => {
+const MetricTeacherPage2 = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [reportCard, setReportCard] = useState(null);
+  const [isMetricFormOpen, setIsMetricFormOpen] = useState(false);
+  const [metric, setMetric] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedReportCard, setSelectedReportCard] = useState(null);
+  const [selectedMetric, setSelectedMetric] = useState(null);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [students, setStudents] = useState([]);
-  const [academicYears, setAcademicYears] = useState([]);
 
-  const handleOpenForm = async () => {
-    if (reportCard) {
+  const handleOpenMetricForm = () => {
+    console.log(metric);
+    if (metric) {
       setIsEditMode(true);
-      setSelectedReportCard(reportCard);
+      setSelectedMetric(metric);
     } else {
       setIsEditMode(false);
-      setSelectedReportCard(null);
+      setSelectedMetric(null);
     }
+    setIsMetricFormOpen(true);
+  };
 
+  const handleCloseMetricForm = () => {
+    setIsMetricFormOpen(false);
+    setMetric(null);
+  };
+
+  const handleAddMetric = async (newMetric) => {
     try {
-      const responseStudents = await client.get("/api/student/allStudent");
-      const responseAcademicYears = await client.get("/api/academic-years/all");
-      setStudents(responseStudents.data);
-      setAcademicYears(responseAcademicYears.data);
+      await client.post("/api/metrics", newMetric);
+      setIsModalOpen(true);
+      await fetchData();
     } catch (error) {
       console.error(error);
       if (error.response) {
-        setError(error.response.data);
+        setError(error.response.data.message);
+      } else {
+        setError("Đã xảy ra lỗi khi cập nhật thống kê.");
       }
     }
-    setIsFormOpen(true);
   };
 
-  const handleCloseForm = () => {
-    setIsFormOpen(false);
-    setReportCard(null);
+  // hiển thị thông tin
+  const handleView = async (id) => {
+    try {
+      const response = await client.get(`/api/metrics/${id}`);
+      const data = response.data;
+      setMetric(data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setMetric(null);
   };
 
   const fetchData = useCallback(async () => {
     try {
-      let url = "/api/report_cards";
+      let url = "/api/metrics";
       if (searchTerm) {
-        url += `?violate=${searchTerm}`;
+        url += `?name=${searchTerm}`;
       }
       const response = await client.get(url);
       setData(response.data);
@@ -70,40 +89,8 @@ const ReportCardTeacherPage = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAddReportCard = async (newReportCard) => {
-    console.log(newReportCard);
-    try {
-      await client.post("/api/report_cards/create", newReportCard);
-
-      await fetchData();
-    } catch (error) {
-      console.error(error);
-      if (error.response) {
-        setError(error.response.data);
-      } else {
-        setError("Đã xảy ra lỗi khi cập nhật hạng kiểm.");
-      }
-    }
-  };
-
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
-  };
-
-  const handleView = async (id) => {
-    try {
-      const response = await client.get(`/api/report_cards/findById/${id}`);
-      const data = response.data;
-      setReportCard(data);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setReportCard(null);
   };
 
   const getHeader = () => (
@@ -130,7 +117,7 @@ const ReportCardTeacherPage = () => {
             color: "white",
             backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
           }}
-          onClick={handleOpenForm}
+          onClick={handleOpenMetricForm}
           size="large"
         >
           Thêm mới
@@ -148,7 +135,7 @@ const ReportCardTeacherPage = () => {
       >
         <SearchIcon sx={{ marginRight: "15px" }} />
         <Input
-          placeholder="Tìm kiếm theo vi phạm... "
+          placeholder="Tìm kiếm theo tên thống kê.. "
           onChange={handleSearchChange}
           value={searchTerm}
           sx={{
@@ -163,47 +150,37 @@ const ReportCardTeacherPage = () => {
   );
 
   const columns = [
-    {
-      field: "student",
-      headerName: "Học sinh",
-      width: 150,
-      valueGetter: (params) => params.row.student?.name || "",
-    },
-    { field: "violate", headerName: "Vi phạm", width: 150 },
-    { field: "description", headerName: "Mô tả", width: 150 },
-    { field: "date", headerName: "Ngày", width: 150 },
-    {
-      field: "academicYear",
-      headerName: "Năm học",
-      width: 100,
-      valueGetter: (params) => params.row.academicYear?.name || "",
-    },
+    { field: "name", headerName: "Tên thống kê", width: 150 },
+    { field: "description", headerName: "Miêu tả", width: 150 },
+    { field: "value", headerName: "Giá trị", width: 150 },
+    { field: "year", headerName: "Năm", width: 150 },
   ];
 
-  const getContent = () => (
-    <DataTable
-      initialRows={data}
-      columns={columns}
-      loading={loading}
-      handleView={handleView}
-      hiddenActions={["delete", "edit"]}
-    />
-  );
+  const getContent = () => {
+    return (
+      <DataTable
+        initialRows={data}
+        columns={columns}
+        loading={loading}
+        handleView={handleView}
+        hiddenActions={["delete", "edit"]}
+      />
+    );
+  };
 
   return (
     <GridWrapper>
-      {isFormOpen && (
-        <ReportCardForm
-          handleAddReportCard={handleAddReportCard}
-          handleClose={handleCloseForm}
+      {isMetricFormOpen && (
+        <MetricForm
+          handleAddMetric={handleAddMetric}
+          handleClose={handleCloseMetricForm}
           isEditMode={isEditMode}
-          initialData={selectedReportCard}
+          initialData={selectedMetric}
           error={error}
-          students={students}
-          academicYears={academicYears}
         />
       )}
-      {reportCard && (
+
+      {metric && (
         <Modal
           open={isModalOpen}
           onClose={closeModal}
@@ -222,13 +199,11 @@ const ReportCardTeacherPage = () => {
               p: 2,
             }}
           >
-            <h2 id="modal-title">Thông tin hạnh kiểm</h2>
-            <p>Học sinh: {reportCard.student.name}</p>
-            <p>Vi phạm: {reportCard.violate}</p>
-            <p>Mô tả: {reportCard.description}</p>
-            <p>Ngày: {reportCard.date}</p>
-            <p>Năm học: {reportCard.academicYear.name}</p>
-
+            <h2 id="modal-title">Thông tin thống kê</h2>
+            <p>Tên thống kê: {metric.name}</p>
+            <p>Miêu tả: {metric.description}</p>
+            <p>Giá trị: {metric.value}</p>
+            <p>Năm: {metric.year}</p>
             <Button variant="contained" onClick={closeModal}>
               Đóng
             </Button>
@@ -241,4 +216,4 @@ const ReportCardTeacherPage = () => {
   );
 };
 
-export default ReportCardTeacherPage;
+export default MetricTeacherPage2;
