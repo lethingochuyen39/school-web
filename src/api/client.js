@@ -22,7 +22,17 @@ export function logout() {
 	localStorage.removeItem("role");
 	localStorage.removeItem("token");
 	localStorage.removeItem("date");
-	localStorage.removeItem("refresh_token");
+	localStorage.removeItem("refreshToken");
+	localStorage.removeItem("userId");
+	localStorage.removeItem("id");
 	delete client.defaults.headers.common["Authorization"];
 	
+}
+
+export function forgotpassword(payload){
+	client.post("auth/forgot_password",payload);
+}
+
+export function resetpassword(payload){
+	client.post("auth/reset_password",payload);
 }

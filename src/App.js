@@ -19,7 +19,8 @@ import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
 import ScheduleView from "./pages/Schedule/ScheduleView";
 import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
-import Success from "./pages/success";
+import Success from "./pages/Student/checkInfo/success";
+import Class from "./pages/Class/Class";
 import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
@@ -27,6 +28,7 @@ import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
 import Metric from "./pages/Metric/Metric";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
+import ForgotPass from "./pages/forgotpassword";
 import ScoreTeacherPage from "./pages/Teacher/score/ScoreTeacherPage";
 import ClassScoreTeacherPage from "./pages/Teacher/score/ClassScoreTeacherPage";
 import NewsTeacherPage from "./pages/Teacher/news/NewsTeacherPage";
@@ -135,6 +137,7 @@ function App() {
 								<Route path="/user/reportCard" element={<ReportCardView />} />
 							</Route>
 						</Route>
+						<Route path="/forgotpassword" element={<ForgotPass />} />
 					</Routes>
 				</AuthContextProvider>
 			</BrowserRouter>
