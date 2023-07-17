@@ -16,7 +16,7 @@ import ScheduleAdd from "./pages/Schedule/ScheduleAdd";
 import ScheduleView from "./pages/Schedule/ScheduleView";
 import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
-import Success from "./pages/success";
+import Success from "./pages/Student/checkInfo/success";
 import Class from "./pages/Class/Class";
 import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
