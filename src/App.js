@@ -20,7 +20,6 @@ import ScheduleView from "./pages/Schedule/ScheduleView";
 import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/Student/checkInfo/success";
-import Class from "./pages/Class/Class";
 import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
@@ -40,6 +39,7 @@ import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
 import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
+import MetricTeacherPage2 from "./pages/Teacher/metric/MetricTeacherPage2";
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
 import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
 import ScoreView from "./pages/Student/score/ScoreView";
@@ -103,6 +103,7 @@ function App() {
 									path="/teacher/class-score/:classId"
 									element={<ClassScoreTeacherPage />}
 								/>
+								<Route path="/teacher/metrics" element={<MetricTeacherPage2 />} />
 								<Route path="/teacher/reportCards" element={<ReportCardTeacherPage />} />
 								<Route path="/teacher/evaluationRecords" element={<EvaluationRecordTeacherPage />} />
 								<Route path="/teacher/news" element={<NewsTeacherPage />} />
