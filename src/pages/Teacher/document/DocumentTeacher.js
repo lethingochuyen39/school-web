@@ -59,23 +59,6 @@ const DocumentTeacherPage = () => {
 		fetchData();
 	}, [fetchData]);
 
-	// const handleAddDocument = async (newDocument) => {
-	// 	try {
-	// 		await client.post("/api/documents", newDocument, {
-	// 			headers: {
-	// 				"Content-Type": "multipart/form-data",
-	// 			},
-	// 		});
-	// 		await fetchData();
-	// 	} catch (error) {
-	// 		if (error.response) {
-	// 			setError(error.response.data);
-	// 		} else {
-	// 			setError("Đã xảy ra lỗi khi cập nhật.");
-	// 		}
-	// 	}
-	// };
-
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
 	};
@@ -249,9 +232,6 @@ const DocumentTeacherPage = () => {
 							</Typography>
 							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Mô tả:</b> {document.description}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Đường dẫn:</b> {document.filePath}
 							</Typography>
 							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
 								<b>Tạo bởi UserId:</b> {document.uploadedBy.id} - <b>Email: </b>
