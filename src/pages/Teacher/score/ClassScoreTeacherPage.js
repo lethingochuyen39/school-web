@@ -48,7 +48,9 @@ const ClassScoreTeacherPage = () => {
 					score: "",
 				}));
 
-				const subjects = subjectsResponse.data;
+				const subjects = subjectsResponse.data.filter(
+					(subject) => !subject.name.startsWith("SHDC")
+				);
 				const scoreTypes = scoreTypesResponse.data;
 
 				setStudents(updatedStudents);

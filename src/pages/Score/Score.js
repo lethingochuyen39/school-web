@@ -46,7 +46,7 @@ const Score = () => {
 
 			setStudents(responseStudents.data);
 			const filteredSubjects = responseSubjects.data.filter(
-				(subject) => subject.name !== "SHDC"
+				(subject) => !subject.name.startsWith("SHDC")
 			);
 			setSubjects(filteredSubjects);
 			// setSubjects(responseSubjects.data);
