@@ -1,8 +1,15 @@
-import React, { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import Modal from "@mui/material/Modal";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import TextField from "@mui/material/TextField";
+import React, { useEffect, useState } from "react";
+import Grid from "@mui/material/Grid";
+import { Alert, Switch, Typography } from "@mui/material";
 import validate from "validate.js";
 
 const schema = {
@@ -69,11 +76,13 @@ const TeacherForm = ({
   });
   const [showModal, setShowModal] = useState(true);
   const [error, setError] = useState(null);
+
   useEffect(() => {
     if (isEditMode && initialData) {
       setTeacher(initialData);
     }
   }, [isEditMode, initialData]);
+
   const handleChange = (event) => {
     setTeacher((prev) => ({
       ...prev,
@@ -106,6 +115,14 @@ const TeacherForm = ({
     handleClose();
   };
 
+  const handleSwitchChange = (event) => {
+    const { checked } = event.target;
+    setTeacher((prev) => ({
+      ...prev,
+      isActive: checked,
+    }));
+  };
+
   const hasError = (field) => {
     return error && error[field] ? true : false;
   };
@@ -113,6 +130,7 @@ const TeacherForm = ({
   const getErrorMessage = (field) => {
     return hasError(field) ? error[field][0] : "";
   };
+
   return (
     <Modal open={showModal} onClose={handleCloseModal}>
       <Box
@@ -133,7 +151,7 @@ const TeacherForm = ({
         <form onSubmit={handleSubmit}>
           <TextField
             name="name"
-            label="Tên thống kê"
+            label="Tên giáo viên"
             value={teacher.name}
             onChange={handleChange}
             fullWidth
@@ -158,19 +176,34 @@ const TeacherForm = ({
             error={hasError("dob")}
             helperText={getErrorMessage("dob")}
           />
-          <TextField
-            name="gender"
-            label="Giới tính"
-            value={teacher.gender}
-            onChange={handleChange}
-            fullWidth
+          <FormControl
+            component="fieldset"
             margin="normal"
-            variant="outlined"
-            focused
             required
             error={hasError("gender")}
-            helperText={getErrorMessage("gender")}
-          />
+          >
+            <FormLabel component="legend">Giới tính</FormLabel>
+            <RadioGroup
+              name="gender"
+              value={teacher.gender}
+              onChange={handleChange}
+              row
+            >
+              <FormControlLabel
+                value="male"
+                control={<Radio color="primary" />}
+                label="Nam"
+              />
+              <FormControlLabel
+                value="female"
+                control={<Radio color="primary" />}
+                label="Nữ"
+              />
+            </RadioGroup>
+            {hasError("gender") && (
+              <span style={{ color: "red" }}>{getErrorMessage("gender")}</span>
+            )}
+          </FormControl>
           <TextField
             name="address"
             label="Địa chỉ"
@@ -210,19 +243,27 @@ const TeacherForm = ({
             error={hasError("phone")}
             helperText={getErrorMessage("phone")}
           />
-          <TextField
-            name="status"
-            label="Trạng thái"
-            value={teacher.status}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            error={hasError("status")}
-            helperText={getErrorMessage("status")}
-          />
+          <Grid
+            item
+            xs={12}
+            sx={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                marginRight: "8px",
+              }}
+            >
+              Trạng thái
+            </Typography>
+            <Switch
+              checked={teacher.isActive}
+              onChange={handleSwitchChange}
+              color="primary"
+            />
+          </Grid>
           <Button type="submit" variant="contained" onClick={handleSubmit}>
             {isEditMode ? "Cập nhật" : "Thêm"}
           </Button>
