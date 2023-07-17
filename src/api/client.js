@@ -26,7 +26,6 @@ export function logout() {
 	localStorage.removeItem("userId");
 	localStorage.removeItem("id");
 	delete client.defaults.headers.common["Authorization"];
-	
 }
 
 export function forgotpassword(payload){

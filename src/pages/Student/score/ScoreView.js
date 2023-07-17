@@ -54,8 +54,9 @@ const ScoreView = ({ refresh, setRefresh }) => {
 					`/api/scores/semester?classId=${selectedClass}&semester=${semester}&studentId=${studentId}`
 				);
 				const fetchedSubjects = subjectResponse.data.filter(
-					(subject) => subject.name !== "SHDC" && subject.name !== "Thể dục"
+					(subject) => !subject.name.startsWith("SHDC")
 				);
+
 				const fetchedScoreData = scoreResponse.data;
 				const fetchedScoreTypes = scoreTypeResponse.data;
 
