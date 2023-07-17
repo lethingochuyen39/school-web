@@ -26,6 +26,7 @@ const Header = ({ toggleSidebar }) => {
 	const handleLogout = () => {
 		logout();
 		navigate("/login");
+		
 	};
 
 	const handleClick = (event) => {
