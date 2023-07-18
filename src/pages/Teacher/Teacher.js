@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
@@ -7,22 +7,23 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
-import TeacherForm from "../../components/teacher/TeacherForm";
 import { Button, Modal } from "@mui/material";
+import TeacherForm from "../../components/teacher/TeacherForm";
+import Typography from "@mui/material/Typography";
+import Switch from "@mui/material/Switch";
 
 const Teacher = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isTeacherFormOpen, setIsTeacherFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [teacher, setTeacher] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isActive, setIsActive] = useState(false);
 
-  const handleOpenTeacherForm = () => {
-    console.log(teacher);
+  const handleTeacherOpenForm = async () => {
     if (teacher) {
       setIsEditMode(true);
       setSelectedTeacher(teacher);
@@ -30,30 +31,53 @@ const Teacher = () => {
       setIsEditMode(false);
       setSelectedTeacher(null);
     }
-    setIsTeacherFormOpen(true);
+
+    setIsFormOpen(true);
   };
 
   const handleCloseTeacherForm = () => {
-    setIsTeacherFormOpen(false);
+    setIsFormOpen(false);
     setTeacher(null);
   };
 
-  const handleAddTeacher = async (newTeacher) => {
+  const fetchData = useCallback(async () => {
     try {
-      await client.post("/api/teachers/create", newTeacher);
-      setIsModalOpen(true);
-      await fetchData();
+      let url = "/api/teachers";
+      if (searchTerm) {
+        url += `?name=${searchTerm}`;
+      }
+      const response = await client.get(url);
+      const fetchedData = response.data;
+
+      const updatedData = fetchedData.map((item) => ({
+        ...item,
+        isActive: item.isActive,
+      }));
+      setData(updatedData);
+      setLoading(false);
+
+      if (teacher) {
+        const fetchedTeacher = fetchedData.find(
+          (item) => item.id === teacher.id
+        );
+        if (fetchedTeacher) {
+          setIsActive(fetchedTeacher.isActive);
+        }
+      }
     } catch (error) {
       console.error(error);
-      if (error.response) {
-        setError(error.response.data.message);
-      } else {
-        setError("Đã xảy ra lỗi khi cập nhật.");
-      }
+      setLoading(false);
     }
+  }, [searchTerm, teacher]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
-  // hiển thị thông tin
   const handleView = async (id) => {
     try {
       const response = await client.get(`/api/teachers/${id}`);
@@ -71,25 +95,12 @@ const Teacher = () => {
   };
 
   const handleEdit = (id) => {
-    const selectedTeacher = data.find((teacher) => teacher.id === id);
+    const selectedTeacher = data.find((item) => item.id === id);
     if (selectedTeacher) {
-      setIsEditMode(true);
       setSelectedTeacher(selectedTeacher);
-      setIsTeacherFormOpen(true);
-    }
-  };
-
-  const handleUpdateTeacher = async (updatedTeacher) => {
-    try {
-      await client.put(`/api/teachers/update/${updatedTeacher.id}`, updatedTeacher);
-      fetchData();
-      setIsModalOpen(true);
-    } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message);
-      } else {
-        setError("Đã xảy ra lỗi khi cập nhật.");
-      }
+      setTeacher(selectedTeacher);
+      setIsEditMode(true);
+      setIsFormOpen(true);
     }
   };
 
@@ -102,27 +113,28 @@ const Teacher = () => {
     }
   };
 
-  const fetchData = useCallback(async () => {
+  const handleUpdateSwitch = async (event, id) => {
+    const { checked } = event.target;
+    console.log(id);
     try {
-      let url = "/api/teachers";
-      if (searchTerm) {
-        url += `?name=${searchTerm}`;
-      }
-      const response = await client.get(url);
-      setData(response.data);
-      setLoading(false);
+      await client.put(`/api/teachers/isActive/${id}`);
+
+      setData((prevData) => {
+        const updatedData = prevData.map((item) =>
+          item.id === id ? { ...item, isActive: checked } : item
+        );
+        return updatedData;
+      });
+
+      setSelectedTeacher((prevTeacher) => {
+        if (prevTeacher && prevTeacher.id === id) {
+          return { ...prevTeacher, isActive: checked };
+        }
+        return prevTeacher;
+      });
     } catch (error) {
       console.error(error);
-      setLoading(false);
     }
-  }, [searchTerm]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const getHeader = () => (
@@ -132,7 +144,6 @@ const Teacher = () => {
       justifyContent="space-between"
       alignItems="center"
       paddingLeft="20px"
-      paddingBottom="20px"
       paddingTop="10px"
       paddingRight="10px"
       flexWrap="wrap"
@@ -149,12 +160,13 @@ const Teacher = () => {
             color: "white",
             backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
           }}
-          onClick={handleOpenTeacherForm}
+          onClick={handleTeacherOpenForm}
           size="large"
         >
           Thêm mới
         </CommonButton>
       </Box>
+
       <Box
         minWidth={{ xs: "100%", sm: 0, md: "500px" }}
         marginRight={{ xs: 0, sm: "10px" }}
@@ -167,7 +179,7 @@ const Teacher = () => {
       >
         <SearchIcon sx={{ marginRight: "15px" }} />
         <Input
-          placeholder="Tìm kiếm theo tên.. "
+          placeholder="Tìm kiếm theo tiêu đề... "
           onChange={handleSearchChange}
           value={searchTerm}
           sx={{
@@ -189,32 +201,39 @@ const Teacher = () => {
     { field: "address", headerName: "Địa chỉ", width: 150 },
     { field: "email", headerName: "Email", width: 150 },
     { field: "phone", headerName: "Số điện thoại", width: 150 },
-    { field: "status", headerName: "Trạng thái", width: 150 },
+    {
+      field: "isActive",
+      headerName: "Trạng thái",
+      width: 100,
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.isActive}
+          onChange={(event) => handleUpdateSwitch(event, params.row.id)}
+          color="primary"
+        />
+      ),
+    },
   ];
 
-  const getContent = () => {
-    return (
-      <DataTable
-        initialRows={data}
-        columns={columns}
-        loading={loading}
-        handleView={handleView}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-      />
-    );
-  };
+  const getContent = () => (
+    <DataTable
+      initialRows={data}
+      columns={columns}
+      loading={loading}
+      handleView={handleView}
+      handleEdit={handleEdit}
+      handleDelete={handleDelete}
+    />
+  );
 
   return (
     <GridWrapper>
-      {isTeacherFormOpen && (
+      {isFormOpen && (
         <TeacherForm
-          handleAddTeacher={handleAddTeacher}
-          handleUpdateTeacher={handleUpdateTeacher}
           handleClose={handleCloseTeacherForm}
           isEditMode={isEditMode}
           initialData={selectedTeacher}
-          error={error}
+          fetchData={fetchData}
         />
       )}
 
@@ -223,7 +242,7 @@ const Teacher = () => {
           open={isModalOpen}
           onClose={closeModal}
           aria-labelledby="modal-title"
-          aria-describedby="modal-description"
+          aria-describedby="modal-content"
         >
           <Box
             sx={{
@@ -231,22 +250,57 @@ const Teacher = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
+              width: 500,
               bgcolor: "background.paper",
               borderRadius: 4,
               p: 2,
+              maxWidth: "90%",
+              maxHeight: "90%",
+              overflow: "auto",
             }}
           >
-            <h2 id="modal-title">Thông tin giáo viên</h2>
-            <p id="modal-description">ID: {teacher.id}</p>
-            <p id="modal-description">Tên: {teacher.name}</p>
-            <p id="modal-description">Ngày sinh: {teacher.dob}</p>
-            <p id="modal-description">Giới tính: {teacher.gender}</p>
-            <p id="modal-description">Địa chỉ: {teacher.address}</p>
-            <p id="modal-description">Email: {teacher.email}</p>
-            <p id="modal-description">Số điện thoại: {teacher.phone}</p>
-            <p id="modal-description">Trạng thái: {teacher.status}</p>
-            <Button variant="contained" onClick={closeModal}>
+            <>
+              <Typography
+                variant="h4"
+                id="modal-title"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+                  color: "#FF4500",
+                  textAlign: "center",
+                }}
+              >
+                Thông tin tin tức
+              </Typography>
+              <Typography variant="body1" id="modal-content">
+                <b>ID:</b> {teacher.id}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Tên:</b> {teacher.name}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Ngày sinh:</b> {teacher.dob}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Giới tính:</b> {teacher.gender}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Địa chỉ:</b> {teacher.address}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Email:</b> {teacher.email}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Số điện thoại:</b> {teacher.phone}
+              </Typography>
+              <Typography variant="body1">
+                <b>Trạng thái:</b>{" "}
+                {teacher.isActive ? "Đang hoạt động" : "Ẩn hoạt động"}
+              </Typography>
+            </>
+
+            <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
               Đóng
             </Button>
           </Box>
