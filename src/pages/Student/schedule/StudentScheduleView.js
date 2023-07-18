@@ -55,18 +55,6 @@ const StudentScheduleView = () => {
 		}
 	}, [classes]);
 
-	// const fetchStudentClass = async (studentId) => {
-	// 	try {
-	// 		const responseClasses = await client.get(
-	// 			`/api/student/${studentId}/Allclass`
-	// 		);
-	// 		setClasses(responseClasses.data);
-	// 	} catch (error) {
-	// 		console.error("Lỗi khi lấy thông tin lớp học:", error);
-	// 		return null;
-	// 	}
-	// };
-
 	useEffect(() => {
 		if (isInitialDataLoaded) {
 			const fetchScheduleData = async () => {
@@ -193,7 +181,7 @@ const StudentScheduleView = () => {
 			<Grid container justifyContent="center" spacing={2} sx={{ mb: 2, mt: 2 }}>
 				<Grid item xs={12} md={6}>
 					<FormControl fullWidth size="small">
-						<InputLabel id="class-label">Chọn Lớp học</InputLabel>
+						<InputLabel id="class-label">Lớp học</InputLabel>
 						<Select
 							labelId="class-label"
 							id="class-select"
@@ -201,13 +189,14 @@ const StudentScheduleView = () => {
 							size="small"
 							value={selectedClass}
 							onChange={handleChange}
-							label="Chọn Lớp học"
+							label="Lớp học"
 							required
 						>
 							{classes.map((classItem) => (
 								<MenuItem key={classItem.id} value={classItem.id}>
-									{classItem.name}- năm học: {classItem.academicYear.name}, Áp
-									dụng TKB từ {classItem.academicYear.startDate} đến{" "}
+									LH{classItem.id}_{classItem.name}_năm học:{" "}
+									{classItem.academicYear.name}; Áp dụng TKB từ{" "}
+									{classItem.academicYear.startDate} đến{" "}
 									{classItem.academicYear.endDate}
 								</MenuItem>
 							))}

@@ -136,14 +136,14 @@ const ScoreView = ({ refresh, setRefresh }) => {
 			<Grid container justifyContent="center" spacing={2} sx={{ mb: 2, mt: 2 }}>
 				<Grid item xs={12} md={6}>
 					<FormControl fullWidth size="small">
-						<InputLabel id="semester-label">Chọn Học kỳ</InputLabel>
+						<InputLabel id="semester-label">Học kỳ</InputLabel>
 						<Select
 							labelId="semester-label"
 							id="semester-select"
 							name="semester"
 							value={semester}
 							onChange={handleSemesterChange}
-							label="Chọn Học kỳ"
+							label="Học kỳ"
 							required
 						>
 							<MenuItem value={1}>Học kỳ 1</MenuItem>
@@ -154,7 +154,7 @@ const ScoreView = ({ refresh, setRefresh }) => {
 
 				<Grid item xs={12} md={6}>
 					<FormControl fullWidth size="small">
-						<InputLabel id="class-label">Chọn Lớp học</InputLabel>
+						<InputLabel id="class-label">Lớp học</InputLabel>
 						<Select
 							labelId="class-label"
 							id="class-select"
@@ -162,12 +162,13 @@ const ScoreView = ({ refresh, setRefresh }) => {
 							size="small"
 							value={selectedClass}
 							onChange={handleChange}
-							label="Chọn Lớp học"
+							label="Lớp học"
 							required
 						>
 							{classes.map((classItem) => (
 								<MenuItem key={classItem.id} value={classItem.id}>
-									{classItem.name}- năm học: {classItem.academicYear.name}
+									LH{classItem.id}_{classItem.name}_năm học:{" "}
+									{classItem.academicYear.name}
 								</MenuItem>
 							))}
 						</Select>
