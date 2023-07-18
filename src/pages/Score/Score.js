@@ -49,7 +49,6 @@ const Score = () => {
 				(subject) => !subject.name.startsWith("SHDC")
 			);
 			setSubjects(filteredSubjects);
-			// setSubjects(responseSubjects.data);
 			setScoreTypes(responseScoreType.data);
 			setClasses(responseClasses.data);
 		} catch (error) {
@@ -208,7 +207,7 @@ const Score = () => {
 	);
 
 	const columns = [
-		{ field: "id", headerName: "ID", width: 50 },
+		{ field: "id", headerName: "ID", width: 70 },
 
 		{
 			field: "classes",
@@ -314,7 +313,8 @@ const Score = () => {
 										marginBottom: 8,
 									}}
 								>
-									{classItem.name}
+									LH{classItem.id}_{classItem.name} (năm học:
+									{classItem.academicYear.name})
 								</li>
 							))}
 						</ul>

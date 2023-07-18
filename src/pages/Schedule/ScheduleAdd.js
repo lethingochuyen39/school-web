@@ -40,8 +40,11 @@ const ScheduleTable = () => {
 			setSelectedSubject(subjectsResponse.data[0]?.id || "");
 
 			const teachersResponse = await client.get("/api/teachers");
-			setTeachers(teachersResponse.data);
-			setSelectedTeacher(teachersResponse.data[0]?.id || "");
+			const activeTeachers = teachersResponse.data.filter(
+				(teacher) => teacher.isActive
+			);
+			setTeachers(activeTeachers);
+			setSelectedTeacher(activeTeachers[0]?.id || "");
 
 			setIsLoadingData(true);
 		} catch (error) {

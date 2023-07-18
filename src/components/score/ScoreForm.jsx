@@ -274,7 +274,7 @@ const ScoreForm = ({
 								>
 									{classes.map((classes) => (
 										<MenuItem key={classes.id} value={classes.id}>
-											Mã số:{classes.id} - {classes.name} (năm học:
+											LH{classes.id}_{classes.name} (năm học:
 											{classes.academicYear.name})
 										</MenuItem>
 									))}
@@ -303,7 +303,7 @@ const ScoreForm = ({
 								>
 									{filteredStudents.map((student) => (
 										<MenuItem key={student.id} value={student.id}>
-											Mã: {student.id} - {student.name}
+											HS{student.id}_{student.name}
 										</MenuItem>
 									))}
 								</Select>
@@ -331,7 +331,7 @@ const ScoreForm = ({
 								>
 									{subjects.map((subject) => (
 										<MenuItem key={subject.id} value={subject.id}>
-											Mã:{subject.id} - {subject.name}
+											MH{subject.id}_{subject.name}
 										</MenuItem>
 									))}
 								</Select>
