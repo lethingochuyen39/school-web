@@ -39,7 +39,7 @@ const ClassScoreTeacherPage = () => {
 				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
 					await Promise.all([
 						client.get(`/api/student/classes/${classId}/students`),
-						client.get(`/api/subjects/teachers/${teacherId}`),
+						client.get(`/api/teachers/${teacherId}/subjects`),
 						client.get("/api/score-types"),
 					]);
 
@@ -184,7 +184,7 @@ const ClassScoreTeacherPage = () => {
 		{
 			field: "score",
 			headerName: "Điểm",
-			width: 500,
+			width: 700,
 			renderCell: (params) => (
 				<>
 					<input

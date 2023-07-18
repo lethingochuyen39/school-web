@@ -110,7 +110,7 @@ const ScheduleTable = () => {
 
 	const fetchTeacherSubjects = async (teacherId) => {
 		try {
-			const response = await client.get(`/api/subjects/teachers/${teacherId}`);
+			const response = await client.get(`/api/teachers/${teacherId}/subjects`);
 			setTeacherSubjects(response.data);
 
 			if (response.data.length > 0) {
