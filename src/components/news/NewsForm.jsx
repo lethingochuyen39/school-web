@@ -87,6 +87,7 @@ const NewsForm = ({
 						"Content-Type": "multipart/form-data",
 					},
 				});
+				fetchData();
 			} else {
 				const errors = validate(news, schema);
 				if (errors) {
@@ -98,8 +99,9 @@ const NewsForm = ({
 						"Content-Type": "multipart/form-data",
 					},
 				});
+				await fetchData();
 			}
-			await fetchData();
+
 			setSuccessMessage("Thao tác thành công");
 			setErrorMessage("");
 			setImageKey(Date.now());
@@ -112,6 +114,7 @@ const NewsForm = ({
 	const handleCloseModal = () => {
 		setShowModal(false);
 		handleClose();
+		fetchData();
 	};
 
 	const handleChange = (event) => {
@@ -134,6 +137,7 @@ const NewsForm = ({
 			...prev,
 			image: image,
 		}));
+
 		setImageKey(Date.now());
 	};
 
