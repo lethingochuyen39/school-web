@@ -103,9 +103,18 @@ function App() {
 									path="/teacher/class-score/:classId"
 									element={<ClassScoreTeacherPage />}
 								/>
-								<Route path="/teacher/metrics" element={<MetricTeacherPage2 />} />
-								<Route path="/teacher/reportCards" element={<ReportCardTeacherPage />} />
-								<Route path="/teacher/evaluationRecords" element={<EvaluationRecordTeacherPage />} />
+								<Route
+									path="/teacher/metrics"
+									element={<MetricTeacherPage2 />}
+								/>
+								<Route
+									path="/teacher/reportCards"
+									element={<ReportCardTeacherPage />}
+								/>
+								<Route
+									path="/teacher/evaluationRecords"
+									element={<EvaluationRecordTeacherPage />}
+								/>
 								<Route path="/teacher/news" element={<NewsTeacherPage />} />
 								<Route
 									path="/teacher/news-detail/:id"
@@ -118,7 +127,7 @@ function App() {
 							</Route>
 						</Route>
 
-						<Route element={<RoleAccess roles={["STUDENT", "PARENTS"]} />}>
+						<Route element={<RoleAccess roles={["STUDENT"]} />}>
 							<Route path="/user/" element={<LayoutStudent />}>
 								<Route path="/user/home" element={<StudentHome />} />
 								<Route path="/user/news" element={<NewsStudentPage />} />
