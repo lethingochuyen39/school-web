@@ -86,7 +86,7 @@ const NewsDetailStudentPage = () => {
 					(a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
 				);
 
-				const formattedRecentNews = activeNews.slice(0).map(async (news) => {
+				const formattedRecentNews = activeNews.slice(0, 6).map(async (news) => {
 					try {
 						const response = await client.get("/api/images", {
 							params: {
