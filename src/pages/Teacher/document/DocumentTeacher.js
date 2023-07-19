@@ -96,7 +96,6 @@ const DocumentTeacherPage = () => {
 	const [uploadedById, setUploadedById] = useState("");
 
 	useEffect(() => {
-		// Lấy giá trị userId từ localStorage và lưu vào state uploadedById
 		const storedUserId = localStorage.getItem("userId");
 		setUploadedById(storedUserId);
 	}, []);
@@ -189,7 +188,7 @@ const DocumentTeacherPage = () => {
 
 	return (
 		<>
-			{!teacher || !teacher.isActive ? (
+			{teacher && !teacher.isActive ? (
 				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
 					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
 					biết thêm thông tin.

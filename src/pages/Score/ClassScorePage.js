@@ -37,7 +37,7 @@ const ClassScorePage = () => {
 			try {
 				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
 					await Promise.all([
-						client.get(`/api/student/classes/${classId}/students`),
+						client.get(`/api/student/${classId}/students`),
 						client.get(`/api/subjects`),
 						client.get("/api/score-types"),
 					]);

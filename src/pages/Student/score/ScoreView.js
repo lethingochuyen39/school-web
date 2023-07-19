@@ -44,7 +44,7 @@ const ScoreView = ({ refresh, setRefresh }) => {
 			try {
 				const studentId = localStorage.getItem("id");
 				const responseClasses = await client.get(
-					`/api/student/${studentId}/Allclass`
+					`/api/student/${studentId}/classes`
 				);
 				setClasses(responseClasses.data);
 				const scoreTypeResponse = await client.get("/api/score-types");

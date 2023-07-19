@@ -37,17 +37,20 @@ const ClassScoreTeacherPage = () => {
 		const fetchInitialData = async () => {
 			try {
 				const teacherId = localStorage.getItem("id");
-				const [
-					teacherRepose,
-					studentsResponse,
-					subjectsResponse,
-					scoreTypesResponse,
-				] = await Promise.all([
-					client.get(`/api/teachers/${teacherId}`),
-					client.get(`/api/student/classes/${classId}/students`),
-					client.get(`/api/teachers/${teacherId}/subjects`),
-					client.get("/api/score-types"),
-				]);
+				const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
+				const teacherData = teacherResponse.data;
+				setTeacher(teacherData);
+
+				if (!teacherData.isActive) {
+					return;
+				}
+
+				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
+					await Promise.all([
+						client.get(`/api/student/${classId}/students`),
+						client.get(`/api/teachers/${teacherId}/subjects`),
+						client.get("/api/score-types"),
+					]);
 
 				const updatedStudents = studentsResponse.data.map((student) => ({
 					...student,
@@ -58,7 +61,6 @@ const ClassScoreTeacherPage = () => {
 					(subject) => !subject.name.startsWith("SHDC")
 				);
 				const scoreTypes = scoreTypesResponse.data;
-				setTeacher(teacherRepose.data);
 				setStudents(updatedStudents);
 				setSubjects(subjects);
 				setSelectedSubject(subjects[0].id);
@@ -343,15 +345,15 @@ const ClassScoreTeacherPage = () => {
 
 	return (
 		<>
-			{teacher && teacher.isActive ? (
-				<GridWrapper>
-					<BasicCard header={getHeader()} content={getContent()} />
-				</GridWrapper>
-			) : (
+			{teacher && !teacher.isActive ? (
 				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
 					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
 					biết thêm thông tin.
 				</div>
+			) : (
+				<GridWrapper>
+					<BasicCard header={getHeader()} content={getContent()} />
+				</GridWrapper>
 			)}
 		</>
 	);

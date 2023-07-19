@@ -37,7 +37,7 @@ const StudentScheduleView = () => {
 			try {
 				const studentId = localStorage.getItem("id");
 				const responseClasses = await client.get(
-					`/api/student/${studentId}/Allclass`
+					`/api/student/${studentId}/classes`
 				);
 				setClasses(responseClasses.data);
 				setIsInitialDataLoaded(true);

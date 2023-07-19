@@ -160,7 +160,7 @@ const ScoreForm = ({
 			const fetchStudents = async () => {
 				try {
 					const response = await client.get(
-						`/api/student/classes/${score.classId}/students`
+						`/api/student/${score.classId}/students`
 					);
 					const filteredStudents = response.data;
 					setFilteredStudents(filteredStudents);

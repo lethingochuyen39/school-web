@@ -175,7 +175,7 @@ const AddForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 						margin="normal"
 						variant="outlined"
 						focused
-						disabled={isEditMode}
+						// disabled={isEditMode}
 						error={hasError("startDate")}
 						helperText={getErrorMessage("startDate")}
 					/>
@@ -189,7 +189,7 @@ const AddForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 						margin="normal"
 						variant="outlined"
 						focused
-						disabled={isEditMode}
+						// disabled={isEditMode}
 						error={hasError("endDate")}
 						helperText={getErrorMessage("endDate")}
 					/>

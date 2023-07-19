@@ -100,6 +100,7 @@ const Schedule = () => {
 		try {
 			const response = await client.get("/api/classes");
 			setClassSchedule(response.data);
+			console.log(classSchedule);
 			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
@@ -534,8 +535,8 @@ const Schedule = () => {
 										marginBottom: 8,
 									}}
 								>
-									LH{classItem.id}_{classItem.name} (năm học:
-									{classItem.academicYear.name})
+									LH{classItem.id}_{classItem.name}
+									(năm học:{classItem.academicYear.name})
 								</li>
 							))}
 						</ul>

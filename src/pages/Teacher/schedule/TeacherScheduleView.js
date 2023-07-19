@@ -112,7 +112,12 @@ const ScheduleTeacherPage = () => {
 
 	return (
 		<>
-			{teacher && teacher.isActive ? (
+			{teacher && !teacher.isActive ? (
+				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
+					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
+					biết thêm thông tin.
+				</div>
+			) : (
 				<GridWrapper>
 					<Box mt={2}>
 						<Typography
@@ -237,11 +242,6 @@ const ScheduleTeacherPage = () => {
 						</Table>
 					</TableContainer>
 				</GridWrapper>
-			) : (
-				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
-					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
-					biết thêm thông tin.
-				</div>
 			)}
 		</>
 	);
