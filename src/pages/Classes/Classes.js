@@ -198,13 +198,14 @@ const Classes = () => {
     { field: "name", headerName: "Lớp", width: 100 },
     { field: "description", headerName: "Mô tả", width: 100 },
     { field: "grade", headerName: "Khối", width: 100 },
+    { field: "limitStudent", headerName: "Giới hạn", width: 100 },
     {
       field: "teacher",
       headerName: "Giáo viên",
       width: 100,
       valueGetter: (params) => params.row.teacher?.name || "",
     },
-    
+
     {
       field: "academicYear",
       headerName: "Năm học",
@@ -261,6 +262,7 @@ const Classes = () => {
             <p id="modal-description">ID: {classes.id}</p>
             <p id="modal-description">Mô tả: {classes.description}</p>
             <p id="modal-description">Khối: {classes.grade}</p>
+            <p id="modal-description">Giới hạn: {classes.limitStudent}</p>
             <p id="modal-description">Tên lớp: {classes.name}</p>
             <p>Năm học: {classes.academicYear.name}</p>
             <p>Giáo viên: {classes.teacher.name}</p>
