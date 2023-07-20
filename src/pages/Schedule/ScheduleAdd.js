@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Divider, Typography } from "@mui/material";
+import { Alert, Button, Divider, IconButton, Typography } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import client from "../../api/client";
 import { Box } from "@mui/system";
@@ -9,7 +9,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const ScheduleTable = () => {
 	const [subjects, setSubjects] = useState([]);
 	const [selectedSubject, setSelectedSubject] = useState("");
@@ -72,6 +72,7 @@ const ScheduleTable = () => {
 	};
 
 	const navigate = useNavigate();
+
 	const handleCloseModal = () => {
 		navigate(-1);
 	};
@@ -126,14 +127,15 @@ const ScheduleTable = () => {
 
 	const getHeader = () => (
 		<>
-			<Box mt={2}>
-				{errorMessage && (
-					<Alert severity="error" onClose={() => setErrorMessage("")}>
-						{errorMessage}
-					</Alert>
-				)}
-				s{" "}
-			</Box>
+			<IconButton onClick={handleCloseModal}>
+				<ArrowBackIcon />
+			</IconButton>
+
+			{errorMessage && (
+				<Alert severity="error" onClose={() => setErrorMessage("")}>
+					{errorMessage}
+				</Alert>
+			)}
 			<Box
 				display="flex"
 				justifyContent="space-between"

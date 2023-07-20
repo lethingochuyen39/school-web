@@ -20,7 +20,6 @@ import ScheduleView from "./pages/Schedule/ScheduleView";
 import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/Student/checkInfo/success";
-import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
 import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
@@ -85,10 +84,7 @@ function App() {
 									element={<SubjectTeacherPage />}
 								/>
 								<Route path="/admin/teacher" element={<Teacher />} />
-								<Route
-									path="/admin/schedule-update/:scheduleId"
-									element={<UpdateSchedulePage />}
-								/>
+
 								<Route path="/admin/metric" element={<Metric />} />
 								<Route
 									path="/admin/evaluationRecord"
