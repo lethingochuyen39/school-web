@@ -20,7 +20,7 @@ export const AuthContextProvider = ({ children }) => {
 			var role = res.data.roles[0];
 			// console.log(role);
 			localStorage.setItem("role", role);
-			let date = new Date(jwtDecode(token).exp * 1000);
+			// let date = new Date(jwtDecode(token).exp * 1000);
 			// console.log(date);
 			const dateUnix = jwtDecode(token).exp;
 			localStorage.setItem("refreshToken", res.data.refreshToken);
