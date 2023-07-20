@@ -28,6 +28,7 @@ import Attendance from "./pages/Attendance/Attendance";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
 import ForgotPass from "./pages/forgotpassword";
+import CheckInfo from "./pages/Student/checkInfo/checkinfo";
 import ScoreTeacherPage from "./pages/Teacher/score/ScoreTeacherPage";
 import ClassScoreTeacherPage from "./pages/Teacher/score/ClassScoreTeacherPage";
 import NewsTeacherPage from "./pages/Teacher/news/NewsTeacherPage";
@@ -151,6 +152,7 @@ function App() {
 							</Route>
 						</Route>
 						<Route path="/forgotpassword" element={<ForgotPass />} />
+						<Route path="/checkInfo" element={<CheckInfo />} />
 					</Routes>
 				</AuthContextProvider>
 			</BrowserRouter>
