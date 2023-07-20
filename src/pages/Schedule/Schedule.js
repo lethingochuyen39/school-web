@@ -100,7 +100,6 @@ const Schedule = () => {
 		try {
 			const response = await client.get("/api/classes");
 			setClassSchedule(response.data);
-			console.log(classSchedule);
 			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
@@ -213,7 +212,6 @@ const Schedule = () => {
 				status: selectedSchedule.status,
 			};
 
-			console.log(updatedSchedule);
 			await client.put(
 				`/api/schedules/${selectedSchedule.id}`,
 				updatedSchedule

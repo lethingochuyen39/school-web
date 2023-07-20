@@ -7,6 +7,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import ScheduleView from "./ScheduleView";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ScheduleTable = () => {
 	const [subjects, setSubjects] = useState([]);
@@ -20,7 +22,6 @@ const ScheduleTable = () => {
 	const { classId } = useParams();
 	const [refreshSchedule, setRefreshSchedule] = useState(false);
 	const [isLoadingData, setIsLoadingData] = useState(false);
-	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [teacherSubjects, setTeacherSubjects] = useState([]);
 
@@ -93,7 +94,6 @@ const ScheduleTable = () => {
 			.catch((error) => {
 				console.error("Lỗi khi thêm lịch học:", error.response.data);
 				setErrorMessage(error.response.data);
-				setSuccessMessage("");
 			});
 	};
 
@@ -106,7 +106,7 @@ const ScheduleTable = () => {
 			fetchTeacherSubjects(selectedTeacher);
 		}
 		if (refreshSchedule) {
-			setSuccessMessage("Lịch học đã được thêm thành công!");
+			toast.success("Lịch học đã được thêm thành công");
 			setRefreshSchedule(false);
 		}
 	}, [refreshSchedule, selectedTeacher]);
@@ -127,19 +127,12 @@ const ScheduleTable = () => {
 	const getHeader = () => (
 		<>
 			<Box mt={2}>
-				{/* Thông báo thành công */}
-				{successMessage && (
-					<Alert severity="success" onClose={() => setSuccessMessage("")}>
-						{successMessage}
-					</Alert>
-				)}
-				{/* Thông báo lỗi */}
 				{errorMessage && (
 					<Alert severity="error" onClose={() => setErrorMessage("")}>
 						{errorMessage}
 					</Alert>
 				)}
-				{/* ... */}
+				s{" "}
 			</Box>
 			<Box
 				display="flex"
@@ -284,6 +277,7 @@ const ScheduleTable = () => {
 	);
 	return (
 		<GridWrapper>
+			<ToastContainer />
 			<BasicCard header={getHeader()} content={getContent()} />
 		</GridWrapper>
 	);
