@@ -22,6 +22,20 @@ const DocumentTeacherPage = () => {
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedDocument, setSelectedDocument] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [teacher, setTeacher] = useState(null);
+	useEffect(() => {
+		const fetchTeacherData = async () => {
+			try {
+				const teacherId = localStorage.getItem("id");
+				const response = await client.get(`/api/teachers/${teacherId}`);
+				setTeacher(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchTeacherData();
+	}, []);
 
 	const handleOpenForm = async () => {
 		if (document) {
@@ -59,23 +73,6 @@ const DocumentTeacherPage = () => {
 		fetchData();
 	}, [fetchData]);
 
-	// const handleAddDocument = async (newDocument) => {
-	// 	try {
-	// 		await client.post("/api/documents", newDocument, {
-	// 			headers: {
-	// 				"Content-Type": "multipart/form-data",
-	// 			},
-	// 		});
-	// 		await fetchData();
-	// 	} catch (error) {
-	// 		if (error.response) {
-	// 			setError(error.response.data);
-	// 		} else {
-	// 			setError("Đã xảy ra lỗi khi cập nhật.");
-	// 		}
-	// 	}
-	// };
-
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
 	};
@@ -99,7 +96,6 @@ const DocumentTeacherPage = () => {
 	const [uploadedById, setUploadedById] = useState("");
 
 	useEffect(() => {
-		// Lấy giá trị userId từ localStorage và lưu vào state uploadedById
 		const storedUserId = localStorage.getItem("userId");
 		setUploadedById(storedUserId);
 	}, []);
@@ -191,89 +187,117 @@ const DocumentTeacherPage = () => {
 	);
 
 	return (
-		<GridWrapper>
-			{isFormOpen && (
-				<DocumentForm
-					handleClose={handleCloseForm}
-					isEditMode={isEditMode}
-					initialData={selectedDocument}
-					fetchData={fetchData}
-					uploadedById={uploadedById}
-				/>
-			)}
+		<>
+			{teacher && !teacher.isActive ? (
+				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
+					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
+					biết thêm thông tin.
+				</div>
+			) : (
+				<GridWrapper>
+					{isFormOpen && (
+						<DocumentForm
+							handleClose={handleCloseForm}
+							isEditMode={isEditMode}
+							initialData={selectedDocument}
+							fetchData={fetchData}
+							uploadedById={uploadedById}
+						/>
+					)}
 
-			{document && (
-				<Modal
-					open={isModalOpen}
-					onClose={closeModal}
-					aria-labelledby="modal-title"
-					aria-describedby="modal-description"
-				>
-					<Box
-						sx={{
-							position: "fixed",
-							top: "50%",
-							left: "50%",
-							transform: "translate(-50%, -50%)",
-							width: 500,
-							bgcolor: "background.paper",
-							borderRadius: 4,
-							p: 2,
-							maxWidth: "90%",
-							maxHeight: "90%",
-							overflow: "auto",
-						}}
-					>
-						<>
-							<Typography
-								id="modal-title"
-								variant="h4"
+					{document && (
+						<Modal
+							open={isModalOpen}
+							onClose={closeModal}
+							aria-labelledby="modal-title"
+							aria-describedby="modal-description"
+						>
+							<Box
 								sx={{
-									mb: 2,
-									fontWeight: "bold",
-									textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
-									color: "#FF4500",
-									textAlign: "center",
+									position: "fixed",
+									top: "50%",
+									left: "50%",
+									transform: "translate(-50%, -50%)",
+									width: 500,
+									bgcolor: "background.paper",
+									borderRadius: 4,
+									p: 2,
+									maxWidth: "90%",
+									maxHeight: "90%",
+									overflow: "auto",
 								}}
 							>
-								Thông tin Tài liệu
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>ID:</b> {document.id}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Tên file:</b> {document.fileName}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Tiêu đề:</b> {document.title}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Mô tả:</b> {document.description}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Đường dẫn:</b> {document.filePath}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Tạo bởi UserId:</b> {document.uploadedBy.id} - <b>Email: </b>
-								{document.uploadedBy.email}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Ngày thêm:</b> {document.uploadedAt}
-							</Typography>
-							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Ngày cập nhật:</b> {document.updatedAt}
-							</Typography>
-						</>
+								<>
+									<Typography
+										id="modal-title"
+										variant="h4"
+										sx={{
+											mb: 2,
+											fontWeight: "bold",
+											textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+											color: "#FF4500",
+											textAlign: "center",
+										}}
+									>
+										Thông tin Tài liệu
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>ID:</b> {document.id}
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>Tên file:</b> {document.fileName}
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>Tiêu đề:</b> {document.title}
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>Mô tả:</b> {document.description}
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>Tạo bởi UserId:</b> {document.uploadedBy.id} -{" "}
+										<b>Email: </b>
+										{document.uploadedBy.email}
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>Ngày thêm:</b> {document.uploadedAt}
+									</Typography>
+									<Typography
+										variant="body1"
+										sx={{ overflowWrap: "break-word" }}
+									>
+										<b>Ngày cập nhật:</b> {document.updatedAt}
+									</Typography>
+								</>
 
-						<Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
-							Đóng
-						</Button>
-					</Box>
-				</Modal>
+								<Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
+									Đóng
+								</Button>
+							</Box>
+						</Modal>
+					)}
+
+					<BasicCard header={getHeader()} content={getContent()} />
+				</GridWrapper>
 			)}
-
-			<BasicCard header={getHeader()} content={getContent()} />
-		</GridWrapper>
+		</>
 	);
 };
 

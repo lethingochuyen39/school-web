@@ -79,14 +79,13 @@ const NewsDetailPage = () => {
 		const fetchRecentNews = async () => {
 			try {
 				const response = await client.get("/api/news");
-				const data = response.data;
 
 				const activeNews = response.data.filter((news) => news.isActive);
 				activeNews.sort(
 					(a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
 				);
 
-				const formattedRecentNews = data.slice(0, 6).map(async (news) => {
+				const formattedRecentNews = activeNews.slice(0, 6).map(async (news) => {
 					try {
 						const response = await client.get("/api/images", {
 							params: {

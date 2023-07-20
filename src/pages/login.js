@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AuthContext from "../../src/api/AuthContext";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -19,37 +19,37 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 // import Cookies from "universal-cookie";
 const Login = () => {
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const defaultTheme = createTheme();
+	const { login } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const defaultTheme = createTheme();
 
-  const loginSubmit = async (event) => {
-    // const cookies = new Cookies();
-    // cookies.remove("token");
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    let payload = {
-      username: data.get("username"),
-      password: data.get("password"),
-    };
-    await login(payload);
-  };
+	const loginSubmit = async (event) => {
+		// const cookies = new Cookies();
+		// cookies.remove("token");
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		let payload = {
+			username: data.get("username"),
+			password: data.get("password"),
+		};
+		await login(payload);
+	};
 	const [showPassword, setShowPassword] = useState(false);
-  	const handleClickShowPassword = () => setShowPassword(!showPassword);
-  	const handleMouseDownPassword = () => setShowPassword(!showPassword);
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    // console.log(role);
-    if (role === "ADMIN") {
-      navigate("/admin/home");
-    }
-    if (role === "STUDENT" || role === "PARENT") {
-      navigate("/user/success");
-    }
-    if (role === "TEACHER") {
-      navigate("/teacher/home");
-    }
-  });
+	const handleClickShowPassword = () => setShowPassword(!showPassword);
+	const handleMouseDownPassword = () => setShowPassword(!showPassword);
+	useEffect(() => {
+		const role = localStorage.getItem("role");
+		// console.log(role);
+		if (role === "ADMIN") {
+			navigate("/admin/home");
+		}
+		if (role === "STUDENT") {
+			navigate("/user/home");
+		}
+		if (role === "TEACHER") {
+			navigate("/teacher/home");
+		}
+	});
 
   return (
     <>
@@ -139,5 +139,6 @@ const Login = () => {
       </ThemeProvider>
     </>
   );
+
 };
 export default Login;

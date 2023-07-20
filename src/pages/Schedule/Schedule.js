@@ -55,7 +55,7 @@ const Schedule = () => {
 		try {
 			if (selectedSchedule?.teacher?.id) {
 				const response = await client.get(
-					`/api/subjects/teachers/${teacherId}`
+					`/api/teachers/${teacherId}/subjects`
 				);
 				setSubjects(response.data);
 			}
@@ -212,7 +212,6 @@ const Schedule = () => {
 				status: selectedSchedule.status,
 			};
 
-			console.log(updatedSchedule);
 			await client.put(
 				`/api/schedules/${selectedSchedule.id}`,
 				updatedSchedule
@@ -534,7 +533,8 @@ const Schedule = () => {
 										marginBottom: 8,
 									}}
 								>
-									{classItem.name}
+									LH{classItem.id}_{classItem.name}
+									(năm học:{classItem.academicYear.name})
 								</li>
 							))}
 						</ul>

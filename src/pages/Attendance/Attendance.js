@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "../../../components/common/DataTable/DataTable";
-import client from "../../../api/client";
+import DataTable from "../../components/common/DataTable/DataTable";
+import client from "../../api/client";
 import Box from "@mui/material/Box";
-import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
-import BasicCard from "../../../components/common/BasicCard/BasicCard";
+import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
+import BasicCard from "../../components/common/BasicCard/BasicCard";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
@@ -16,9 +16,10 @@ import {
 	AlertTitle,
 	Stack,
 	IconButton,
+	TextField,
 } from "@mui/material";
 
-const ClassScoreTeacherPage = () => {
+const ClassScorePage = () => {
 	const [students, setStudents] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { classId } = useParams();
@@ -28,27 +29,17 @@ const ClassScoreTeacherPage = () => {
 	const [scoreTypes, setScoreTypes] = useState([]);
 	const [semester, setSemester] = useState(1);
 	const [errors, setErrors] = useState({});
-	const [success, setSuccess] = useState({});
+	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
-	const [teacher, setTeacher] = useState(null);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchInitialData = async () => {
 			try {
-				const teacherId = localStorage.getItem("id");
-				const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
-				const teacherData = teacherResponse.data;
-				setTeacher(teacherData);
-
-				if (!teacherData.isActive) {
-					return;
-				}
-
 				const [studentsResponse, subjectsResponse, scoreTypesResponse] =
 					await Promise.all([
 						client.get(`/api/student/${classId}/students`),
-						client.get(`/api/teachers/${teacherId}/subjects`),
+						client.get(`/api/subjects`),
 						client.get("/api/score-types"),
 					]);
 
@@ -56,11 +47,12 @@ const ClassScoreTeacherPage = () => {
 					...student,
 					score: "",
 				}));
-
 				const subjects = subjectsResponse.data.filter(
 					(subject) => !subject.name.startsWith("SHDC")
 				);
+
 				const scoreTypes = scoreTypesResponse.data;
+
 				setStudents(updatedStudents);
 				setSubjects(subjects);
 				setSelectedSubject(subjects[0].id);
@@ -117,22 +109,13 @@ const ClassScoreTeacherPage = () => {
 		});
 	};
 
-	const renderMessage = (id) => {
+	const renderErrorMessage = (id) => {
 		const errorObj = errors[id];
-		const successObj = success[id];
-
 		if (errorObj) {
 			return (
 				<Alert severity="error">
 					<AlertTitle>Error</AlertTitle>
 					{errorObj.message}
-				</Alert>
-			);
-		}
-		if (successObj) {
-			return (
-				<Alert severity="success">
-					<AlertTitle>Thêm thành công</AlertTitle>
 				</Alert>
 			);
 		}
@@ -142,17 +125,16 @@ const ClassScoreTeacherPage = () => {
 	const handleSubjectChange = (event) => {
 		setSelectedSubject(event.target.value);
 	};
-
-	const handleScoreTypeChange = (event) => {
-		setSelectedScoreType(event.target.value);
-	};
 	const handlesemesterChange = (event) => {
 		setSemester(event.target.value);
 	};
 
+	const handleScoreTypeChange = (event) => {
+		setSelectedScoreType(event.target.value);
+	};
+
 	const handleSaveScores = async () => {
 		setErrors({});
-		setSuccess({});
 		for (const row of students) {
 			if (row.score !== "") {
 				const scoreToAdd = {
@@ -166,17 +148,16 @@ const ClassScoreTeacherPage = () => {
 
 				try {
 					await client.post("/api/scores", scoreToAdd);
+
 					setErrors((prevErrors) => {
 						const updatedErrors = { ...prevErrors };
 						delete updatedErrors[row.id];
 						return updatedErrors;
 					});
-					setSuccess((prev) => ({
-						...prev,
-						[row.id]: "Thêm thành công",
-					}));
+					setSuccessMessage("Thao tác thành công");
 					setErrorMessage("");
 				} catch (error) {
+					setSuccessMessage("");
 					setErrors((prevErrors) => ({
 						...prevErrors,
 						[row.id]: { message: error.response.data || "Lỗi khi lưu điểm" },
@@ -196,7 +177,7 @@ const ClassScoreTeacherPage = () => {
 		{
 			field: "score",
 			headerName: "Điểm",
-			width: 700,
+			width: 1000,
 			renderCell: (params) => (
 				<>
 					<input
@@ -205,7 +186,7 @@ const ClassScoreTeacherPage = () => {
 						value={params.row.score}
 						onChange={(e) => handleScoreInput(params.id, e.target.value)}
 					/>
-					{renderMessage(params.id)}
+					{renderErrorMessage(params.id)}
 				</>
 			),
 			disableActions: true,
@@ -226,19 +207,19 @@ const ClassScoreTeacherPage = () => {
 				flexWrap="wrap"
 			>
 				<FormControl fullWidth margin="normal" size="small">
-					<InputLabel id="semester-label">Chọn Học kì</InputLabel>
+					<InputLabel id="semester-label">Chọn Học kỳ</InputLabel>
 					<Select
 						labelId="semester-label"
 						id="semester-select"
 						name="semester"
 						value={semester}
 						onChange={handlesemesterChange}
-						label="Chọn Học kì"
+						label="Chọn Học kỳ"
 						required
 						defaultValue={1}
 					>
-						<MenuItem value={1}>Học kì 1</MenuItem>
-						<MenuItem value={2}>Học kì 2</MenuItem>
+						<MenuItem value={1}>Học kỳ 1</MenuItem>
+						<MenuItem value={2}>Học kỳ 2</MenuItem>
 					</Select>
 				</FormControl>
 				<Box width="calc(50% - 10px)" marginRight="10px">
@@ -263,24 +244,22 @@ const ClassScoreTeacherPage = () => {
 				</Box>
 				<Box width="calc(50% - 10px)" marginLeft="10px">
 					<FormControl fullWidth margin="normal">
-						<InputLabel id="scoreType-label">Chọn Loại điểm</InputLabel>
-						<Select
+						<InputLabel id="scoreType-label">Chọn Ngày</InputLabel>
+						{/* Thay thế Select thành TextField */}
+						<TextField
 							labelId="scoreType-label"
 							id="scoreType-select"
 							name="scoreTypeId"
+							type="date" // Sử dụng type="date" để hiển thị picker ngày
 							value={selectedScoreType}
-							onChange={handleScoreTypeChange}
-							label="Chọn loại điểm"
-							displayEmpty
+							// onChange={handleDateChange}
+							label="Chọn ngày"
 							fullWidth
 							sx={{ height: "40px" }}
-						>
-							{scoreTypes.map((scoreType) => (
-								<MenuItem key={scoreType.id} value={scoreType.id}>
-									{scoreType.name}
-								</MenuItem>
-							))}
-						</Select>
+							InputLabelProps={{
+								shrink: true,
+							}}
+						/>
 					</FormControl>
 				</Box>
 			</Box>
@@ -331,6 +310,12 @@ const ClassScoreTeacherPage = () => {
 						{errorMessage}
 					</Alert>
 				)}
+				{successMessage && (
+					<Alert severity="success">
+						<AlertTitle>Success</AlertTitle>
+						{successMessage}
+					</Alert>
+				)}
 			</Stack>
 			<DataTable
 				initialRows={students}
@@ -342,19 +327,10 @@ const ClassScoreTeacherPage = () => {
 	);
 
 	return (
-		<>
-			{teacher && !teacher.isActive ? (
-				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
-					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
-					biết thêm thông tin.
-				</div>
-			) : (
-				<GridWrapper>
-					<BasicCard header={getHeader()} content={getContent()} />
-				</GridWrapper>
-			)}
-		</>
+		<GridWrapper>
+			<BasicCard header={getHeader()} content={getContent()} />
+		</GridWrapper>
 	);
 };
 
-export default ClassScoreTeacherPage;
+export default ClassScorePage;

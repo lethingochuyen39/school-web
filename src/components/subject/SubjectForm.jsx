@@ -4,54 +4,50 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
-import {
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
-
+import { Alert, Typography } from "@mui/material";
+import client from "../../api/client";
 const schema = {
   name: {
     presence: {
       allowEmpty: false,
-      message: "^Tên không được bỏ trống.",
+      message: "^Tên năm học không được bỏ trống",
     },
-  },
-  teacherId: {
-    presence: {
-      allowEmpty: false,
-      message: "^giáo viên không được bỏ trống.",
+    length: {
+      minimum: 1,
+      maximum: 255,
+      message: "^Tên năm học phải có từ 1 đến 255 ký tự",
     },
   },
 };
-
-const SubjectForm = ({
-  handleAddSubject,
-  handleUpdateSubject,
-  handleClose,
-  isEditMode,
-  initialData,
-  teachers,
-}) => {
+const SubjectForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
   const [subject, setSubject] = useState({
     id: isEditMode ? initialData.id : "",
     name: isEditMode ? initialData.name : "",
-    teacherId: isEditMode ? initialData.teacher.id : "",
   });
-
   const [showModal, setShowModal] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     if (isEditMode && initialData) {
-      setSubject({
-        id: initialData.id,
-        name: initialData.name,
-        teacherId: initialData.teacher.id,
-      });
+      setSubject(initialData);
     }
-  }, [isEditMode, initialData, teachers]);
+  }, [isEditMode, initialData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setSubject((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    const errors = validate({ ...subject, [name]: value }, schema);
+    setError((prevError) => ({
+      ...prevError,
+      [name]: errors ? errors[name] : null,
+    }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -62,20 +58,24 @@ const SubjectForm = ({
         setError(errors);
         return;
       }
-
       if (isEditMode) {
-        const updatedSubject = {
-          name: subject.name,
-          teacherId: subject.teacherId,
-        };
-        await handleUpdateSubject(subject.id, updatedSubject);
+        await client.put(`/api/subjects/update/${subject.id}`, subject);
       } else {
-        await handleAddSubject(subject);
+        await client.post("/api/subjects/create", subject);
       }
+      await fetchData();
 
-      handleClose();
+      console.log("Data from API:", subject);
+      setSuccessMessage("Thao tác thành công");
+      setErrorMessage("");
     } catch (error) {
-      setError(error);
+      console.log(error);
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data);
+      } else {
+        setErrorMessage("Có lỗi xảy ra");
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -91,15 +91,6 @@ const SubjectForm = ({
   const getErrorMessage = (field) => {
     return hasError(field) ? error[field][0] : "";
   };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setSubject((prevSubject) => ({
-      ...prevSubject,
-      [name]: value,
-    }));
-  };
-
   return (
     <Modal open={showModal} onClose={handleCloseModal}>
       <Box
@@ -108,101 +99,56 @@ const SubjectForm = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 500,
+          width: 400,
           bgcolor: "background.paper",
           border: "2px solid #000",
           boxShadow: 24,
           p: 4,
+          maxWidth: "90%",
+          maxHeight: "80%",
+          overflow: "auto",
         }}
       >
-        <h2>{isEditMode ? "Cập nhật" : "Thêm mới"}</h2>
+        <Typography
+          id="modal-title"
+          variant="h4"
+          sx={{
+            mb: 2,
+            fontWeight: "bold",
+            textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+            color: "#FF4500",
+            textAlign: "center",
+          }}
+        >
+          {isEditMode ? "Cập nhật" : "Thêm mới"}
+        </Typography>
+
+        {successMessage && (
+          <Alert severity="success" onClose={() => setSuccessMessage("")}>
+            {successMessage}
+          </Alert>
+        )}
+        {errorMessage && (
+          <Alert severity="error" onClose={() => setErrorMessage("")}>
+            {errorMessage}
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit}>
-          {isEditMode ? (
-            <>
-              <TextField
-                name="name"
-                label="Tên lớp"
-                value={subject.name}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                required
-                error={hasError("name")}
-                helperText={getErrorMessage("name")}
-              />
+          <TextField
+            name="name"
+            label="Tên"
+            value={subject.name}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            focused
+            required
+            error={hasError("name")}
+            helperText={getErrorMessage("name")}
+          />
 
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={hasError("teacherId")}
-              >
-                <InputLabel id="teacher-label">Giáo viên</InputLabel>
-                <Select
-                  labelId="teacher-label"
-                  id="teacher-select"
-                  name="teacherId"
-                  value={subject.teacherId}
-                  onChange={handleChange}
-                  label="Giáo viên"
-                >
-                  {teachers.map((teacher) => (
-                    <MenuItem key={teacher.id} value={teacher.id}>
-                      {teacher.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {hasError("teacherId") && (
-                  <FormHelperText>
-                    {getErrorMessage("teacherId")}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </>
-          ) : (
-            <>
-              <TextField
-                name="name"
-                label="Tên lớp"
-                value={subject.name}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                required
-                error={hasError("name")}
-                helperText={getErrorMessage("name")}
-              />
-
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={hasError("teacherId")}
-              >
-                <InputLabel id="teacher-label">Giáo viên</InputLabel>
-                <Select
-                  labelId="teacher-label"
-                  id="teacher-select"
-                  name="teacherId"
-                  value={subject.teacherId}
-                  onChange={handleChange}
-                  label="Giáo viên"
-                >
-                  {teachers.map((teacher) => (
-                    <MenuItem key={teacher.id} value={teacher.id}>
-                      {teacher.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {hasError("teacherId") && (
-                  <FormHelperText>
-                    {getErrorMessage("teacherId")}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </>
-          )}
           <Button type="submit" variant="contained" onClick={handleSubmit}>
             {isEditMode ? "Cập nhật" : "Thêm"}
           </Button>

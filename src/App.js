@@ -20,12 +20,11 @@ import ScheduleView from "./pages/Schedule/ScheduleView";
 import News from "./pages/News/News";
 import RoleAccess from "./api/checkRole";
 import Success from "./pages/Student/checkInfo/success";
-import Class from "./pages/Class/Class";
-import UpdateSchedulePage from "./pages/Schedule/UpdateSchedulePage";
 import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
 import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
 import Metric from "./pages/Metric/Metric";
+import Attendance from "./pages/Attendance/Attendance";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
 import ForgotPass from "./pages/forgotpassword";
@@ -41,10 +40,12 @@ import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
 import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
+import MetricTeacherPage2 from "./pages/Teacher/metric/MetricTeacherPage2";
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
 import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
 import ScoreView from "./pages/Student/score/ScoreView";
 import ReportCardView from "./pages/Student/reportCard/ReportCardView";
+import SubjectTeacherPage from "./pages/Subject/SubjectTeacherPage";
 
 function App() {
 	return (
@@ -78,11 +79,13 @@ function App() {
 								/>
 								<Route path="/admin/classes" element={<Classes />} />
 								<Route path="/admin/subject" element={<Subject />} />
-								<Route path="/admin/teacher" element={<Teacher />} />
+								<Route path="/admin/attendance" element={<Attendance />} />
 								<Route
-									path="/admin/schedule-update/:scheduleId"
-									element={<UpdateSchedulePage />}
+									path="/admin/subject-teacher/:id"
+									element={<SubjectTeacherPage />}
 								/>
+								<Route path="/admin/teacher" element={<Teacher />} />
+
 								<Route path="/admin/metric" element={<Metric />} />
 								<Route
 									path="/admin/evaluationRecord"
@@ -104,8 +107,18 @@ function App() {
 									path="/teacher/class-score/:classId"
 									element={<ClassScoreTeacherPage />}
 								/>
-								<Route path="/teacher/reportCards" element={<ReportCardTeacherPage />} />
-								<Route path="/teacher/evaluationRecords" element={<EvaluationRecordTeacherPage />} />
+								<Route
+									path="/teacher/metrics"
+									element={<MetricTeacherPage2 />}
+								/>
+								<Route
+									path="/teacher/reportCards"
+									element={<ReportCardTeacherPage />}
+								/>
+								<Route
+									path="/teacher/evaluationRecords"
+									element={<EvaluationRecordTeacherPage />}
+								/>
 								<Route path="/teacher/news" element={<NewsTeacherPage />} />
 								<Route
 									path="/teacher/news-detail/:id"
@@ -118,7 +131,7 @@ function App() {
 							</Route>
 						</Route>
 
-						<Route element={<RoleAccess roles={["STUDENT", "PARENTS"]} />}>
+						<Route element={<RoleAccess roles={["STUDENT"]} />}>
 							<Route path="/user/" element={<LayoutStudent />}>
 								<Route path="/user/home" element={<StudentHome />} />
 								<Route path="/user/news" element={<NewsStudentPage />} />

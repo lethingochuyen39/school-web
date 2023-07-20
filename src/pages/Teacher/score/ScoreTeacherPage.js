@@ -21,9 +21,7 @@ const ScoreTeacherPage = () => {
 
 	const fetchDataStudents = useCallback(async (classId) => {
 		try {
-			const response = await client.get(
-				`/api/student/classes/${classId}/students`
-			);
+			const response = await client.get(`/api/student/${classId}/students`);
 			const students = response.data;
 			setClassScores((prevClassScores) => {
 				const updatedClassScores = prevClassScores.map((classItem) => {

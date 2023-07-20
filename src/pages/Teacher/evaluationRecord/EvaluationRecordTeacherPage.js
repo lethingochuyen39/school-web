@@ -162,7 +162,6 @@ const EvaluationRecordTeacherPage = () => {
   );
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
     {
       field: "student",
       headerName: "Học sinh",
@@ -216,7 +215,6 @@ const EvaluationRecordTeacherPage = () => {
             }}
           >
             <h2 id="modal-title">Thông tin bảng đánh giá</h2>
-            <p id="modal-description">ID: {evaluationRecord.id}</p>
             <p>Học sinh: {evaluationRecord.student.name}</p>
             <p>Lí do: {evaluationRecord.disciplineReason}</p>
             <p>Thành tựu: {evaluationRecord.achievement}</p>

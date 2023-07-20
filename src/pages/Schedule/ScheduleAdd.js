@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Divider, Typography } from "@mui/material";
+import { Alert, Button, Divider, IconButton, Typography } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import client from "../../api/client";
 import { Box } from "@mui/system";
@@ -7,7 +7,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import ScheduleView from "./ScheduleView";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const ScheduleTable = () => {
 	const [subjects, setSubjects] = useState([]);
 	const [selectedSubject, setSelectedSubject] = useState("");
@@ -20,7 +22,6 @@ const ScheduleTable = () => {
 	const { classId } = useParams();
 	const [refreshSchedule, setRefreshSchedule] = useState(false);
 	const [isLoadingData, setIsLoadingData] = useState(false);
-	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [teacherSubjects, setTeacherSubjects] = useState([]);
 
@@ -40,8 +41,11 @@ const ScheduleTable = () => {
 			setSelectedSubject(subjectsResponse.data[0]?.id || "");
 
 			const teachersResponse = await client.get("/api/teachers");
-			setTeachers(teachersResponse.data);
-			setSelectedTeacher(teachersResponse.data[0]?.id || "");
+			const activeTeachers = teachersResponse.data.filter(
+				(teacher) => teacher.isActive
+			);
+			setTeachers(activeTeachers);
+			setSelectedTeacher(activeTeachers[0]?.id || "");
 
 			setIsLoadingData(true);
 		} catch (error) {
@@ -68,6 +72,7 @@ const ScheduleTable = () => {
 	};
 
 	const navigate = useNavigate();
+
 	const handleCloseModal = () => {
 		navigate(-1);
 	};
@@ -90,7 +95,6 @@ const ScheduleTable = () => {
 			.catch((error) => {
 				console.error("Lỗi khi thêm lịch học:", error.response.data);
 				setErrorMessage(error.response.data);
-				setSuccessMessage("");
 			});
 	};
 
@@ -103,14 +107,14 @@ const ScheduleTable = () => {
 			fetchTeacherSubjects(selectedTeacher);
 		}
 		if (refreshSchedule) {
-			setSuccessMessage("Lịch học đã được thêm thành công!");
+			toast.success("Lịch học đã được thêm thành công");
 			setRefreshSchedule(false);
 		}
 	}, [refreshSchedule, selectedTeacher]);
 
 	const fetchTeacherSubjects = async (teacherId) => {
 		try {
-			const response = await client.get(`/api/subjects/teachers/${teacherId}`);
+			const response = await client.get(`/api/teachers/${teacherId}/subjects`);
 			setTeacherSubjects(response.data);
 
 			if (response.data.length > 0) {
@@ -123,21 +127,15 @@ const ScheduleTable = () => {
 
 	const getHeader = () => (
 		<>
-			<Box mt={2}>
-				{/* Thông báo thành công */}
-				{successMessage && (
-					<Alert severity="success" onClose={() => setSuccessMessage("")}>
-						{successMessage}
-					</Alert>
-				)}
-				{/* Thông báo lỗi */}
-				{errorMessage && (
-					<Alert severity="error" onClose={() => setErrorMessage("")}>
-						{errorMessage}
-					</Alert>
-				)}
-				{/* ... */}
-			</Box>
+			<IconButton onClick={handleCloseModal}>
+				<ArrowBackIcon />
+			</IconButton>
+
+			{errorMessage && (
+				<Alert severity="error" onClose={() => setErrorMessage("")}>
+					{errorMessage}
+				</Alert>
+			)}
 			<Box
 				display="flex"
 				justifyContent="space-between"
@@ -281,6 +279,7 @@ const ScheduleTable = () => {
 	);
 	return (
 		<GridWrapper>
+			<ToastContainer />
 			<BasicCard header={getHeader()} content={getContent()} />
 		</GridWrapper>
 	);
