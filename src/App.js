@@ -26,6 +26,7 @@ import Metric from "./pages/Metric/Metric";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
 import ForgotPass from "./pages/forgotpassword";
+import CheckInfo from "./pages/Student/checkInfo/checkinfo";
 
 function App() {
 	return (
@@ -85,6 +86,7 @@ function App() {
 							</Route>
 						</Route>
 						<Route path="/forgotpassword" element={<ForgotPass />} />
+						<Route path="/checkInfo" element={<CheckInfo />} />
 					</Routes>
 				</AuthContextProvider>
 			</BrowserRouter>

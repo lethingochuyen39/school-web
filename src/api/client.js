@@ -1,6 +1,4 @@
 import axios from "axios";
-import Login from "../pages/login";
-import { Navigate, useNavigate } from "react-router-dom";
 
 const client = axios.create({
 	baseURL: "http://localhost:8080",
@@ -35,4 +33,8 @@ export function forgotpassword(payload){
 
 export function resetpassword(payload){
 	client.post("auth/reset_password",payload);
+}
+
+export function confirm(payload){
+	client.post("/api/student/confirm",payload);
 }
