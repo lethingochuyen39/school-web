@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }) => {
 				navigate("/teacher/home");
 			}
 			if (role === "STUDENT") {
-				navigate("/user/success");
+				navigate("/user/home");
 			}
 		});
 	};

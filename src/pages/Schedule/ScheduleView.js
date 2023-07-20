@@ -122,9 +122,9 @@ const ScheduleView = ({ classId, refresh, setRefresh }) => {
 								"&:nth-of-type(odd)": {
 									backgroundColor: "#e3f2fd",
 								},
-								"&:last-child td": {
-									borderBottom: "none",
-								},
+								// "&:last-child td": {
+								// 	borderBottom: "none",
+								// },
 							}}
 						>
 							<TableCell

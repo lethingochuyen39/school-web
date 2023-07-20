@@ -3,7 +3,7 @@ import { Alert, Button, Divider, Typography } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import client from "../../api/client";
 import { Box } from "@mui/system";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ScheduleView from "./ScheduleView";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
@@ -22,6 +22,7 @@ const ScheduleTable = () => {
 	const [isLoadingData, setIsLoadingData] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
+	const [teacherSubjects, setTeacherSubjects] = useState([]);
 
 	const fetchData = async () => {
 		try {
@@ -61,7 +62,14 @@ const ScheduleTable = () => {
 	};
 
 	const handleTeacherChange = (event) => {
-		setSelectedTeacher(event.target.value);
+		const teacherId = event.target.value;
+		setSelectedTeacher(teacherId);
+		fetchTeacherSubjects(teacherId);
+	};
+
+	const navigate = useNavigate();
+	const handleCloseModal = () => {
+		navigate(-1);
 	};
 
 	const handleSubmit = () => {
@@ -77,7 +85,6 @@ const ScheduleTable = () => {
 			.post("/api/schedules", scheduleData)
 			.then((response) => {
 				setRefreshSchedule(true);
-				console.log("Lịch học đã được thêm:", response.data);
 				setErrorMessage("");
 			})
 			.catch((error) => {
@@ -92,11 +99,27 @@ const ScheduleTable = () => {
 	}, [classId]);
 
 	useEffect(() => {
+		if (selectedTeacher) {
+			fetchTeacherSubjects(selectedTeacher);
+		}
 		if (refreshSchedule) {
 			setSuccessMessage("Lịch học đã được thêm thành công!");
 			setRefreshSchedule(false);
 		}
-	}, [refreshSchedule]);
+	}, [refreshSchedule, selectedTeacher]);
+
+	const fetchTeacherSubjects = async (teacherId) => {
+		try {
+			const response = await client.get(`/api/subjects/teachers/${teacherId}`);
+			setTeacherSubjects(response.data);
+
+			if (response.data.length > 0) {
+				setSelectedSubject(response.data[0].id);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	const getHeader = () => (
 		<>
@@ -164,26 +187,6 @@ const ScheduleTable = () => {
 				</Box>
 				<Box width="calc(50% - 10px)" marginRight="10px">
 					<FormControl fullWidth margin="normal">
-						<InputLabel id="subject-label">Chọn môn học</InputLabel>
-						<Select
-							labelId="subject-label"
-							id="subject-select"
-							name="subjectId"
-							value={selectedSubject}
-							onChange={handleSubjectChange}
-							label="Chọn môn học"
-							sx={{ height: "40px" }}
-						>
-							{subjects.map((subject) => (
-								<MenuItem key={subject.id} value={subject.id}>
-									{subject.name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</Box>
-				<Box width="calc(50% - 10px)" marginLeft="10px">
-					<FormControl fullWidth margin="normal">
 						<InputLabel id="teacher-label">Chọn giáo viên</InputLabel>
 						<Select
 							labelId="teacher-label"
@@ -197,6 +200,26 @@ const ScheduleTable = () => {
 							{teachers.map((teacher) => (
 								<MenuItem key={teacher.id} value={teacher.id}>
 									{teacher.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Box>
+				<Box width="calc(50% - 10px)" marginLeft="10px">
+					<FormControl fullWidth margin="normal">
+						<InputLabel id="subject-label">Chọn môn học</InputLabel>
+						<Select
+							labelId="subject-label"
+							id="subject-select"
+							name="subjectId"
+							value={selectedSubject}
+							onChange={handleSubjectChange}
+							label="Chọn môn học"
+							sx={{ height: "40px" }}
+						>
+							{teacherSubjects.map((subject) => (
+								<MenuItem key={subject.id} value={subject.id}>
+									{subject.name}
 								</MenuItem>
 							))}
 						</Select>
@@ -216,6 +239,18 @@ const ScheduleTable = () => {
 			>
 				Thêm
 			</Button>
+			<Button
+				onClick={handleCloseModal}
+				color="error"
+				sx={{
+					fontSize: "1.1rem",
+					width: "100px",
+					marginTop: "10px",
+					marginBottom: "20px",
+				}}
+			>
+				Quay lại
+			</Button>
 		</>
 	);
 
@@ -233,7 +268,7 @@ const ScheduleTable = () => {
 						textAlign: "center",
 					}}
 				>
-					Danh sách lịch học lớp ID - {classId}
+					Danh sách Thời khóa biểu
 				</Typography>
 
 				<ScheduleView

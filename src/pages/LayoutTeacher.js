@@ -9,10 +9,7 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -27,7 +24,7 @@ function Footer(props) {
 			variant="body2"
 			color="text.secondary"
 			align="center"
-			marginBottom="10px"
+			marginBottom={2}
 			{...props}
 		>
 			{"Copyright © "}
@@ -102,7 +99,6 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function LayoutTeacher() {
-
 	const navigate = useNavigate();
 	const handleLogout = () => {
 		logout();
@@ -182,7 +178,7 @@ export default function LayoutTeacher() {
 								? theme.palette.grey[100]
 								: theme.palette.grey[900],
 						flexGrow: 1,
-						height: "100vh",
+						minHeight: "100vh",
 						overflow: "auto",
 					}}
 				>
@@ -194,7 +190,6 @@ export default function LayoutTeacher() {
 						<Outlet />
 					</Container>
 					<Footer />
-
 				</Box>
 			</Box>
 		</ThemeProvider>

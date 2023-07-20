@@ -12,6 +12,7 @@ import HttpsIcon from "@mui/icons-material/Https";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 export const mainListItems = (
 	<React.Fragment>
 		<ListItemButton component={Link} to="/teacher/home">
@@ -28,27 +29,49 @@ export const mainListItems = (
 		</ListItemButton>
 		<ListItemButton>
 			<ListItemIcon>
-				<FactCheckIcon />
-			</ListItemIcon>
-			<ListItemText primary="Nhập điểm" />
-		</ListItemButton>
-		<ListItemButton>
-			<ListItemIcon>
 				<AssignmentIcon />
 			</ListItemIcon>
 			<ListItemText primary="Điểm danh" />
 		</ListItemButton>
+		<ListItemButton component={Link} to="/teacher/schedule">
+			<ListItemIcon>
+				<CalendarMonthIcon />
+			</ListItemIcon>
+			<ListItemText primary="Lịch biểu" />
+		</ListItemButton>
+		<ListItemButton component={Link} to="/teacher/score">
+			<ListItemIcon>
+				<FactCheckIcon />
+			</ListItemIcon>
+			<ListItemText primary="Nhập điểm" />
+		</ListItemButton>
+
 		<ListItemButton component={Link} to="/teacher/document">
 			<ListItemIcon>
 				<LibraryBooksIcon />
 			</ListItemIcon>
 			<ListItemText primary="Tài liệu" />
 		</ListItemButton>
-		<ListItemButton>
+		<ListItemButton component={Link} to="/teacher/news">
 			<ListItemIcon>
 				<NewspaperIcon />
 			</ListItemIcon>
 			<ListItemText primary="Tin tức" />
+		</ListItemButton>
+		<ListItemButton component={Link} to="/teacher/evaluationRecords">
+			<ListItemIcon>
+				<LibraryBooksIcon />
+			</ListItemIcon>
+			<ListItemText primary="Đánh giá" />
+		</ListItemButton>
+		<ListItemButton component={Link} to="/teacher/reportCards">
+			<ListItemIcon>
+				<LibraryBooksIcon />
+			</ListItemIcon>
+			<ListItemText
+				primary="Vi phạm"
+				primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+			/>
 		</ListItemButton>
 	</React.Fragment>
 );

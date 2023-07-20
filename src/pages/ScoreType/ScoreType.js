@@ -2,55 +2,18 @@ import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import SearchIcon from "@mui/icons-material/Search";
 import Input from "@mui/material/Input";
-import CommonButton from "../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
-import ScoreTypeForm from "../../components/score/ScoreTypeForm";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 const ScoreType = () => {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [scoreType, setScoreType] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [isEditMode, setIsEditMode] = useState(false);
-	const [selectedScoreType, setselectedScoreType] = useState(null);
-	const [error, setError] = useState("");
 	const [searchTerm, setSearchTerm] = useState("");
 
-	const handleOpenForm = () => {
-		if (scoreType) {
-			setIsEditMode(true);
-			setselectedScoreType(scoreType);
-		} else {
-			setIsEditMode(false);
-			setselectedScoreType(null);
-		}
-		setIsFormOpen(true);
-	};
-
-	const handleCloseForm = () => {
-		setIsFormOpen(false);
-		setScoreType(null);
-	};
-
-	const handleAddScoreType = async (newScoreType) => {
-		try {
-			await client.post("/api/score-types", newScoreType);
-			setIsModalOpen(true);
-			await fetchData();
-		} catch (error) {
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
-			}
-		}
-	};
-
-	// hiển thị thông tin
 	const handleView = async (id) => {
 		try {
 			const response = await client.get(`/api/score-types/${id}`);
@@ -67,41 +30,6 @@ const ScoreType = () => {
 		setScoreType(null);
 	};
 
-	const handleEdit = (id) => {
-		const selectedScoreType = data.find((year) => year.id === id);
-		if (selectedScoreType) {
-			setIsEditMode(true);
-			setselectedScoreType(selectedScoreType);
-			setIsFormOpen(true);
-		}
-	};
-
-	const handleUpdateScoreType = async (updatedScoreType) => {
-		try {
-			await client.put(
-				`/api/score-types/${updatedScoreType.id}`,
-				updatedScoreType
-			);
-			setIsModalOpen(true);
-			await fetchData();
-		} catch (error) {
-			console.error(error);
-			if (error.response) {
-				setError(error.response.data);
-			} else {
-				setError("Đã xảy ra lỗi khi cập nhật loại điểm.");
-			}
-		}
-	};
-
-	const handleDelete = async (id) => {
-		try {
-			await client.delete(`/api/score-types/${id}`);
-			fetchData();
-		} catch (error) {
-			console.error(error);
-		}
-	};
 	const fetchData = useCallback(async () => {
 		try {
 			let url = "/api/score-types";
@@ -132,31 +60,12 @@ const ScoreType = () => {
 			justifyContent="space-between"
 			alignItems="center"
 			paddingLeft="20px"
-			paddingBottom="20px"
 			paddingTop="10px"
 			paddingRight="10px"
 			flexWrap="wrap"
 		>
 			<Box
-				display="flex"
-				alignItems="center"
-				marginTop={{ xs: "10px", sm: 0 }}
-				marginRight={{ xs: "10px" }}
-			>
-				<CommonButton
-					variant="contained"
-					sx={{
-						color: "white",
-						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-					}}
-					onClick={handleOpenForm}
-					size="large"
-				>
-					Thêm mới
-				</CommonButton>
-			</Box>
-			<Box
-				minWidth={{ xs: "100%", sm: 0, md: "500px" }}
+				minWidth={{ xs: "100%", sm: "250px", md: "500px" }}
 				marginRight={{ xs: 0, sm: "10px" }}
 				marginBottom={{ xs: "10px", sm: 0 }}
 				backgroundColor="#f5f5f5"
@@ -171,7 +80,7 @@ const ScoreType = () => {
 					onChange={handleSearchChange}
 					value={searchTerm}
 					sx={{
-						width: { xs: "100%", sm: "auto", md: "100%" },
+						width: { xs: "100%", sm: "100%", md: "100%" },
 						color: "rgba(0, 0, 0, 0.6)",
 						fontSize: "1.1rem",
 					}}
@@ -183,7 +92,8 @@ const ScoreType = () => {
 
 	const columns = [
 		{ field: "id", headerName: "ID", width: 100 },
-		{ field: "name", headerName: "Tên", width: 250 },
+		{ field: "name", headerName: "Tên loại điểm", width: 200 },
+		{ field: "description", headerName: "Mô tả", width: 200 },
 		{ field: "coefficient", headerName: "Hệ số", width: 100 },
 	];
 
@@ -194,25 +104,13 @@ const ScoreType = () => {
 				columns={columns}
 				loading={loading}
 				handleView={handleView}
-				handleEdit={handleEdit}
-				handleDelete={handleDelete}
+				hiddenActions={["delete", "edit"]}
 			/>
 		);
 	};
 
 	return (
 		<GridWrapper>
-			{isFormOpen && (
-				<ScoreTypeForm
-					handleAddScoreType={handleAddScoreType}
-					handleUpdateScoreType={handleUpdateScoreType}
-					handleClose={handleCloseForm}
-					isEditMode={isEditMode}
-					initialData={selectedScoreType}
-					error={error}
-				/>
-			)}
-
 			{scoreType && (
 				<Modal
 					open={isModalOpen}
@@ -232,10 +130,35 @@ const ScoreType = () => {
 							p: 2,
 						}}
 					>
-						<h2 id="modal-title">Thông tin loại điểm</h2>
-						<p id="modal-description">ID: {scoreType.id}</p>
-						<p>Tên loại điểm: {scoreType.name}</p>
-						<p>Hệ số nhân: {scoreType.coefficient}</p>
+						<Typography
+							id="modal-title"
+							variant="h4"
+							sx={{
+								mb: 2,
+								fontWeight: "bold",
+								textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+								color: "#FF4500",
+								textAlign: "center",
+							}}
+						>
+							Thông tin loại điểm
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>ID:</b> {scoreType.id}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Tên loại điểm: </b> {scoreType.name}
+						</Typography>
+						<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+							<b>Mô tả loại điểm: </b> {scoreType.description}
+						</Typography>
+						<Typography
+							variant="body1"
+							sx={{ overflowWrap: "break-word", mb: 2 }}
+						>
+							<b>Hệ số nhân: </b> {scoreType.coefficient}
+						</Typography>
+
 						<Button variant="contained" onClick={closeModal}>
 							Đóng
 						</Button>
