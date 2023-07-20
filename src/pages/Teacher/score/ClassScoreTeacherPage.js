@@ -28,7 +28,7 @@ const ClassScoreTeacherPage = () => {
 	const [scoreTypes, setScoreTypes] = useState([]);
 	const [semester, setSemester] = useState(1);
 	const [errors, setErrors] = useState({});
-	const [successMessage, setSuccessMessage] = useState("");
+	const [success, setSuccess] = useState({});
 	const [errorMessage, setErrorMessage] = useState("");
 	const [teacher, setTeacher] = useState(null);
 	const navigate = useNavigate();
@@ -117,13 +117,22 @@ const ClassScoreTeacherPage = () => {
 		});
 	};
 
-	const renderErrorMessage = (id) => {
+	const renderMessage = (id) => {
 		const errorObj = errors[id];
+		const successObj = success[id];
+
 		if (errorObj) {
 			return (
 				<Alert severity="error">
 					<AlertTitle>Error</AlertTitle>
 					{errorObj.message}
+				</Alert>
+			);
+		}
+		if (successObj) {
+			return (
+				<Alert severity="success">
+					<AlertTitle>Thêm thành công</AlertTitle>
 				</Alert>
 			);
 		}
@@ -142,10 +151,8 @@ const ClassScoreTeacherPage = () => {
 	};
 
 	const handleSaveScores = async () => {
-		if (Object.keys(errors).length > 0) {
-			setErrorMessage("Vui lòng kiểm tra lại điểm nhập vào");
-			return;
-		}
+		setErrors({});
+		setSuccess({});
 		for (const row of students) {
 			if (row.score !== "") {
 				const scoreToAdd = {
@@ -164,15 +171,12 @@ const ClassScoreTeacherPage = () => {
 						delete updatedErrors[row.id];
 						return updatedErrors;
 					});
-					setSuccessMessage("Thao tác thành công");
+					setSuccess((prev) => ({
+						...prev,
+						[row.id]: "Thêm thành công",
+					}));
 					setErrorMessage("");
 				} catch (error) {
-					if (error.response && error.response.data) {
-						setErrorMessage(error.response.data);
-					} else {
-						setErrorMessage("Có lỗi xảy ra");
-					}
-					setSuccessMessage("");
 					setErrors((prevErrors) => ({
 						...prevErrors,
 						[row.id]: { message: error.response.data || "Lỗi khi lưu điểm" },
@@ -201,7 +205,7 @@ const ClassScoreTeacherPage = () => {
 						value={params.row.score}
 						onChange={(e) => handleScoreInput(params.id, e.target.value)}
 					/>
-					{renderErrorMessage(params.id)}
+					{renderMessage(params.id)}
 				</>
 			),
 			disableActions: true,
@@ -325,12 +329,6 @@ const ClassScoreTeacherPage = () => {
 					<Alert severity="error">
 						<AlertTitle>Error</AlertTitle>
 						{errorMessage}
-					</Alert>
-				)}
-				{successMessage && (
-					<Alert severity="success">
-						<AlertTitle>Success</AlertTitle>
-						{successMessage}
 					</Alert>
 				)}
 			</Stack>

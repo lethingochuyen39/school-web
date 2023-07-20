@@ -6,6 +6,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 import {
 	Button,
 	FormControl,
@@ -28,7 +29,7 @@ const ClassScorePage = () => {
 	const [scoreTypes, setScoreTypes] = useState([]);
 	const [semester, setSemester] = useState(1);
 	const [errors, setErrors] = useState({});
-	const [successMessage, setSuccessMessage] = useState("");
+	const [success, setSuccess] = useState({});
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
@@ -108,13 +109,22 @@ const ClassScorePage = () => {
 		});
 	};
 
-	const renderErrorMessage = (id) => {
+	const renderMessage = (id) => {
 		const errorObj = errors[id];
+		const successObj = success[id];
+
 		if (errorObj) {
 			return (
 				<Alert severity="error">
 					<AlertTitle>Error</AlertTitle>
 					{errorObj.message}
+				</Alert>
+			);
+		}
+		if (successObj) {
+			return (
+				<Alert severity="success">
+					<AlertTitle>Thêm thành công</AlertTitle>
 				</Alert>
 			);
 		}
@@ -134,6 +144,7 @@ const ClassScorePage = () => {
 
 	const handleSaveScores = async () => {
 		setErrors({});
+		setSuccess({});
 		for (const row of students) {
 			if (row.score !== "") {
 				const scoreToAdd = {
@@ -153,10 +164,12 @@ const ClassScorePage = () => {
 						delete updatedErrors[row.id];
 						return updatedErrors;
 					});
-					setSuccessMessage("Thao tác thành công");
 					setErrorMessage("");
+					setSuccess((prev) => ({
+						...prev,
+						[row.id]: "Thêm thành công",
+					}));
 				} catch (error) {
-					setSuccessMessage("");
 					setErrors((prevErrors) => ({
 						...prevErrors,
 						[row.id]: { message: error.response.data || "Lỗi khi lưu điểm" },
@@ -185,7 +198,7 @@ const ClassScorePage = () => {
 						value={params.row.score}
 						onChange={(e) => handleScoreInput(params.id, e.target.value)}
 					/>
-					{renderErrorMessage(params.id)}
+					{renderMessage(params.id)}
 				</>
 			),
 			disableActions: true,
@@ -309,12 +322,6 @@ const ClassScorePage = () => {
 					<Alert severity="error">
 						<AlertTitle>Error</AlertTitle>
 						{errorMessage}
-					</Alert>
-				)}
-				{successMessage && (
-					<Alert severity="success">
-						<AlertTitle>Success</AlertTitle>
-						{successMessage}
 					</Alert>
 				)}
 			</Stack>
