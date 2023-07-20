@@ -59,6 +59,7 @@ const ClassesForm = ({
     name: isEditMode ? initialData.name : "",
     description: isEditMode ? initialData.description : "",
     grade: isEditMode ? initialData.grade : "",
+    limitStudent: isEditMode ? initialData.limitStudent : "",
     academicYearId: isEditMode ? initialData.academicYear.id : "",
     teacherId: isEditMode ? initialData.teacher.id : "",
   });
@@ -72,6 +73,7 @@ const ClassesForm = ({
         name: initialData.name,
         description: initialData.description,
         grade: initialData.grade,
+        limitStudent: initialData.limitStudent,
         academicYearId: initialData.academicYear.id,
         teacherId: initialData.teacher.id,
       });
@@ -93,6 +95,7 @@ const ClassesForm = ({
           name: classes.name,
           description: classes.description,
           grade: classes.grade,
+          limitStudent: classes.limitStudent,
           academicYearId: classes.academicYearId,
           teacherId: classes.teacherId,
         };
@@ -185,6 +188,20 @@ const ClassesForm = ({
                 required
                 error={hasError("grade")}
                 helperText={getErrorMessage("grade")}
+              />
+
+              <TextField
+                type="number"
+                name="limitStudent"
+                label="Giới hạn học sinh"
+                value={classes.limitStudent}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                required
+                error={hasError("limitStudent")}
+                helperText={getErrorMessage("limitStudent")}
               />
 
               <FormControl
@@ -280,6 +297,20 @@ const ClassesForm = ({
                 required
                 error={hasError("grade")}
                 helperText={getErrorMessage("grade")}
+              />
+
+              <TextField
+                type="number"
+                name="limitStudent"
+                label="Giới hạn"
+                value={classes.limitStudent}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                required
+                error={hasError("limitStudent")}
+                helperText={getErrorMessage("limitStudent")}
               />
 
               <FormControl
