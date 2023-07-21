@@ -98,18 +98,15 @@ const TeacherForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 		formData.append("isActive", teacher.isActive);
 
 		try {
+			const errors = validate(teacher, schema);
+			if (errors) {
+				setError(errors);
+				return;
+			}
 			if (isEditMode && teacher.id) {
-				if (!formData) {
-					formData = { isActive: teacher.isActive };
-				}
-				await client.put(`/api/teachers/update/${teacher.id}`, formData, {});
+				await client.put(`/api/teachers/update/${teacher.id}`, teacher);
 				fetchData();
 			} else {
-				const errors = validate(teacher, schema);
-				if (errors) {
-					setError(errors);
-					return;
-				}
 				await client.post("/api/teachers/create", teacher);
 				await fetchData();
 			}
