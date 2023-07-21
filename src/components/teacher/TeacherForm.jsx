@@ -99,10 +99,8 @@ const TeacherForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 
     try {
       if (isEditMode && teacher.id) {
-        if (!formData) {
-          formData = { isActive: teacher.isActive };
-        }
-        await client.put(`/api/teachers/update/${teacher.id}`, formData, {});
+
+        await client.put(`/api/teachers/update/${teacher.id}`, teacher);
         fetchData();
       } else {
         const errors = validate(teacher, schema);
@@ -110,11 +108,7 @@ const TeacherForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
           setError(errors);
           return;
         }
-        await client.post("/api/teachers/create", teacher, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await client.post("/api/teachers/create");
         await fetchData();
       }
 
