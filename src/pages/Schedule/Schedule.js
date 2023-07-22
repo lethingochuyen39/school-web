@@ -47,7 +47,10 @@ const Schedule = () => {
 	const fetchTeachers = useCallback(async () => {
 		try {
 			const response = await client.get("/api/teachers");
-			setTeachers(response.data);
+			const teachersWithSubjects = response.data.filter(
+				(teacher) => teacher.subjects && teacher.subjects.length > 0
+			);
+			setTeachers(teachersWithSubjects);
 		} catch (error) {
 			console.error(error);
 		}
@@ -145,9 +148,11 @@ const Schedule = () => {
 		const selectedTeacher = teachers.find(
 			(teacher) => teacher.id === teacherId
 		);
+		const selectedSubject = selectedTeacher?.subjects?.[0] || null;
 		const updatedSchedule = {
 			...selectedSchedule,
 			teacher: selectedTeacher,
+			subject: selectedSubject,
 		};
 		setSelectedSchedule(updatedSchedule);
 	};

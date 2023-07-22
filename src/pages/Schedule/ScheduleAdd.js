@@ -42,7 +42,8 @@ const ScheduleTable = () => {
 
 			const teachersResponse = await client.get("/api/teachers");
 			const activeTeachers = teachersResponse.data.filter(
-				(teacher) => teacher.isActive
+				(teacher) =>
+					teacher.isActive && teacher.subjects && teacher.subjects.length > 0
 			);
 			setTeachers(activeTeachers);
 			setSelectedTeacher(activeTeachers[0]?.id || "");
