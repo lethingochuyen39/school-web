@@ -25,6 +25,8 @@ const Score = () => {
 	const [subjects, setSubjects] = useState([]);
 	const [scoreTypes, setScoreTypes] = useState([]);
 	const [selectedClass, setSelectedClass] = useState(null);
+	const [searchClass, setSearchClass] = useState("");
+	const [filteredClassSchedule, setFilteredClassSchedule] = useState([]);
 	const [classScores, setClassScores] = useState([]);
 	const [classes, setClasses] = useState([]);
 
@@ -88,6 +90,17 @@ const Score = () => {
 		setSearchTerm(event.target.value);
 	};
 
+	const handleFilteredClassChange = (event) => {
+		setSearchClass(event.target.value);
+		if (event.target.value === "") {
+			setFilteredClassSchedule(classScores);
+		} else {
+			const filteredClasses = classScores.filter((classItem) =>
+				classItem.name.toLowerCase().includes(event.target.value.toLowerCase())
+			);
+			setFilteredClassSchedule(filteredClasses);
+		}
+	};
 	const handleView = async (id) => {
 		try {
 			const response = await client.get(`/api/scores/${id}`);
@@ -125,6 +138,7 @@ const Score = () => {
 		try {
 			const response = await client.get("/api/classes");
 			setClassScores(response.data);
+			setFilteredClassSchedule(response.data);
 			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
@@ -303,8 +317,32 @@ const Score = () => {
 						>
 							Chọn lớp học
 						</Typography>
+
+						<Box
+							minWidth={{ xs: "100%", sm: 0, md: "80%" }}
+							marginRight={{ xs: 0, sm: "10px" }}
+							marginBottom={{ xs: "10px", sm: 0 }}
+							backgroundColor="#f5f5f5"
+							borderRadius="4px"
+							padding="4px"
+							display="flex"
+							alignItems="center"
+						>
+							<SearchIcon sx={{ marginRight: "15px" }} />
+							<Input
+								placeholder="Tìm kiếm theo tên lớp... "
+								onChange={handleFilteredClassChange}
+								value={searchClass}
+								sx={{
+									width: { xs: "100%", sm: "auto", md: "100%" },
+									color: "rgba(0, 0, 0, 0.6)",
+									fontSize: "1.1rem",
+								}}
+								disableUnderline
+							/>
+						</Box>
 						<ul>
-							{classScores.map((classItem) => (
+							{filteredClassSchedule.map((classItem) => (
 								<li
 									key={classItem.id}
 									onClick={() => handleClassClick(classItem.id)}
