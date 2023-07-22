@@ -112,18 +112,6 @@ export const mainNavbarItems = [
 		id: 16,
 		icon: <ContactEmergencyIcon />,
 		label: "Quản lý điểm danh",
-		route: "home",
-		children: [
-			{
-				id: 17,
-				label: "Danh mục 1",
-				route: "home",
-			},
-			{
-				id: 18,
-				label: "Danh mục 2",
-				route: "home",
-			},
-		],
+		route: "attendance",
 	},
 ];
