@@ -1,23 +1,34 @@
-import { Avatar, Button, CssBaseline, TextField, Typography } from "@mui/material";
-import { Box, Container, ThemeProvider, createTheme } from "@mui/system";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import AuthContext from "../../src/api/AuthContext";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { resetpassword } from "../api/client";
-
-const ResetPassword = ()=>{
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Outlet, useNavigate } from "react-router-dom";
+import { forgotpassword, resetpassword } from "../api/client";
+// import Cookies from "universal-cookie";
+const ResetPassword = () => {
 	// const { forgotpassword } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const defaultTheme = createTheme();
 
-	const resetpasssubmit = async (event) => {
+	const forgotpasswordsubmit = async (event) => {
 		// const cookies = new Cookies();
 		// cookies.remove("token");
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		let payload = {
-			password: data.get("password"),
-		};
+						password: data.get("password"),
+					};
         try{
             resetpassword(payload);
             navigate("/")
@@ -58,11 +69,11 @@ const ResetPassword = ()=>{
 							<LockOutlinedIcon />
 						</Avatar>
 						<Typography component="h1" variant="h5">
-							Verify Email
+							Get New Password
 						</Typography>
 						<Box
 							component="form"
-							onSubmit={resetpasssubmit}
+							onSubmit={forgotpasswordsubmit}
 							noValidate
 							sx={{ mt: 1 }}
 						>
@@ -82,7 +93,7 @@ const ResetPassword = ()=>{
 								required
 								fullWidth
 								name="password"
-								label="password"
+								label="New Password"
 								type="text"
 								id="password"
 								autoComplete="current-password"
@@ -93,7 +104,7 @@ const ResetPassword = ()=>{
 								variant="contained"
 								sx={{ mt: 3, mb: 2 }}
 							>
-								Send Verification Code
+								CHANGE
 							</Button>
 						</Box>
 					</Box>
@@ -101,5 +112,5 @@ const ResetPassword = ()=>{
 			</ThemeProvider>
 		</>
 	);
-}
+};
 export default ResetPassword;
