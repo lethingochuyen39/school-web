@@ -17,9 +17,9 @@ const MetricTeacherPage2 = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState(null);
   const [error, setError] = useState("");
+  const [academicYears, setAcademicYears] = useState([]);
 
-  const handleOpenMetricForm = () => {
-    console.log(metric);
+  const handleOpenMetricForm = async () => {
     if (metric) {
       setIsEditMode(true);
       setSelectedMetric(metric);
@@ -27,39 +27,22 @@ const MetricTeacherPage2 = () => {
       setIsEditMode(false);
       setSelectedMetric(null);
     }
+
+    try {
+      const responseAcademicYears = await client.get("/api/academic-years/all");
+      setAcademicYears(responseAcademicYears.data);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        setError(error.response.data);
+      }
+    }
     setIsMetricFormOpen(true);
   };
 
   const handleCloseMetricForm = () => {
     setIsMetricFormOpen(false);
     setMetric(null);
-  };
-
-  const handleAddMetric = async (newMetric) => {
-    try {
-      await client.post("/api/metrics", newMetric);
-      setIsModalOpen(true);
-      await fetchData();
-    } catch (error) {
-      console.error(error);
-      if (error.response) {
-        setError(error.response.data.message);
-      } else {
-        setError("Đã xảy ra lỗi khi cập nhật thống kê.");
-      }
-    }
-  };
-
-  // hiển thị thông tin
-  const handleView = async (id) => {
-    try {
-      const response = await client.get(`/api/metrics/${id}`);
-      const data = response.data;
-      setMetric(data);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const closeModal = () => {
@@ -82,6 +65,34 @@ const MetricTeacherPage2 = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleAddMetric = async (newMetric) => {
+    console.log(newMetric);
+    try {
+      await client.post("/api/metrics", newMetric);
+
+      await fetchData();
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        setError(error.response.data.message);
+      } else {
+        setError("Đã xảy ra lỗi khi cập nhật thống kê.");
+      }
+    }
+  };
+
+  // hiển thị thông tin
+  const handleView = async (id) => {
+    try {
+      const response = await client.get(`/api/metrics/${id}`);
+      const data = response.data;
+      setMetric(data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getHeader = () => (
     <Box
@@ -117,10 +128,16 @@ const MetricTeacherPage2 = () => {
   );
 
   const columns = [
-    { field: "name", headerName: "Tên thống kê", width: 150 },
-    { field: "description", headerName: "Miêu tả", width: 150 },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "name", headerName: "Tên thống kê", width: 200 },
+    { field: "description", headerName: "Miêu tả", width: 200 },
     { field: "value", headerName: "Giá trị", width: 150 },
-    { field: "year", headerName: "Năm", width: 150 },
+    {
+      field: "academicYear",
+      headerName: "Năm học",
+      width: 150,
+      valueGetter: (params) => params.row.academicYear?.name || "",
+    },
   ];
 
   const getContent = () => {
@@ -144,6 +161,7 @@ const MetricTeacherPage2 = () => {
           isEditMode={isEditMode}
           initialData={selectedMetric}
           error={error}
+          academicYears={academicYears}
         />
       )}
 
@@ -167,10 +185,11 @@ const MetricTeacherPage2 = () => {
             }}
           >
             <h2 id="modal-title">Thông tin thống kê</h2>
+            <p id="modal-description">ID: {metric.id}</p>
             <p>Tên thống kê: {metric.name}</p>
             <p>Miêu tả: {metric.description}</p>
             <p>Giá trị: {metric.value}</p>
-            <p>Năm: {metric.year}</p>
+            <p>Năm học: {metric.academicYear.name}</p>
             <Button variant="contained" onClick={closeModal}>
               Đóng
             </Button>

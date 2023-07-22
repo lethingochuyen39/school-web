@@ -73,7 +73,7 @@ const ReportCard = () => {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        setError(error.response.data);
+        setError(error.response.data.message);
       } else {
         setError("Đã xảy ra lỗi khi cập nhật hạng kiểm.");
       }
