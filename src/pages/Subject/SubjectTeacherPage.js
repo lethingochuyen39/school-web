@@ -55,31 +55,38 @@ export default function SubjectTeacherPage() {
   }, [id]);
 
   const handleTeacherChange = (event) => {
-    const id = event.target.value;
-    setSelectedTeacher(id);
-    console.log(selectedTeacher);
+    const selectedIds = event.target.value;
+    setSelectedTeachers(selectedIds);
   };
 
   const handleSubmit = () => {
-    const data = {
-      teacherId: selectedTeacher,
-      subjectId: id,
-    };
-
-    // Check if the selected teacher is already in the teachers state
-    if (teachers.find((teacher) => teacher.id === data.teacherId)) {
-      toast.warning("Giáo viên đã được thêm vào môn học.");
-    } else {
-      client
-        .post(`/api/subjects/${data.subjectId}/teachers/${data.teacherId}`)
-        .then((response) => {
-          fetchTeacherData();
-          toast.success("Thêm giáo viên vào môn học thành công");
-        })
-        .catch((error) => {
-          console.error("Lỗi khi thêm:", error.response.data);
-        });
+    if (selectedTeachers.length === 0) {
+      toast.warning("Vui lòng chọn ít nhất một giáo viên để thêm vào môn học.");
+      return;
     }
+
+    // Check if any of the selected teachers are already in the teachers state
+    const existingTeachers = selectedTeachers.filter((teacherId) =>
+      teachers.find((teacher) => teacher.id === teacherId)
+    );
+
+    if (existingTeachers.length > 0) {
+      toast.warning("Một số giáo viên đã tồn tại trong môn học.");
+      return;
+    }
+
+    Promise.all(
+      selectedTeachers.map((teacherId) =>
+        client.post(`/api/subjects/${id}/teachers/${teacherId}`)
+      )
+    )
+      .then(() => {
+        fetchTeacherData();
+        toast.success("Thêm giáo viên vào môn học thành công");
+      })
+      .catch((error) => {
+        console.error("Lỗi khi thêm:", error.response.data);
+      });
   };
 
   const handleView = (teacherId) => {
@@ -122,13 +129,13 @@ export default function SubjectTeacherPage() {
 
   const handleAllCheckboxClick = (event) => {
     if (event.target.checked) {
-      const allTeacherIds = teachers.map((teacher) => teacher.id);
+      const allTeacherIds = selectTeachers.map((teacher) => teacher.id);
       setSelectedTeachers(allTeacherIds);
     } else {
       setSelectedTeachers([]);
     }
   };
-
+  
 
   const handleSubmitBatchDeletion = () => {
     if (selectedTeachers.length === 0) {
@@ -175,10 +182,11 @@ export default function SubjectTeacherPage() {
             labelId="teacher-label"
             id="teacher-select"
             name="teacherId"
-            value={selectedTeacher}
+            value={selectedTeachers}
             onChange={handleTeacherChange}
             label="Chọn giáo viên"
             sx={{ height: "40px" }}
+            multiple // Enable multiple selection
           >
             {selectTeachers.map((teacher) => (
               <MenuItem key={teacher.id} value={teacher.id}>
