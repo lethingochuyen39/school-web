@@ -68,7 +68,7 @@ export default function SubjectTeacherPage() {
       });
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     const data = {
       teacherId: selectedTeacher,
       subjectId: id,
