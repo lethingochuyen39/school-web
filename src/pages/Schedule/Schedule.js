@@ -31,6 +31,8 @@ const Schedule = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [classSchedule, setClassSchedule] = useState([]);
 	const [selectedClass, setSelectedClass] = useState(null);
+	const [searchClass, setSearchClass] = useState("");
+	const [filteredClassSchedule, setFilteredClassSchedule] = useState([]);
 
 	const [teachers, setTeachers] = useState([]);
 	const [subjects, setSubjects] = useState([]);
@@ -45,7 +47,10 @@ const Schedule = () => {
 	const fetchTeachers = useCallback(async () => {
 		try {
 			const response = await client.get("/api/teachers");
-			setTeachers(response.data);
+			const teachersWithSubjects = response.data.filter(
+				(teacher) => teacher.subjects && teacher.subjects.length > 0
+			);
+			setTeachers(teachersWithSubjects);
 		} catch (error) {
 			console.error(error);
 		}
@@ -100,9 +105,21 @@ const Schedule = () => {
 		try {
 			const response = await client.get("/api/classes");
 			setClassSchedule(response.data);
+			setFilteredClassSchedule(response.data);
 			setIsModalOpen(true);
 		} catch (error) {
 			console.error(error);
+		}
+	};
+	const handleFilteredClassChange = (event) => {
+		setSearchClass(event.target.value);
+		if (event.target.value === "") {
+			setFilteredClassSchedule(classSchedule);
+		} else {
+			const filteredClasses = classSchedule.filter((classItem) =>
+				classItem.name.toLowerCase().includes(event.target.value.toLowerCase())
+			);
+			setFilteredClassSchedule(filteredClasses);
 		}
 	};
 
@@ -131,9 +148,11 @@ const Schedule = () => {
 		const selectedTeacher = teachers.find(
 			(teacher) => teacher.id === teacherId
 		);
+		const selectedSubject = selectedTeacher?.subjects?.[0] || null;
 		const updatedSchedule = {
 			...selectedSchedule,
 			teacher: selectedTeacher,
+			subject: selectedSubject,
 		};
 		setSelectedSchedule(updatedSchedule);
 	};
@@ -523,8 +542,32 @@ const Schedule = () => {
 						>
 							Chọn lớp học
 						</Typography>
+
+						<Box
+							minWidth={{ xs: "100%", sm: 0, md: "80%" }}
+							marginRight={{ xs: 0, sm: "10px" }}
+							marginBottom={{ xs: "10px", sm: 0 }}
+							backgroundColor="#f5f5f5"
+							borderRadius="4px"
+							padding="4px"
+							display="flex"
+							alignItems="center"
+						>
+							<SearchIcon sx={{ marginRight: "15px" }} />
+							<Input
+								placeholder="Tìm kiếm theo tên lớp... "
+								onChange={handleFilteredClassChange}
+								value={searchClass}
+								sx={{
+									width: { xs: "100%", sm: "auto", md: "100%" },
+									color: "rgba(0, 0, 0, 0.6)",
+									fontSize: "1.1rem",
+								}}
+								disableUnderline
+							/>
+						</Box>
 						<ul>
-							{classSchedule.map((classItem) => (
+							{filteredClassSchedule.map((classItem) => (
 								<li
 									key={classItem.id}
 									onClick={() => handleClassClick(classItem.id)}

@@ -132,6 +132,8 @@ const Teacher = () => {
         }
         return prevTeacher;
       });
+
+      setIsActive(checked); // Đảm bảo trường "isActive" luôn được xác định giá trị.
     } catch (error) {
       console.error(error);
     }

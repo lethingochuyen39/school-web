@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../../components/common/BasicCard/BasicCard";
-import SearchIcon from "@mui/icons-material/Search";
-import Input from "@mui/material/Input";
 import CommonButton from "../../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
 import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
@@ -20,7 +18,6 @@ const EvaluationRecordTeacherPage = () => {
   const [selectedEvaluationRecord, setSelectedEvaluationRecord] =
     useState(null);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState([]);
 
   const handleOpenForm = async () => {
@@ -52,9 +49,6 @@ const EvaluationRecordTeacherPage = () => {
   const fetchData = useCallback(async () => {
     try {
       let url = "/api/evaluation_records";
-      if (searchTerm) {
-        url += `?achievement=${searchTerm}`;
-      }
       const response = await client.get(url);
       setData(response.data);
       setLoading(false);
@@ -62,7 +56,7 @@ const EvaluationRecordTeacherPage = () => {
       console.error(error);
       setLoading(false);
     }
-  }, [searchTerm]);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -81,10 +75,6 @@ const EvaluationRecordTeacherPage = () => {
         setError("Đã xảy ra lỗi khi cập nhật bảng đánh giá.");
       }
     }
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const handleView = async (id) => {
@@ -135,29 +125,6 @@ const EvaluationRecordTeacherPage = () => {
           Thêm mới
         </CommonButton>
       </Box>
-      <Box
-        minWidth={{ xs: "100%", sm: 0, md: "500px" }}
-        marginRight={{ xs: 0, sm: "10px" }}
-        marginBottom={{ xs: "10px", sm: 0 }}
-        backgroundColor="#f5f5f5"
-        borderRadius="4px"
-        padding="4px"
-        display="flex"
-        alignItems="center"
-      >
-        <SearchIcon sx={{ marginRight: "15px" }} />
-        <Input
-          placeholder="Tìm kiếm theo tên bảng đánh giá... "
-          onChange={handleSearchChange}
-          value={searchTerm}
-          sx={{
-            width: { xs: "100%", sm: "auto", md: "100%" },
-            color: "rgba(0, 0, 0, 0.6)",
-            fontSize: "1.1rem",
-          }}
-          disableUnderline
-        />
-      </Box>
     </Box>
   );
 
@@ -168,8 +135,8 @@ const EvaluationRecordTeacherPage = () => {
       width: 100,
       valueGetter: (params) => params.row.student?.name || "",
     },
-    { field: "disciplineReason", headerName: "Lí do", width: 100 },
-    { field: "achievement", headerName: "Thành tựu", width: 100 },
+    { field: "disciplineReason", headerName: "Lí do", width: 200 },
+    { field: "achievement", headerName: "Thành tựu", width: 200 },
     { field: "date", headerName: "Ngày", width: 100 },
   ];
 
