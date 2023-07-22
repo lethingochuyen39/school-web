@@ -273,7 +273,7 @@ const Teacher = () => {
                   textAlign: "center",
                 }}
               >
-                Thông tin tin tức
+                Thông tin
               </Typography>
               <Typography variant="body1" id="modal-content">
                 <b>ID:</b> {teacher.id}

@@ -1,11 +1,16 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   FormControl,
   IconButton,
   InputLabel,
   MenuItem,
+  Modal,
   Select,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
@@ -23,6 +28,8 @@ export default function SubjectTeacherPage() {
   const [selectTeachers, setSelectTeachers] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const navigate = useNavigate();
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedTeacherDetails, setSelectedTeacherDetails] = useState(null);
 
   const fetchTeacherData = async () => {
     try {
@@ -57,20 +64,38 @@ export default function SubjectTeacherPage() {
       subjectId: id,
     };
 
-    client
-      .post(`/api/subjects/${data.subjectId}/teachers/${data.teacherId}`)
-      .then((response) => {
-        fetchTeacherData();
-        toast.success("Thêm giáo viên vào môn học thành công");
-      })
-      .catch((error) => {
-        console.error("Lỗi khi thêm:", error.response.data);
-      });
+    // Check if the selected teacher is already in the teachers state
+    if (teachers.find((teacher) => teacher.id === data.teacherId)) {
+      toast.warning("Giáo viên đã được thêm vào môn học.");
+    } else {
+      client
+        .post(`/api/subjects/${data.subjectId}/teachers/${data.teacherId}`)
+        .then((response) => {
+          fetchTeacherData();
+          toast.success("Thêm giáo viên vào môn học thành công");
+        })
+        .catch((error) => {
+          console.error("Lỗi khi thêm:", error.response.data);
+        });
+    }
   };
 
-  const handleDelete = async (id) => {
+  const handleView = (teacherId) => {
+    // Find the teacher in the teachers state based on the teacherId
+    const selectedTeacher = teachers.find(
+      (teacher) => teacher.id === teacherId
+    );
+    setSelectedTeacherDetails(selectedTeacher);
+    setIsViewModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsViewModalOpen(false);
+  };
+
+  const handleDelete = async (teacherId) => {
     const data = {
-      teacherId: selectedTeacher,
+      teacherId: teacherId,
       subjectId: id,
     };
     try {
@@ -174,9 +199,96 @@ export default function SubjectTeacherPage() {
         initialRows={teachers}
         columns={columns}
         handleDelete={handleDelete}
-        hiddenActions={["view", "edit"]}
+        handleView={handleView}
+        hiddenActions={["edit"]}
         // hiddenActions={["view", "edit", "delete"]}
       />
+
+      {/* View Teacher Modal */}
+      <Dialog open={isViewModalOpen} onClose={handleCloseModal}>
+        <DialogTitle>{selectedTeacherDetails?.name}</DialogTitle>
+        <DialogContent>
+          {selectedTeacherDetails && (
+            <>
+              <Box
+                sx={{
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 500,
+                  bgcolor: "background.paper",
+                  borderRadius: 4,
+                  p: 2,
+                  maxWidth: "90%",
+                  maxHeight: "90%",
+                  overflow: "auto",
+                }}
+              >
+                <>
+                  <Typography
+                    variant="h4"
+                    id="modal-title"
+                    sx={{
+                      mb: 2,
+                      fontWeight: "bold",
+                      textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+                      color: "#FF4500",
+                      textAlign: "center",
+                    }}
+                  >
+                    Thông tin giáo viên
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    <b>Tên:</b> {selectedTeacherDetails.name}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    <b>Ngày sinh:</b> {selectedTeacherDetails.dob}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    <b>Giới tính:</b> {selectedTeacherDetails.gender}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    <b>Địa chỉ:</b> {selectedTeacherDetails.address}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    <b>Email:</b> {selectedTeacherDetails.email}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    <b>Số điện thoại:</b> {selectedTeacherDetails.phone}
+                  </Typography>
+                </>
+
+                <Button
+                  variant="contained"
+                  onClick={handleCloseModal}
+                  sx={{ mt: 2 }}
+                >
+                  Đóng
+                </Button>
+              </Box>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
   return (
