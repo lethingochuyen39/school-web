@@ -59,7 +59,17 @@ const Document = () => {
 		fetchData();
 	}, [fetchData]);
 
-	//
+	const formatDate = (dateString) => {
+		const options = {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		};
+		return new Date(dateString).toLocaleString("vi-VN", options);
+	};
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
@@ -261,10 +271,10 @@ const Document = () => {
 								{document.uploadedBy.email}
 							</Typography>
 							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Ngày thêm:</b> {document.uploadedAt}
+								<b>Ngày thêm:</b> {formatDate(document.uploadedAt)}
 							</Typography>
 							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-								<b>Ngày cập nhật:</b> {document.updatedAt}
+								<b>Ngày cập nhật:</b> {formatDate(document.updatedAt)}
 							</Typography>
 						</>
 
