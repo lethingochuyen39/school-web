@@ -3,10 +3,6 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
@@ -14,8 +10,6 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Divider, FormControl, FormLabel, Grid, Input, Radio, RadioGroup } from "@mui/material";
-import { GridRow } from "@mui/x-data-grid";
-import { border, borderBottom } from "@mui/system";
 import { confirm } from "../../../api/client";
 import { useState } from "react";
 // import Cookies from "universal-cookie";
@@ -44,6 +38,7 @@ const CheckInfo = () => {
     };
 	try{
 		confirm(payload);
+    navigate("/");
 	}catch(e){
 		console.log(e.message);
 	}

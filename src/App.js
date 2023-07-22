@@ -46,6 +46,7 @@ import DocumentStudentPage from "./pages/Student/document/DocumentStudent";
 import ScoreView from "./pages/Student/score/ScoreView";
 import ReportCardView from "./pages/Student/reportCard/ReportCardView";
 import SubjectTeacherPage from "./pages/Subject/SubjectTeacherPage";
+import ResetPassword from "./pages/resetpassword";
 
 function App() {
 	return (
@@ -152,6 +153,7 @@ function App() {
 							</Route>
 						</Route>
 						<Route path="/forgotpassword" element={<ForgotPass />} />
+						<Route path="/reset_password" element={<ResetPassword />} />
 						<Route path="/checkInfo" element={<CheckInfo />} />
 					</Routes>
 				</AuthContextProvider>

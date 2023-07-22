@@ -31,7 +31,8 @@ export function forgotpassword(payload){
 }
 
 export function resetpassword(payload){
-	client.post("auth/reset_password",payload);
+	const token = window.location.search;
+	client.post("auth/reset_password"+token,payload);
 }
 
 export function confirm(payload){
