@@ -1,6 +1,7 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -30,6 +31,7 @@ export default function SubjectTeacherPage() {
   const navigate = useNavigate();
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedTeacherDetails, setSelectedTeacherDetails] = useState(null);
+  const [selectedTeachers, setSelectedTeachers] = useState([]);
 
   const fetchTeacherData = async () => {
     try {
@@ -53,31 +55,38 @@ export default function SubjectTeacherPage() {
   }, [id]);
 
   const handleTeacherChange = (event) => {
-    const id = event.target.value;
-    setSelectedTeacher(id);
-    console.log(selectedTeacher);
+    const selectedIds = event.target.value;
+    setSelectedTeachers(selectedIds);
   };
 
   const handleSubmit = () => {
-    const data = {
-      teacherId: selectedTeacher,
-      subjectId: id,
-    };
-
-    // Check if the selected teacher is already in the teachers state
-    if (teachers.find((teacher) => teacher.id === data.teacherId)) {
-      toast.warning("Giáo viên đã được thêm vào môn học.");
-    } else {
-      client
-        .post(`/api/subjects/${data.subjectId}/teachers/${data.teacherId}`)
-        .then((response) => {
-          fetchTeacherData();
-          toast.success("Thêm giáo viên vào môn học thành công");
-        })
-        .catch((error) => {
-          console.error("Lỗi khi thêm:", error.response.data);
-        });
+    if (selectedTeachers.length === 0) {
+      toast.warning("Vui lòng chọn ít nhất một giáo viên để thêm vào môn học.");
+      return;
     }
+
+    // Check if any of the selected teachers are already in the teachers state
+    const existingTeachers = selectedTeachers.filter((teacherId) =>
+      teachers.find((teacher) => teacher.id === teacherId)
+    );
+
+    if (existingTeachers.length > 0) {
+      toast.warning("Một số giáo viên đã tồn tại trong môn học.");
+      return;
+    }
+
+    Promise.all(
+      selectedTeachers.map((teacherId) =>
+        client.post(`/api/subjects/${id}/teachers/${teacherId}`)
+      )
+    )
+      .then(() => {
+        fetchTeacherData();
+        toast.success("Thêm giáo viên vào môn học thành công");
+      })
+      .catch((error) => {
+        console.error("Lỗi khi thêm:", error.response.data);
+      });
   };
 
   const handleView = (teacherId) => {
@@ -108,16 +117,58 @@ export default function SubjectTeacherPage() {
     }
   };
 
+  const handleRowCheckboxClick = (event, teacherId) => {
+    if (event.target.checked) {
+      setSelectedTeachers((prevSelected) => [...prevSelected, teacherId]);
+    } else {
+      setSelectedTeachers((prevSelected) =>
+        prevSelected.filter((id) => id !== teacherId)
+      );
+    }
+  };
+
+  const handleAllCheckboxClick = (event) => {
+    if (event.target.checked) {
+      const allTeacherIds = selectTeachers.map((teacher) => teacher.id);
+      setSelectedTeachers(allTeacherIds);
+    } else {
+      setSelectedTeachers([]);
+    }
+  };
+  
+
+  const handleSubmitBatchDeletion = () => {
+    if (selectedTeachers.length === 0) {
+      toast.warning("Vui lòng chọn ít nhất một giáo viên để xóa.");
+      return;
+    }
+
+    Promise.all(
+      selectedTeachers.map((teacherId) =>
+        client.delete(`/api/subjects/${id}/teachers/${teacherId}`)
+      )
+    )
+      .then(() => {
+        fetchTeacherData();
+        toast.success("Xóa giáo viên khỏi môn học thành công");
+      })
+      .catch((error) => {
+        console.error("Lỗi khi xóa:", error.response.data);
+      });
+  };
+
   const handleGoBack = () => {
     navigate(-1);
   };
 
   const getHeader = () => (
     <>
+      {/* Back button */}
       <IconButton onClick={handleGoBack}>
         <ArrowBackIcon />
       </IconButton>
 
+      {/* Teacher select dropdown */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -131,10 +182,11 @@ export default function SubjectTeacherPage() {
             labelId="teacher-label"
             id="teacher-select"
             name="teacherId"
-            value={selectedTeacher}
+            value={selectedTeachers}
             onChange={handleTeacherChange}
             label="Chọn giáo viên"
             sx={{ height: "40px" }}
+            multiple // Enable multiple selection
           >
             {selectTeachers.map((teacher) => (
               <MenuItem key={teacher.id} value={teacher.id}>
@@ -148,7 +200,19 @@ export default function SubjectTeacherPage() {
   );
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100, disableActions: true },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 100,
+      disableActions: true,
+      // Render a checkbox for each row
+      renderCell: (params) => (
+        <Checkbox
+          checked={selectedTeachers.includes(params.row.id)}
+          onClick={(e) => handleRowCheckboxClick(e, params.row.id)}
+        />
+      ),
+    },
     {
       field: "name",
       headerName: "Giáo viên",
@@ -180,18 +244,38 @@ export default function SubjectTeacherPage() {
         justifyContent="flex-end"
         alignItems="center"
         padding="5px"
+        gap={1}
       >
         <Button
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          style={{
+          sx={{
             background: "linear-gradient(45deg, #304ffe, #42a5f5)",
             fontSize: "1.2rem",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              background: "#1e40af",
+            },
           }}
         >
-          Lưu
+          Thêm
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitBatchDeletion}
+          disabled={teachers.length === 0} // Disable button if no teachers to delete
+          sx={{
+            background: "linear-gradient(45deg, #304ffe, #42a5f5)",
+            fontSize: "1.2rem",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              background: "#1e40af",
+            },
+          }}
+        >
+          Xóa
         </Button>
       </Box>
 
@@ -201,7 +285,6 @@ export default function SubjectTeacherPage() {
         handleDelete={handleDelete}
         handleView={handleView}
         hiddenActions={["edit"]}
-        // hiddenActions={["view", "edit", "delete"]}
       />
 
       {/* View Teacher Modal */}
