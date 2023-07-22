@@ -48,10 +48,10 @@ const ScoreView = ({ refresh, setRefresh }) => {
 	};
 
 	useEffect(() => {
-		if (classes.length > 0) {
+		if (classes.length > 0 && !selectedClass) {
 			setSelectedClass(classes[0].id);
 		}
-	}, [classes]);
+	}, [classes, selectedClass]);
 
 	useEffect(() => {
 		const fetchScoreData = async () => {
