@@ -1,22 +1,35 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import SearchIcon from "@mui/icons-material/Search";
-import Input from "@mui/material/Input";
-import IconButton from "@mui/material/IconButton";
-import CommonButton from "../../components/common/CommonButton/CommonButton";
+import axios from "axios";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 
 const Home = () => {
-	const handleChange = (value) => {
-		console.log(value);
-	};
+	const [studentData, setStudentData] = useState([]);
+	// const navigate = useNavigate();
 
-	const addUser = () => {
-		console.log("click");
-	};
+	const fetchDataStudents = useCallback(async () => {
+		try {
+		  const response = await axios.get('/api/student/allStudent');
+		  const students = response.data;
+		  setStudentData(students);
+		} catch (error) {
+		  console.error(error);
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchDataStudents();
+	}, [fetchDataStudents]);
+
+	const numStudents = studentData.length;
+
+	// const handleStudentClick = () => {
+	// 	navigate(`/admin/score`);
+	// };
 
 	const getHeader = () => (
 		<Box
@@ -41,50 +54,26 @@ const Home = () => {
 				display="flex"
 				alignItems="center"
 			>
-				<SearchIcon sx={{ marginRight: "15px" }} />
-				<Input
-					placeholder="Search by email address, phone number, or user UID"
-					onChange={(event) => handleChange(event.target.value)}
-					sx={{
-						width: { xs: "100%", sm: "auto", md: "100%" },
-						color: "rgba(0, 0, 0, 0.6)",
-						fontSize: "1.1rem",
-					}}
-					disableUnderline
-				/>
-			</Box>
-			<Box display="flex" alignItems="center" marginTop={{ xs: "10px", sm: 0 }}>
-				<CommonButton
-					variant="contained"
-					sx={{
-						color: "white",
-						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-					}}
-					onClick={addUser}
-					size="large"
-				>
-					Add New
-				</CommonButton>
-				<IconButton>
-					<RefreshIcon />
-				</IconButton>
+
 			</Box>
 		</Box>
 	);
 
-	const getContent = () => (
-		<Typography
+	const getContent = () => {
+		return (
+		  <Typography
 			align="center"
 			sx={{
-				margin: "40px 16px",
-				color: "rgba(0, 0, 0, 0.6)",
-				fontSize: "1.rem",
+			  margin: "40px 16px",
+			  color: "rgba(0, 0, 0, 0.6)",
+			  fontSize: "1.rem",
 			}}
-		>
-			No users for this project yet
-		</Typography>
-	);
-
+		  >
+			Number of Students: {numStudents}
+		  </Typography>
+		);
+	  };
+		//<Button onClick={handleStudentClick} variant="contained">Go to Score page</Button>
 	return (
 		<GridWrapper>
 			<BasicCard header={getHeader()} content={getContent()} />
