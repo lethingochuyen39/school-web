@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import axios from "axios";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import client from "../../api/client";
+
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 
 const Home = () => {
 	const [studentData, setStudentData] = useState([]);
-	// const navigate = useNavigate();
+	const [numStudents, setNumStudents] = useState(0); // Số lượng học sinh
 
 	const fetchDataStudents = useCallback(async () => {
 		try {
-		  const response = await axios.get('/api/student/allStudent');
-		  const students = response.data;
-		  setStudentData(students);
+			const response = await client.get("/api/student/all");
+			const students = response.data;
+			setStudentData(students);
 		} catch (error) {
-		  console.error(error);
+			console.error(error);
 		}
 	}, []);
 
@@ -25,11 +26,11 @@ const Home = () => {
 		fetchDataStudents();
 	}, [fetchDataStudents]);
 
-	const numStudents = studentData.length;
-
-	// const handleStudentClick = () => {
-	// 	navigate(`/admin/score`);
-	// };
+	// Sử dụng useEffect để theo dõi thay đổi của studentData
+	useEffect(() => {
+		// Cập nhật tổng số lượng học sinh khi studentData thay đổi
+		setNumStudents(studentData.length);
+	}, [studentData]);
 
 	const getHeader = () => (
 		<Box
@@ -53,27 +54,24 @@ const Home = () => {
 				padding="4px"
 				display="flex"
 				alignItems="center"
-			>
-
-			</Box>
+			></Box>
 		</Box>
 	);
 
 	const getContent = () => {
 		return (
-		  <Typography
-			align="center"
-			sx={{
-			  margin: "40px 16px",
-			  color: "rgba(0, 0, 0, 0.6)",
-			  fontSize: "1.rem",
-			}}
-		  >
-			Number of Students: {numStudents}
-		  </Typography>
+			<Typography
+				align="center"
+				sx={{
+					margin: "40px 16px",
+					color: "rgba(0, 0, 0, 0.6)",
+					fontSize: "1.rem",
+				}}
+			>
+				Number of Students: {numStudents}
+			</Typography>
 		);
-	  };
-		//<Button onClick={handleStudentClick} variant="contained">Go to Score page</Button>
+	};
 	return (
 		<GridWrapper>
 			<BasicCard header={getHeader()} content={getContent()} />
