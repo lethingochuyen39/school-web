@@ -12,7 +12,7 @@ import DataTable from "../../../components/common/DataTable/DataTable";
 import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
 import BasicCard from "../../../components/common/BasicCard/BasicCard";
 
-const Profile = ({ loggedInUserId }) => {
+const Profile = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -20,19 +20,6 @@ const Profile = ({ loggedInUserId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleTeacherOpenForm = () => {
-    if (teacher) {
-      setIsEditMode(true);
-      setSelectedTeacher(teacher);
-    } else {
-      setIsEditMode(false);
-      setSelectedTeacher(null);
-    }
-
-    setIsFormOpen(true);
-  };
 
   const handleCloseTeacherForm = () => {
     setIsFormOpen(false);
@@ -41,16 +28,20 @@ const Profile = ({ loggedInUserId }) => {
 
   const fetchData = useCallback(async () => {
     try {
-      const teacherId = localStorage.getItem("id");
-      const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
-      const teacherData = teacherResponse.data;
-      setTeacher(teacherData);
+      let url = "/api/teachers";
+      const response = await client.get(url);
+      const fetchedData = response.data;
+
+      const updatedData = fetchedData.map((item) => ({
+        ...item,
+      }));
+      setData(updatedData);
       setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
-  }, [loggedInUserId, teacher]);
+  }, [teacher]);
 
   useEffect(() => {
     fetchData();
@@ -59,10 +50,6 @@ const Profile = ({ loggedInUserId }) => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  //   const handleSearchChange = (event) => {
-  //     setSearchTerm(event.target.value);
-  //   };
 
   const handleView = async (id) => {
     try {
@@ -90,71 +77,6 @@ const Profile = ({ loggedInUserId }) => {
     }
   };
 
-  //   const handleDelete = async (id) => {
-  //     try {
-  //       await client.delete(`/api/teachers/delete/${id}`);
-  //       fetchData();
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  const getHeader = () => (
-    <Box
-      display="flex"
-      flexDirection={{ xs: "column", sm: "row" }}
-      justifyContent="space-between"
-      alignItems="center"
-      paddingLeft="20px"
-      paddingTop="10px"
-      paddingRight="10px"
-      flexWrap="wrap"
-    >
-      {/* <Box
-        display="flex"
-        alignItems="center"
-        marginTop={{ xs: "10px", sm: 0 }}
-        marginRight={{ xs: "10px" }}
-      >
-        <CommonButton
-          variant="contained"
-          sx={{
-            color: "white",
-            backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-          }}
-          onClick={handleTeacherOpenForm}
-          size="large"
-        >
-          Thêm mới
-        </CommonButton>
-      </Box> */}
-
-      {/* <Box
-        minWidth={{ xs: "100%", sm: 0, md: "500px" }}
-        marginRight={{ xs: 0, sm: "10px" }}
-        marginBottom={{ xs: "10px", sm: 0 }}
-        backgroundColor="#f5f5f5"
-        borderRadius="4px"
-        padding="4px"
-        display="flex"
-        alignItems="center"
-      >
-        <SearchIcon sx={{ marginRight: "15px" }} />
-        <Input
-          placeholder="Tìm kiếm theo tiêu đề... "
-          onChange={handleSearchChange}
-          value={searchTerm}
-          sx={{
-            width: { xs: "100%", sm: "auto", md: "100%" },
-            color: "rgba(0, 0, 0, 0.6)",
-            fontSize: "1.1rem",
-          }}
-          disableUnderline
-        />
-      </Box> */}
-    </Box>
-  );
-
   const columns = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "name", headerName: "Tên", width: 150 },
@@ -172,8 +94,6 @@ const Profile = ({ loggedInUserId }) => {
       loading={loading}
       handleEdit={handleEdit}
       hiddenActions={("delete", "view")}
-      //   handleDelete={handleDelete}
-      //   handleView={handleView}
     />
   );
 
@@ -245,10 +165,6 @@ const Profile = ({ loggedInUserId }) => {
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
                 <b>Số điện thoại:</b> {teacher.phone}
               </Typography>
-              <Typography variant="body1">
-                <b>Trạng thái:</b>{" "}
-                {teacher.isActive ? "Đang hoạt động" : "Ẩn hoạt động"}
-              </Typography>
             </>
 
             <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
@@ -258,7 +174,7 @@ const Profile = ({ loggedInUserId }) => {
         </Modal>
       )}
 
-      <BasicCard header={getHeader()} content={getContent()} />
+      <BasicCard content={getContent()} />
     </GridWrapper>
   );
 };
