@@ -170,12 +170,12 @@ const EvaluationRecord = () => {
     {
       field: "student",
       headerName: "Học sinh",
-      width: 100,
+      width: 150,
       valueGetter: (params) => params.row.student?.name || "",
     },
-    { field: "disciplineReason", headerName: "Lí do", width: 150 },
-    { field: "achievement", headerName: "Thành tựu", width: 150 },
-    { field: "date", headerName: "Ngày", width: 100 },
+    { field: "disciplineReason", headerName: "Lí do", width: 200 },
+    { field: "achievement", headerName: "Thành tựu", width: 200 },
+    { field: "date", headerName: "Ngày", width: 150 },
   ];
 
   const getContent = () => (
