@@ -30,7 +30,9 @@ const ScoreView = ({ refresh, setRefresh }) => {
 		const fetchStudentData = async () => {
 			try {
 				const studentId = localStorage.getItem("id");
-				const response = await client.get(`/api/student/${studentId}`);
+				const response = await client.get(
+					`/api/student/studentId/${studentId}`
+				);
 				setStudent(response.data);
 			} catch (error) {
 				console.error(error);
