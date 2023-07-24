@@ -12,7 +12,7 @@ const DateChecker = () => {
     if(date){
       
     if (date < dateNow) {
-      const role = localStorage.getItem('role');
+      // const role = localStorage.getItem('role');
         logout();
       // navigate('/login');
       localStorage.removeItem('date');
@@ -27,7 +27,7 @@ const DateChecker = () => {
 			localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("date", dateUnix);
 			localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", role);
+      localStorage.setItem("role", res.data.role[0]);
       });
     }
     }
