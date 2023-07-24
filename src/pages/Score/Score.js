@@ -29,6 +29,8 @@ const Score = () => {
 	const [filteredClassSchedule, setFilteredClassSchedule] = useState([]);
 	const [classScores, setClassScores] = useState([]);
 	const [classes, setClasses] = useState([]);
+	const [viewScores, setViewScores] = useState([]);
+	const [selectedView, setSelectedView] = useState(null);
 
 	const navigate = useNavigate();
 	const handleOpenForm = async () => {
@@ -144,10 +146,26 @@ const Score = () => {
 			console.error(error);
 		}
 	};
+	const handleOpenViewScoresModal = async () => {
+		try {
+			const response = await client.get("/api/classes");
+			setViewScores(response.data);
+			setFilteredClassSchedule(response.data);
+			setIsModalOpen(true);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	const handleClassClick = (classId) => {
 		setSelectedClass(classId);
 		navigate(`/admin/class-score/${classId}`);
+	};
+
+	const handleViewClick = (classId) => {
+		setSelectedClass(classId);
+		// Chuyển hướng đến trang điểm của lớp đó
+		navigate(`/admin/view-score/${classId}`);
 	};
 
 	const getHeader = () => (
@@ -169,6 +187,18 @@ const Score = () => {
 				marginRight={{ xs: "10px" }}
 				marginBottom={{ xs: "10px", sm: 0 }}
 			>
+				<CommonButton
+					variant="contained"
+					sx={{
+						color: "white",
+						backgroundImage: "linear-gradient(to right, #1565c0, #0d47a1)",
+					}}
+					onClick={handleOpenViewScoresModal}
+					size="large"
+				>
+					Tra cứu điểm
+				</CommonButton>
+				<Box sx={{ marginLeft: "10px" }}></Box>
 				<CommonButton
 					variant="contained"
 					sx={{
@@ -346,6 +376,87 @@ const Score = () => {
 								<li
 									key={classItem.id}
 									onClick={() => handleClassClick(classItem.id)}
+									style={{
+										cursor: "pointer",
+										marginBottom: 8,
+									}}
+								>
+									LH{classItem.id}_{classItem.name} (năm học:
+									{classItem.academicYear.name})
+								</li>
+							))}
+						</ul>
+						<Button variant="contained" onClick={closeModal}>
+							Đóng
+						</Button>
+					</Box>
+				</Modal>
+			)}
+
+			{viewScores && (
+				<Modal
+					open={isModalOpen}
+					onClose={closeModal}
+					aria-labelledby="modal-title"
+					aria-describedby="modal-description"
+				>
+					<Box
+						sx={{
+							position: "fixed",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+							width: 400,
+							bgcolor: "background.paper",
+							borderRadius: 4,
+							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
+						}}
+					>
+						<Typography
+							id="modal-title"
+							variant="h4"
+							sx={{
+								mb: 2,
+								fontWeight: "bold",
+								textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+								color: "#FF4500",
+								textAlign: "center",
+							}}
+						>
+							Chọn lớp học
+						</Typography>
+
+						<Box
+							minWidth={{ xs: "100%", sm: 0, md: "80%" }}
+							marginRight={{ xs: 0, sm: "10px" }}
+							marginBottom={{ xs: "10px", sm: 0 }}
+							backgroundColor="#f5f5f5"
+							borderRadius="4px"
+							padding="4px"
+							display="flex"
+							alignItems="center"
+						>
+							<SearchIcon sx={{ marginRight: "15px" }} />
+							<Input
+								placeholder="Tìm kiếm theo tên lớp... "
+								onChange={handleFilteredClassChange}
+								value={searchClass}
+								sx={{
+									width: { xs: "100%", sm: "auto", md: "100%" },
+									color: "rgba(0, 0, 0, 0.6)",
+									fontSize: "1.1rem",
+								}}
+								disableUnderline
+							/>
+						</Box>
+						<ul>
+							{filteredClassSchedule.map((classItem) => (
+								<li
+									key={classItem.id}
+									onClick={() => handleViewClick(classItem.id)}
 									style={{
 										cursor: "pointer",
 										marginBottom: 8,

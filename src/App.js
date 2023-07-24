@@ -48,133 +48,138 @@ import SubjectTeacherPage from "./pages/Subject/SubjectTeacherPage";
 import ResetPassword from "./pages/resetpassword";
 import Student from "./pages/Student/StudentAdmin";
 import DateChecker from "./components/DateChecker";
+import ViewScorePage from "./pages/Score/ViewScorePage";
 
 function App() {
-// 	const navigate = useNavigate();
-//   useEffect(() => {
-	
-//     let date = new Date(localStorage.getItem("date") * 1000);
-// 	// let date = localStorage.getItem("date");
-//     // console.log(date);
-// 	var unixTime = Date.now();
-//     let dateNow = new Date(unixTime*1000);
-	
-//     if (date < dateNow) {
-//     //   return <Login />;
-// 		navigate('/login');
-//     }
-//   });
-  return (
-    <ThemeProvider theme={dashboardTheme}>
-      <BrowserRouter>
-        <AuthContextProvider>
-			<DateChecker/>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Login />} />
+	// 	const navigate = useNavigate();
+	//   useEffect(() => {
 
-            <Route element={<RoleAccess roles={["ADMIN"]} />}>
-              <Route path="/admin/" element={<LayoutAdmin />}>
-                <Route path="/admin/home" element={<Home />} />
-                <Route path="/admin/academicYear" element={<AcademicYear />} />
-                <Route path="/admin/schedule" element={<Schedule />} />
-                <Route path="/admin/score" element={<Score />} />
-                <Route path="/admin/score-type" element={<ScoreType />} />
-                <Route
-                  path="/admin/class-score/:classId"
-                  element={<ClassScorePage />}
-                />
-                <Route path="/admin/classes" element={<Classes />} />
+	//     let date = new Date(localStorage.getItem("date") * 1000);
+	// 	// let date = localStorage.getItem("date");
+	//     // console.log(date);
+	// 	var unixTime = Date.now();
+	//     let dateNow = new Date(unixTime*1000);
 
-                <Route path="/admin/document" element={<Document />} />
-                <Route path="/admin/news" element={<News />} />
-                <Route path="/admin/schedule-add" element={<ScheduleAdd />} />
-                <Route path="/admin/schedule-view" element={<ScheduleView />} />
-                <Route
-                  path="/admin/class-schedule/:classId"
-                  element={<ScheduleAdd />}
-                />
-                <Route path="/admin/classes" element={<Classes />} />
-                <Route path="/admin/subject" element={<Subject />} />
-                <Route
-                  path="/admin/subject-teacher/:id"
-                  element={<SubjectTeacherPage />}
-                />
-                <Route path="/admin/teacher" element={<Teacher />} />
-                <Route path="/admin/student" element={<Student />} />
-                <Route path="/admin/metric" element={<Metric />} />
-                <Route
-                  path="/admin/evaluationRecord"
-                  element={<EvaluationRecord />}
-                />
-                <Route path="/admin/reportCard" element={<ReportCard />} />
-              </Route>
-            </Route>
+	//     if (date < dateNow) {
+	//     //   return <Login />;
+	// 		navigate('/login');
+	//     }
+	//   });
+	return (
+		<ThemeProvider theme={dashboardTheme}>
+			<BrowserRouter>
+				<AuthContextProvider>
+					<DateChecker />
+					<Routes>
+						<Route path="/login" element={<Login />} />
+						<Route path="/" element={<Login />} />
 
-            <Route element={<RoleAccess roles={["TEACHER"]} />}>
-              <Route path="/teacher/" element={<LayoutTeacher />}>
-                <Route path="/teacher/home" element={<Dashboard />} />
-                <Route
-                  path="/teacher/document"
-                  element={<DocumentTeacherPage />}
-                />
-                <Route path="/teacher/score" element={<ScoreTeacherPage />} />
-                <Route
-                  path="/teacher/class-score/:classId"
-                  element={<ClassScoreTeacherPage />}
-                />
-                <Route
-                  path="/teacher/metrics"
-                  element={<MetricTeacherPage2 />}
-                />
-                <Route
-                  path="/teacher/reportCards"
-                  element={<ReportCardTeacherPage />}
-                />
-                <Route
-                  path="/teacher/evaluationRecords"
-                  element={<EvaluationRecordTeacherPage />}
-                />
-                <Route path="/teacher/news" element={<NewsTeacherPage />} />
-                <Route
-                  path="/teacher/news-detail/:id"
-                  element={<NewsDetailPage />}
-                />
-                <Route
-                  path="/teacher/schedule"
-                  element={<ScheduleTeacherPage />}
-                />
-              </Route>
-            </Route>
+						<Route element={<RoleAccess roles={["ADMIN"]} />}>
+							<Route path="/admin/" element={<LayoutAdmin />}>
+								<Route path="/admin/home" element={<Home />} />
+								<Route path="/admin/academicYear" element={<AcademicYear />} />
+								<Route path="/admin/schedule" element={<Schedule />} />
+								<Route path="/admin/score" element={<Score />} />
+								<Route path="/admin/score-type" element={<ScoreType />} />
+								<Route
+									path="/admin/class-score/:classId"
+									element={<ClassScorePage />}
+								/>
+								<Route
+									path="/admin/view-score/:classId"
+									element={<ViewScorePage />}
+								/>
+								<Route path="/admin/classes" element={<Classes />} />
 
-            <Route element={<RoleAccess roles={["STUDENT"]} />}>
-              <Route path="/user/" element={<LayoutStudent />}>
-                <Route path="/user/home" element={<StudentHome />} />
-                <Route path="/user/news" element={<NewsStudentPage />} />
-                <Route
-                  path="/user/news-detail/:id"
-                  element={<NewsDetailStudentPage />}
-                />
-                <Route
-                  path="/user/schedule"
-                  element={<StudentScheduleView />}
-                />
-                <Route
-                  path="/user/document"
-                  element={<DocumentStudentPage />}
-                />
-                <Route path="/user/score" element={<ScoreView />} />
-                <Route path="/user/reportCard" element={<ReportCardView />} />
-              </Route>
-            </Route>
-            <Route path="/forgotpassword" element={<ForgotPass />} />
-            <Route path="/reset_password" element={<ResetPassword />} />
-            <Route path="/checkInfo" element={<CheckInfo />} />
-          </Routes>
-        </AuthContextProvider>
-      </BrowserRouter>
-    </ThemeProvider>
-  );
+								<Route path="/admin/document" element={<Document />} />
+								<Route path="/admin/news" element={<News />} />
+								<Route path="/admin/schedule-add" element={<ScheduleAdd />} />
+								<Route path="/admin/schedule-view" element={<ScheduleView />} />
+								<Route
+									path="/admin/class-schedule/:classId"
+									element={<ScheduleAdd />}
+								/>
+								<Route path="/admin/classes" element={<Classes />} />
+								<Route path="/admin/subject" element={<Subject />} />
+								<Route
+									path="/admin/subject-teacher/:id"
+									element={<SubjectTeacherPage />}
+								/>
+								<Route path="/admin/teacher" element={<Teacher />} />
+								<Route path="/admin/student" element={<Student />} />
+								<Route path="/admin/metric" element={<Metric />} />
+								<Route
+									path="/admin/evaluationRecord"
+									element={<EvaluationRecord />}
+								/>
+								<Route path="/admin/reportCard" element={<ReportCard />} />
+							</Route>
+						</Route>
+
+						<Route element={<RoleAccess roles={["TEACHER"]} />}>
+							<Route path="/teacher/" element={<LayoutTeacher />}>
+								<Route path="/teacher/home" element={<Dashboard />} />
+								<Route
+									path="/teacher/document"
+									element={<DocumentTeacherPage />}
+								/>
+								<Route path="/teacher/score" element={<ScoreTeacherPage />} />
+								<Route
+									path="/teacher/class-score/:classId"
+									element={<ClassScoreTeacherPage />}
+								/>
+								<Route
+									path="/teacher/metrics"
+									element={<MetricTeacherPage2 />}
+								/>
+								<Route
+									path="/teacher/reportCards"
+									element={<ReportCardTeacherPage />}
+								/>
+								<Route
+									path="/teacher/evaluationRecords"
+									element={<EvaluationRecordTeacherPage />}
+								/>
+								<Route path="/teacher/news" element={<NewsTeacherPage />} />
+								<Route
+									path="/teacher/news-detail/:id"
+									element={<NewsDetailPage />}
+								/>
+								<Route
+									path="/teacher/schedule"
+									element={<ScheduleTeacherPage />}
+								/>
+							</Route>
+						</Route>
+
+						<Route element={<RoleAccess roles={["STUDENT"]} />}>
+							<Route path="/user/" element={<LayoutStudent />}>
+								<Route path="/user/home" element={<StudentHome />} />
+								<Route path="/user/news" element={<NewsStudentPage />} />
+								<Route
+									path="/user/news-detail/:id"
+									element={<NewsDetailStudentPage />}
+								/>
+								<Route
+									path="/user/schedule"
+									element={<StudentScheduleView />}
+								/>
+								<Route
+									path="/user/document"
+									element={<DocumentStudentPage />}
+								/>
+								<Route path="/user/score" element={<ScoreView />} />
+								<Route path="/user/reportCard" element={<ReportCardView />} />
+							</Route>
+						</Route>
+						<Route path="/forgotpassword" element={<ForgotPass />} />
+						<Route path="/reset_password" element={<ResetPassword />} />
+						<Route path="/checkInfo" element={<CheckInfo />} />
+					</Routes>
+				</AuthContextProvider>
+			</BrowserRouter>
+		</ThemeProvider>
+	);
 }
 
 export default App;
