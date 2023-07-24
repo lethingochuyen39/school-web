@@ -13,6 +13,8 @@ import NewspaperIcon from "@mui/icons-material/Newspaper";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import DoNotDisturbOnTotalSilenceIcon from "@mui/icons-material/DoNotDisturbOnTotalSilence";
 export const mainListItems = (
 	<React.Fragment>
 		<ListItemButton component={Link} to="/teacher/home">
@@ -48,7 +50,7 @@ export const mainListItems = (
 
 		<ListItemButton component={Link} to="/teacher/document">
 			<ListItemIcon>
-				<LibraryBooksIcon />
+				<AutoStoriesIcon />
 			</ListItemIcon>
 			<ListItemText primary="Tài liệu" />
 		</ListItemButton>
@@ -66,7 +68,7 @@ export const mainListItems = (
 		</ListItemButton>
 		<ListItemButton component={Link} to="/teacher/reportCards">
 			<ListItemIcon>
-				<LibraryBooksIcon />
+				<DoNotDisturbOnTotalSilenceIcon />
 			</ListItemIcon>
 			<ListItemText
 				primary="Vi phạm"
