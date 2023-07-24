@@ -27,7 +27,7 @@ export const AuthContextProvider = ({ children }) => {
 			localStorage.setItem("date", dateUnix);
 			localStorage.setItem("userId", res.data.uid);
 			localStorage.setItem("id", res.data.id);
-
+			localStorage.setItem("username",res.data.username);
 			// newCookie.set("token", token, { path: "/", expires: date });
 			localStorage.setItem("token", res.data.token);
 

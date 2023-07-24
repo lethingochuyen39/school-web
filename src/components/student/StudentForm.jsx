@@ -10,6 +10,7 @@ import {
   Alert,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   Radio,
   RadioGroup,
@@ -147,7 +148,18 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
   const getErrorMessage = (field) => {
     return hasError(field) ? error[field][0] : "";
   };
+  // const [error, setError] = useState(null);
 
+  // const hasError = (field) => {
+	// 	return error && error[field] ? true : false;
+	// };
+  // const getErrorMessage = (field) => {
+	// 	return hasError(field) ? error[field][0] : "";
+	// };
+  const [document, setDocument] = useState({
+		file: null,
+		// file: initialData ? { name: initialData.fileName } : null,
+	});
   return (
     <Modal open={showModal} onClose={handleCloseModal}>
       <Box
@@ -237,12 +249,12 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
               row
             >
               <FormControlLabel
-                value="male"
+                value="Nam"
                 control={<Radio color="primary" />}
                 label="Nam"
               />
               <FormControlLabel
-                value="female"
+                value="Nữ"
                 control={<Radio color="primary" />}
                 label="Nữ"
               />
@@ -303,6 +315,7 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
             Hủy
           </Button>
         </form>
+
       </Box>
     </Modal>
   );

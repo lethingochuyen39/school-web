@@ -1,4 +1,5 @@
 import axios from "axios";
+import DateChecker from "../components/DateChecker";
 
 const client = axios.create({
 	baseURL: "http://localhost:8080",
@@ -8,6 +9,7 @@ const client = axios.create({
 client.interceptors.request.use((config) => {
 	const token = localStorage.getItem("token");
 	if (token) {
+		<DateChecker/>;
 		config.headers.Authorization = `Bearer ${token}`;
 	}
 	return config;
@@ -41,4 +43,7 @@ export function resetpassword(payload){
 
 export function confirm(payload){
 	client.post("/api/student/confirm",payload);
+}
+export function changepassword(payload){
+	client.post("auth/changepassword",payload);
 }

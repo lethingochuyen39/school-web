@@ -107,8 +107,8 @@ const Home = () => {
 					justifyContent="center"
 				>
 					<StatBox
-						title={numStudents + " students"}
-						subtitle="Total Students"
+						title={numStudents + " học sinh"}
+						subtitle="Tổng số học sinh"
 						icon={<AccountCircleIcon />}
 					/>
 				</Box>
@@ -120,8 +120,8 @@ const Home = () => {
 					justifyContent="center"
 				>
 					<StatBox
-						title={numTeachers + " teachers"}
-						subtitle="Total Teachers"
+						title={numTeachers + " giáo viên"}
+						subtitle="Tổng số giáo viên"
 						icon={<AccountCircleIcon />}
 					/>
 				</Box>
@@ -133,8 +133,8 @@ const Home = () => {
 					justifyContent="center"
 				>
 					<StatBox
-						title={numUsers + " users"}
-						subtitle="Total User"
+						title={numUsers + " tài khoản"}
+						subtitle="Tổng số tài khoản"
 						icon={<AccountCircleIcon />}
 					/>
 				</Box>
@@ -146,23 +146,12 @@ const Home = () => {
 					justifyContent="center"
 				>
 					<StatBox
-						title={numClasses + " classes"}
-						subtitle="Total Classes"
+						title={numClasses + " lớp học"}
+						subtitle="Tổng số lớp học"
 						icon={<ClassIcon />}
 					/>
 				</Box>
-				{/* <Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button> */}
+				{/* <Button onClick={handleScoreClick} variant="contained">Go to Score page</Button> */}
 			</Box>
 		);
 	};
