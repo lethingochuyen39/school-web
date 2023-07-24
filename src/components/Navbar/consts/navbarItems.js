@@ -27,7 +27,7 @@ export const mainNavbarItems = [
 			{
 				id: 3,
 				label: "Học sinh",
-				route: "home",
+				route: "student",
 			},
 			{
 				id: 4,

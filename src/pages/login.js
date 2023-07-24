@@ -14,16 +14,19 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { IconButton, InputAdornment } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Alert, IconButton, InputAdornment } from "@mui/material";
+import { Label, Visibility, VisibilityOff } from "@mui/icons-material";
 
 // import Cookies from "universal-cookie";
 const Login = () => {
+
 	const { login } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const defaultTheme = createTheme();
+  const [error,setError] = useState();
 
 	const loginSubmit = async (event) => {
+    
 		// const cookies = new Cookies();
 		// cookies.remove("token");
 		event.preventDefault();
@@ -32,7 +35,13 @@ const Login = () => {
 			username: data.get("username"),
 			password: data.get("password"),
 		};
-		await login(payload);
+		try{
+      await login(payload);
+    }
+    catch(e){
+      console.log(e);
+      setError('Invalid Username or Password');
+    }
 	};
 	const [showPassword, setShowPassword] = useState(false);
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -56,6 +65,7 @@ const Login = () => {
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
+
           <Box
             sx={{
               marginTop: 8,
@@ -70,12 +80,14 @@ const Login = () => {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
+
             <Box
               component="form"
               onSubmit={loginSubmit}
               noValidate
               sx={{ mt: 1 }}
             >
+              {error?<Alert severity="error">{error}</Alert>:null}          
               <TextField
                 margin="normal"
                 required
