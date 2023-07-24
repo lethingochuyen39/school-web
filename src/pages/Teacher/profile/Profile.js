@@ -1,37 +1,78 @@
 import React, { useState, useEffect } from "react";
 import client from "../../../api/client";
+import TeacherForm from "../../../components/teacher/TeacherForm";
 
-const Profile = () => {
-	const [teacher, setTeacher] = useState(null);
+const ProfilePage = () => {
+  const [teacher, setTeacher] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false); // State to manage the TeacherForm
 
-	useEffect(() => {
-		const fetchTeacherData = async () => {
-			try {
-				const teacherId = localStorage.getItem("id");
-				const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
-				const teacherData = teacherResponse.data;
-				setTeacher(teacherData);
-			} catch (error) {
-				console.error("Error:", error);
-			}
-		};
+  useEffect(() => {
+    const fetchTeacherData = async () => {
+      try {
+        const teacherId = localStorage.getItem("id");
+        const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
+        const teacherData = teacherResponse.data;
+        setTeacher(teacherData);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
-		fetchTeacherData();
-	}, []);
+    fetchTeacherData();
+  }, []);
 
-	return (
-		<div>
-			{teacher ? (
-				<div>
-					<h1>{teacher.name}</h1>
-					<p>Email: {teacher.email}</p>
-					{/* Display other teacher information as needed */}
-				</div>
-			) : (
-				<p>Loading...</p>
-			)}
-		</div>
-	);
+  // Function to handle the opening of the TeacherForm in edit mode
+  const handleEditProfile = () => {
+    setIsFormOpen(true);
+  };
+
+  return (
+    <div className="profile-page-container">
+      <div className="profile-card">
+        {teacher ? (
+          <>
+            <h1 className="profile-name">{teacher.name}</h1>
+            <div className="profile-info">
+              <p>Ngày sinh: {teacher.dob}</p>
+              <p>Giới tính: {teacher.gender}</p>
+              <p>Số điện thoại: {teacher.phone}</p>
+              <p>Email: {teacher.email}</p>
+              <p>Địa chỉ: {teacher.address}</p>
+              <button onClick={handleEditProfile}>Edit Profile</button>{" "}
+              {/* Edit button */}
+            </div>
+          </>
+        ) : (
+          <p className="loading">Loading...</p>
+        )}
+      </div>
+
+      {isFormOpen && (
+        <TeacherForm
+          handleClose={() => setIsFormOpen(false)}
+          isEditMode={true} // Set isEditMode to true for editing
+          initialData={teacher}
+          fetchData={() => {
+            // Optional: You can refresh teacher data after updating
+            const fetchTeacherData = async () => {
+              try {
+                const teacherId = localStorage.getItem("id");
+                const teacherResponse = await client.get(
+                  `/api/teachers/${teacherId}`
+                );
+                const teacherData = teacherResponse.data;
+                setTeacher(teacherData);
+              } catch (error) {
+                console.error("Error:", error);
+              }
+            };
+
+            fetchTeacherData();
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
-export default Profile;
+export default ProfilePage;
