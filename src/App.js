@@ -24,7 +24,6 @@ import Dashboard from "./pages/Teacher/Dashboard";
 import LayoutTeacher from "./pages/LayoutTeacher";
 import DocumentTeacherPage from "./pages/Teacher/document/DocumentTeacher";
 import Metric from "./pages/Metric/Metric";
-import Attendance from "./pages/Attendance/Attendance";
 import EvaluationRecord from "./pages/EvaluationRecords/EvaluationRecords";
 import ReportCard from "./pages/ReportCard/ReportCard";
 import ForgotPass from "./pages/forgotpassword";
@@ -97,7 +96,6 @@ function App() {
                 />
                 <Route path="/admin/classes" element={<Classes />} />
                 <Route path="/admin/subject" element={<Subject />} />
-                <Route path="/admin/attendance" element={<Attendance />} />
                 <Route
                   path="/admin/subject-teacher/:id"
                   element={<SubjectTeacherPage />}

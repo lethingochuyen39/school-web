@@ -27,12 +27,6 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Thống kê" />
 		</ListItemButton>
-		<ListItemButton>
-			<ListItemIcon>
-				<AssignmentIcon />
-			</ListItemIcon>
-			<ListItemText primary="Điểm danh" />
-		</ListItemButton>
 		<ListItemButton component={Link} to="/teacher/schedule">
 			<ListItemIcon>
 				<CalendarMonthIcon />
