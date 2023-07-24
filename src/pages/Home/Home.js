@@ -23,7 +23,7 @@ const Home = () => {
 
 	const fetchData = useCallback(async () => {
 		try {
-			const responseStudents = await client.get("/api/student/all");
+			const responseStudents = await client.get("/api/student/allStudent");
 			const responseTeachers = await client.get("/api/teachers/all");
 			const responseClasses = await client.get("/api/classes/all");
 			const responseUsers = await client.get("auth/all");
