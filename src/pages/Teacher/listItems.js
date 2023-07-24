@@ -83,7 +83,7 @@ export const secondaryListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Tài khoản" />
 		</ListItemButton>
-		<ListItemButton  component={Link} to="/changepasswords">
+		<ListItemButton  component={Link} to="/teacher/changepasswords">
 			<ListItemIcon>
 				<HttpsIcon />
 			</ListItemIcon>
