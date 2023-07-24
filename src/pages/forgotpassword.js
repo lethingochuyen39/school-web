@@ -18,6 +18,7 @@ import { forgotpassword } from "../api/client";
 // import Cookies from "universal-cookie";
 const ForgotPass = () => {
 	// const { forgotpassword } = useContext(AuthContext);
+	localStorage.removeItem("role");
 	const navigate = useNavigate();
 	const defaultTheme = createTheme();
 
@@ -31,7 +32,7 @@ const ForgotPass = () => {
 		};
         try{
             forgotpassword(payload);
-            navigate("/")
+            navigate("/login");
         }
         catch(e){
             console.log(e);
