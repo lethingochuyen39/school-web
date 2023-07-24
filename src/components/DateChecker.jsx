@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import client, { logout } from '../api/client';
+import client, { logout, noToken } from '../api/client';
 import jwtDecode from 'jwt-decode';
 
 const DateChecker = () => {
@@ -9,10 +9,13 @@ const DateChecker = () => {
   useEffect(() => {
     let date = new Date(localStorage.getItem('date') * 1000);
     let dateNow = new Date();
-
+    if(date){
+      
     if (date < dateNow) {
-      //   logout();
+      const role = localStorage.getItem('role');
+        logout();
       // navigate('/login');
+      localStorage.removeItem('date');
       client.post('/auth/refreshtoken', {refreshToken: localStorage.getItem('refreshToken')}).then((res)=>{
         const token = res.data.token;
 			// var role = res.data.roles[0];
@@ -24,8 +27,9 @@ const DateChecker = () => {
 			localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("date", dateUnix);
 			localStorage.setItem("token", res.data.token);
-
+      localStorage.setItem("role", role);
       });
+    }
     }
   }, [navigate]);
 

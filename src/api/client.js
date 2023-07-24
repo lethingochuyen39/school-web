@@ -26,6 +26,10 @@ export function logout() {
 	delete client.defaults.headers.common["Authorization"];
 }
 
+export function noToken(){
+	delete client.defaults.headers.common["Authorization"];
+}
+
 export function forgotpassword(payload){
 	client.post("auth/forgot_password",payload);
 }
