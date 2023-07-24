@@ -9,7 +9,7 @@ const DateChecker = () => {
   useEffect(() => {
     let date = new Date(localStorage.getItem('date') * 1000);
     let dateNow = new Date();
-    if(date){
+    if(date&&localStorage.getItem('date')){
       
     if (date < dateNow) {
       // const role = localStorage.getItem('role');
