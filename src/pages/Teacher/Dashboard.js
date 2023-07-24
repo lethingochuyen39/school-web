@@ -98,8 +98,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title={numSchedules + " schedule"}
-            subtitle="Your Schedule"
+            title={numSchedules + " tiết"}
+            subtitle="Số tiết học của bạn"
             icon={<CalendarMonthIcon />}
           />
         </Box>
@@ -111,8 +111,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title={numDocuments + " documents"}
-            subtitle="Total Documents"
+            title={numDocuments + " tài liệu"}
+            subtitle="Tổng số tài liệu"
             icon={<LibraryBooksIcon />}
           />
         </Box>
@@ -124,8 +124,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title={numNews + " news"}
-            subtitle="Total News"
+            title={numNews + " tin tức"}
+            subtitle="Tổng số tin tức"
             icon={<NewspaperIcon />}
           />
         </Box>
@@ -137,8 +137,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title={numClasses + " classes"}
-            subtitle="Your Classes"
+            title={numClasses + " lớp"}
+            subtitle="Số lớp học của bạn"
             icon={<ClassIcon />}
           />
         </Box>
