@@ -15,6 +15,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import StudentExcelForm from "../../components/student/StudentExcelForm";
 
 const Student = () => {
+// <<<<<<< HEAD
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -55,55 +56,93 @@ const Student = () => {
       // }
       const response = await client.get(url);
       const fetchedData = response.data;
+// =======
+// 	const [data, setData] = useState([]);
+// 	const [loading, setLoading] = useState(true);
+// 	const [isFormOpen, setIsFormOpen] = useState(false);
+// 	const [student, setStudent] = useState(null);
+// 	const [isModalOpen, setIsModalOpen] = useState(false);
+// 	const [isEditMode, setIsEditMode] = useState(false);
+// 	const [selectedStudent, setSelectedStudent] = useState(null);
+// 	// const [searchTerm, setSearchTerm] = useState("");
+// 	// const [isActive, setIsActive] = useState(false);
 
-      const updatedData = fetchedData.map((item) => ({
-        ...item,
-        // isActive: item.isActive,
-      }));
-      setData(updatedData);
-      setLoading(false);
+// 	const handleStudentOpenForm = async () => {
+// 		if (student) {
+// 			setIsEditMode(true);
+// 			setSelectedStudent(student);
+// 		} else {
+// 			setIsEditMode(false);
+// 			setSelectedStudent(null);
+// 		}
 
-      if (student) {
-        const fetchedStudent = fetchedData.find(
-          (item) => item.id === student.id
-        );
-        // if (fetchedTeacher) {
-        //   setIsActive(fetchedTeacher.isActive);
-        // }
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [
-    // searchTerm,
-    student,
-  ]);
+// 		setIsFormOpen(true);
+// 	};
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+// 	const handleCloseStudentForm = () => {
+// 		setIsFormOpen(false);
+// 		setStudent(null);
+// 	};
 
-  // const handleSearchChange = (event) => {
-  //   setSearchTerm(event.target.value);
-  // };
+// 	const fetchData = useCallback(async () => {
+// 		try {
+// 			let url = "/api/student/all";
+// 			// if (searchTerm) {
+// 			//   url += `?name=${searchTerm}`;
+// 			// }
+// 			const response = await client.get(url);
+// 			const fetchedData = response.data;
+// >>>>>>> f8d43a6e7d39de0948634bed89583986e9e7d9d1
 
-  const handleView = async (id) => {
-    try {
-      const response = await client.get(`/api/student/` + id);
-      const data = response.data;
-      setStudent(data);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+			const updatedData = fetchedData.map((item) => ({
+				...item,
+				// isActive: item.isActive,
+			}));
+			setData(updatedData);
+			setLoading(false);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setStudent(null);
-  };
+			if (student) {
+				const fetchedStudent = fetchedData.find(
+					(item) => item.id === student.id
+				);
+				// if (fetchedTeacher) {
+				//   setIsActive(fetchedTeacher.isActive);
+				// }
+			}
+		} catch (error) {
+			console.error(error);
+			setLoading(false);
+		}
+	}, [
+		// searchTerm,
+		student,
+	]);
 
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	// const handleSearchChange = (event) => {
+	//   setSearchTerm(event.target.value);
+	// };
+
+	const handleView = async (id) => {
+		try {
+			const response = await client.get(`/api/student/` + id);
+			const data = response.data;
+			setStudent(data);
+			setIsModalOpen(true);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const closeModal = () => {
+		setIsModalOpen(false);
+		setStudent(null);
+	};
+
+// <<<<<<< HEAD
   const handleEdit = (id) => {
     const selectedStudent = data.find((item) => item.id === id);
     if (selectedStudent) {
@@ -124,48 +163,68 @@ const Student = () => {
       console.error(error);
     }
   };
+// =======
+// 	const handleEdit = (id) => {
+// 		const selectedStudent = data.find((item) => item.id === id);
+// 		if (selectedStudent) {
+// 			setSelectedStudent(selectedStudent);
+// 			setStudent(selectedStudent);
+// 			setIsEditMode(true);
+// 			setIsFormOpen(true);
+// 		}
+// 	};
 
-  const getHeader = () => (
-    <Box
-      display="flex"
-      flexDirection={{ xs: "column", sm: "row" }}
-      justifyContent="space-between"
-      alignItems="center"
-      paddingLeft="20px"
-      paddingTop="10px"
-      paddingRight="10px"
-      flexWrap="wrap"
-    >
-      <Box
-        display="flex"
-        alignItems="center"
-        marginTop={{ xs: "10px", sm: 0 }}
-        marginRight={{ xs: "10px" }}
-      >
-        <CommonButton
-          variant="contained"
-          sx={{
-            color: "white",
-            backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-          }}
-          onClick={handleStudentOpenForm}
-          size="large"
-        >
-          Thêm mới
-        </CommonButton>
-      </Box>
+// 	const handleDelete = async (id) => {
+// 		try {
+// 			await client.delete(`/api/student/deleteStudent/${id}`);
+// 			fetchData();
+// 		} catch (error) {
+// 			console.error(error);
+// 		}
+// 	};
+// >>>>>>> f8d43a6e7d39de0948634bed89583986e9e7d9d1
 
-      <Box
-        minWidth={{ xs: "100%", sm: 0, md: "500px" }}
-        marginRight={{ xs: 0, sm: "10px" }}
-        marginBottom={{ xs: "10px", sm: 0 }}
-        backgroundColor="#f5f5f5"
-        borderRadius="4px"
-        padding="4px"
-        display="flex"
-        alignItems="center"
-      >
-        {/* <SearchIcon sx={{ marginRight: "15px" }} />
+	const getHeader = () => (
+		<Box
+			display="flex"
+			flexDirection={{ xs: "column", sm: "row" }}
+			justifyContent="space-between"
+			alignItems="center"
+			paddingLeft="20px"
+			paddingTop="10px"
+			paddingRight="10px"
+			flexWrap="wrap"
+		>
+			<Box
+				display="flex"
+				alignItems="center"
+				marginTop={{ xs: "10px", sm: 0 }}
+				marginRight={{ xs: "10px" }}
+			>
+				<CommonButton
+					variant="contained"
+					sx={{
+						color: "white",
+						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
+					}}
+					onClick={handleStudentOpenForm}
+					size="large"
+				>
+					Thêm mới
+				</CommonButton>
+			</Box>
+
+			<Box
+				minWidth={{ xs: "100%", sm: 0, md: "500px" }}
+				marginRight={{ xs: 0, sm: "10px" }}
+				marginBottom={{ xs: "10px", sm: 0 }}
+				backgroundColor="#f5f5f5"
+				borderRadius="4px"
+				padding="4px"
+				display="flex"
+				alignItems="center"
+			>
+				{/* <SearchIcon sx={{ marginRight: "15px" }} />
         <Input
           placeholder="Tìm kiếm theo tiêu đề... "
           onChange={handleSearchChange}
@@ -177,32 +236,33 @@ const Student = () => {
           }}
           disableUnderline
         /> */}
-      </Box>
-    </Box>
-  );
+			</Box>
+		</Box>
+	);
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "name", headerName: "Tên", width: 150 },
-    { field: "dob", headerName: "Ngày sinh", width: 150 },
-    { field: "gender", headerName: "Giới tính", width: 150 },
-    { field: "address", headerName: "Địa chỉ", width: 150 },
-    { field: "email", headerName: "Email", width: 150 },
-    { field: "phone", headerName: "Số điện thoại", width: 150 },
-    { field: "status", headerName: "Trạng thái", width: 150 },
-  ];
+	const columns = [
+		{ field: "id", headerName: "ID", width: 100 },
+		{ field: "name", headerName: "Tên", width: 150 },
+		{ field: "dob", headerName: "Ngày sinh", width: 150 },
+		{ field: "gender", headerName: "Giới tính", width: 150 },
+		{ field: "address", headerName: "Địa chỉ", width: 150 },
+		{ field: "email", headerName: "Email", width: 150 },
+		{ field: "phone", headerName: "Số điện thoại", width: 150 },
+		{ field: "status", headerName: "Trạng thái", width: 150 },
+	];
 
-  const getContent = () => (
-    <DataTable
-      initialRows={data}
-      columns={columns}
-      loading={loading}
-      handleView={handleView}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-    />
-  );
+	const getContent = () => (
+		<DataTable
+			initialRows={data}
+			columns={columns}
+			loading={loading}
+			handleView={handleView}
+			handleEdit={handleEdit}
+			handleDelete={handleDelete}
+		/>
+	);
 
+// <<<<<<< HEAD
   return (
     <>
 
@@ -284,19 +344,99 @@ const Student = () => {
                 <b>Trạng thái:</b> {student.status}
               </Typography>
             </>
+{/* =======
+	return (
+		<GridWrapper>
+			{isFormOpen && (
+				<StudentForm
+					handleClose={handleCloseStudentForm}
+					isEditMode={isEditMode}
+					initialData={selectedStudent}
+					fetchData={fetchData}
+				/>
+			)}
 
-            <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
-              Đóng
-            </Button>
-          </Box>
-        </Modal>
-      )}
+			{student && (
+				<Modal
+					open={isModalOpen}
+					onClose={closeModal}
+					aria-labelledby="modal-title"
+					aria-describedby="modal-content"
+				>
+					<Box
+						sx={{
+							position: "fixed",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+							width: 500,
+							bgcolor: "background.paper",
+							borderRadius: 4,
+							p: 2,
+							maxWidth: "90%",
+							maxHeight: "90%",
+							overflow: "auto",
+						}}
+					>
+						<>
+							<Typography
+								variant="h4"
+								id="modal-title"
+								sx={{
+									mb: 2,
+									fontWeight: "bold",
+									textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+									color: "#FF4500",
+									textAlign: "center",
+								}}
+							>
+								Thông tin tin tức
+							</Typography>
+							<Typography variant="body1" id="modal-content">
+								<b>ID:</b> {student.id}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Tên:</b> {student.name}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Ngày sinh:</b> {student.dob}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Giới tính:</b> {student.gender}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Địa chỉ:</b> {student.address}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Email:</b> {student.email}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Số điện thoại:</b> {student.phone}
+							</Typography>
+							<Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+								<b>Trạng thái:</b> {student.status}
+							</Typography>
+						</>
+>>>>>>> f8d43a6e7d39de0948634bed89583986e9e7d9d1 */}
 
+						<Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
+							Đóng
+						</Button>
+					</Box>
+				</Modal>
+			)}
+
+{/* <<<<<<< HEAD */}
       <BasicCard header={getHeader()} content={getContent()} />
     </GridWrapper>
     </>
 
   );
+// =======
+// 			<BasicCard header={getHeader()} content={getContent()} />
+// 		</GridWrapper>
+// 	);
+// >>>>>>> f8d43a6e7d39de0948634bed89583986e9e7d9d1
 };
 
 export default Student;
