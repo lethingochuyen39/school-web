@@ -8,7 +8,7 @@ import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
 import { Button, Modal } from "@mui/material";
-import TeacherForm from "../../components/teacher/TeacherForm";
+import StudentForm from "../../components/student/StudentForm";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
 
@@ -16,28 +16,28 @@ const Student = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [teacher, setTeacher] = useState(null);
+  const [student, setStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
   // const [searchTerm, setSearchTerm] = useState("");
   // const [isActive, setIsActive] = useState(false);
 
-  const handleTeacherOpenForm = async () => {
-    if (teacher) {
+  const handleStudentOpenForm = async () => {
+    if (student) {
       setIsEditMode(true);
-      setSelectedTeacher(teacher);
+      setSelectedStudent(student);
     } else {
       setIsEditMode(false);
-      setSelectedTeacher(null);
+      setSelectedStudent(null);
     }
 
     setIsFormOpen(true);
   };
 
-  const handleCloseTeacherForm = () => {
+  const handleCloseStudentForm = () => {
     setIsFormOpen(false);
-    setTeacher(null);
+    setStudent(null);
   };
 
   const fetchData = useCallback(async () => {
@@ -56,9 +56,9 @@ const Student = () => {
       setData(updatedData);
       setLoading(false);
 
-      if (teacher) {
-        const fetchedTeacher = fetchedData.find(
-          (item) => item.id === teacher.id
+      if (student) {
+        const fetchedStudent = fetchedData.find(
+          (item) => item.id === student.id
         );
         // if (fetchedTeacher) {
         //   setIsActive(fetchedTeacher.isActive);
@@ -70,7 +70,8 @@ const Student = () => {
     }
   }, [
     // searchTerm,
-     teacher]);
+    student,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -82,9 +83,9 @@ const Student = () => {
 
   const handleView = async (id) => {
     try {
-      const response = await client.get(`/api/student/`+id);
+      const response = await client.get(`/api/student/` + id);
       const data = response.data;
-      setTeacher(data);
+      setStudent(data);
       setIsModalOpen(true);
     } catch (error) {
       console.error(error);
@@ -93,14 +94,14 @@ const Student = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setTeacher(null);
+    setStudent(null);
   };
 
   const handleEdit = (id) => {
-    const selectedTeacher = data.find((item) => item.id === id);
-    if (selectedTeacher) {
-      setSelectedTeacher(selectedTeacher);
-      setTeacher(selectedTeacher);
+    const selectedStudent = data.find((item) => item.id === id);
+    if (selectedStudent) {
+      setSelectedStudent(selectedStudent);
+      setStudent(selectedStudent);
       setIsEditMode(true);
       setIsFormOpen(true);
     }
@@ -110,32 +111,6 @@ const Student = () => {
     try {
       await client.delete(`/api/student/deleteStudent/${id}`);
       fetchData();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleUpdateSwitch = async (event, id) => {
-    const { checked } = event.target;
-    console.log(id);
-    try {
-      await client.put(`/api/teachers/isActive/${id}`);
-
-      setData((prevData) => {
-        const updatedData = prevData.map((item) =>
-          item.id === id ? { ...item, isActive: checked } : item
-        );
-        return updatedData;
-      });
-
-      setSelectedTeacher((prevTeacher) => {
-        if (prevTeacher && prevTeacher.id === id) {
-          return { ...prevTeacher, isActive: checked };
-        }
-        return prevTeacher;
-      });
-
-      // setIsActive(checked); // Đảm bảo trường "isActive" luôn được xác định giá trị.
     } catch (error) {
       console.error(error);
     }
@@ -164,7 +139,7 @@ const Student = () => {
             color: "white",
             backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
           }}
-          onClick={handleTeacherOpenForm}
+          onClick={handleStudentOpenForm}
           size="large"
         >
           Thêm mới
@@ -205,18 +180,7 @@ const Student = () => {
     { field: "address", headerName: "Địa chỉ", width: 150 },
     { field: "email", headerName: "Email", width: 150 },
     { field: "phone", headerName: "Số điện thoại", width: 150 },
-    {
-      field: "isActive",
-      headerName: "Trạng thái",
-      width: 100,
-      renderCell: (params) => (
-        <Switch
-          checked={params.row.isActive}
-          onChange={(event) => handleUpdateSwitch(event, params.row.id)}
-          color="primary"
-        />
-      ),
-    },
+    { field: "status", headerName: "Trạng thái", width: 150 },
   ];
 
   const getContent = () => (
@@ -233,15 +197,15 @@ const Student = () => {
   return (
     <GridWrapper>
       {isFormOpen && (
-        <TeacherForm
-          handleClose={handleCloseTeacherForm}
+        <StudentForm
+          handleClose={handleCloseStudentForm}
           isEditMode={isEditMode}
-          initialData={selectedTeacher}
+          initialData={selectedStudent}
           fetchData={fetchData}
         />
       )}
 
-      {teacher && (
+      {student && (
         <Modal
           open={isModalOpen}
           onClose={closeModal}
@@ -278,29 +242,28 @@ const Student = () => {
                 Thông tin tin tức
               </Typography>
               <Typography variant="body1" id="modal-content">
-                <b>ID:</b> {teacher.id}
+                <b>ID:</b> {student.id}
               </Typography>
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Tên:</b> {teacher.name}
+                <b>Tên:</b> {student.name}
               </Typography>
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Ngày sinh:</b> {teacher.dob}
+                <b>Ngày sinh:</b> {student.dob}
               </Typography>
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Giới tính:</b> {teacher.gender}
+                <b>Giới tính:</b> {student.gender}
               </Typography>
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Địa chỉ:</b> {teacher.address}
+                <b>Địa chỉ:</b> {student.address}
               </Typography>
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Email:</b> {teacher.email}
+                <b>Email:</b> {student.email}
               </Typography>
               <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Số điện thoại:</b> {teacher.phone}
+                <b>Số điện thoại:</b> {student.phone}
               </Typography>
-              <Typography variant="body1">
-                <b>Trạng thái:</b>{" "}
-                {teacher.isActive ? "Đang hoạt động" : "Ẩn hoạt động"}
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Trạng thái:</b> {student.status}
               </Typography>
             </>
 
