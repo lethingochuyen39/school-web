@@ -27,7 +27,7 @@ const ChangePassword = ()=>{
             console.log("not match");
         }else{
             let payload = {
-                id:localStorage.getItem("uid"),
+                id:localStorage.getItem("userId"),
                 oldpass:data.get("oldpass"),
                 newpass:data.get("newpass")
             };
