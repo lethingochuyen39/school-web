@@ -204,128 +204,204 @@ const TeacherForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
         )}
 
         <form onSubmit={handleSubmit}>
-          <TextField
-            type="text"
-            name="name"
-            label="Tên giáo viên"
-            value={teacher.name}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            sx={{ mb: 2 }}
-            error={hasError("name")}
-            helperText={getErrorMessage("name")}
-          />
-
-          <TextField
-            name="dob"
-            label="Ngày sinh"
-            type="date"
-            value={teacher.dob}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            sx={{ mb: 2 }}
-            error={hasError("dob")}
-            helperText={getErrorMessage("dob")}
-          />
-
-          <FormControl
-            component="fieldset"
-            margin="normal"
-            required
-            error={hasError("gender")}
-          >
-            <FormLabel component="legend">Giới tính</FormLabel>
-            <RadioGroup
-              name="gender"
-              value={teacher.gender}
-              onChange={handleChange}
-              row
-            >
-              <FormControlLabel
-                value="male"
-                control={<Radio color="primary" />}
-                label="Nam"
+          {isEditMode ? (
+            <>
+              <TextField
+                type="text"
+                name="name"
+                label="Tên giáo viên"
+                value={teacher.name}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                sx={{ mb: 2 }}
+                error={hasError("name")}
+                helperText={getErrorMessage("name")}
               />
-              <FormControlLabel
-                value="female"
-                control={<Radio color="primary" />}
-                label="Nữ"
+
+              <TextField
+                name="dob"
+                label="Ngày sinh"
+                type="date"
+                value={teacher.dob}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                sx={{ mb: 2 }}
+                error={hasError("dob")}
+                helperText={getErrorMessage("dob")}
               />
-            </RadioGroup>
-            {hasError("gender") && (
-              <span style={{ color: "red" }}>{getErrorMessage("gender")}</span>
-            )}
-          </FormControl>
-          <TextField
-            name="address"
-            label="Địa chỉ"
-            value={teacher.address}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            error={hasError("address")}
-            helperText={getErrorMessage("address")}
-          />
-          <TextField
-            name="email"
-            label="Email"
-            value={teacher.email}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            error={hasError("email")}
-            helperText={getErrorMessage("email")}
-          />
-          <TextField
-            name="phone"
-            label="Số điện thoại"
-            value={teacher.phone}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            error={hasError("phone")}
-            helperText={getErrorMessage("phone")}
-          />
 
-          <Grid
-            item
-            xs={12}
-            sx={{ display: "flex", justifyContent: "flex-end" }}
-          >
-            <Typography
-              variant="body1"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginRight: "8px",
-              }}
-            >
-              Trạng thái
-            </Typography>
-            <Switch
-              checked={teacher.isActive}
-              onChange={handleSwitchChange}
-              color="primary"
-            />
-          </Grid>
+              <FormControl
+                component="fieldset"
+                margin="normal"
+                required
+                error={hasError("gender")}
+              >
+                <FormLabel component="legend">Giới tính</FormLabel>
+                <RadioGroup
+                  name="gender"
+                  value={teacher.gender}
+                  onChange={handleChange}
+                  row
+                >
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio color="primary" />}
+                    label="Nam"
+                  />
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio color="primary" />}
+                    label="Nữ"
+                  />
+                </RadioGroup>
+                {hasError("gender") && (
+                  <span style={{ color: "red" }}>
+                    {getErrorMessage("gender")}
+                  </span>
+                )}
+              </FormControl>
+              
+              <TextField
+                name="address"
+                label="Địa chỉ"
+                value={teacher.address}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("address")}
+                helperText={getErrorMessage("address")}
+              />
 
+              <TextField
+                name="phone"
+                label="Số điện thoại"
+                value={teacher.phone}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("phone")}
+                helperText={getErrorMessage("phone")}
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                type="text"
+                name="name"
+                label="Tên giáo viên"
+                value={teacher.name}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                sx={{ mb: 2 }}
+                error={hasError("name")}
+                helperText={getErrorMessage("name")}
+              />
+
+              <TextField
+                name="dob"
+                label="Ngày sinh"
+                type="date"
+                value={teacher.dob}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                sx={{ mb: 2 }}
+                error={hasError("dob")}
+                helperText={getErrorMessage("dob")}
+              />
+
+              <FormControl
+                component="fieldset"
+                margin="normal"
+                required
+                error={hasError("gender")}
+              >
+                <FormLabel component="legend">Giới tính</FormLabel>
+                <RadioGroup
+                  name="gender"
+                  value={teacher.gender}
+                  onChange={handleChange}
+                  row
+                >
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio color="primary" />}
+                    label="Nam"
+                  />
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio color="primary" />}
+                    label="Nữ"
+                  />
+                </RadioGroup>
+                {hasError("gender") && (
+                  <span style={{ color: "red" }}>
+                    {getErrorMessage("gender")}
+                  </span>
+                )}
+              </FormControl>
+              <TextField
+                name="address"
+                label="Địa chỉ"
+                value={teacher.address}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("address")}
+                helperText={getErrorMessage("address")}
+              />
+              <TextField
+                name="email"
+                label="Email"
+                value={teacher.email}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("email")}
+                helperText={getErrorMessage("email")}
+              />
+              <TextField
+                name="phone"
+                label="Số điện thoại"
+                value={teacher.phone}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("phone")}
+                helperText={getErrorMessage("phone")}
+              />
+            </>
+          )}
           <Button
             type="submit"
             variant="contained"
