@@ -38,6 +38,7 @@ import StudentHome from "./pages/Student/Home";
 import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
+import Profile from "./pages/Teacher/profile/Profile";
 import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
 import MetricTeacherPage2 from "./pages/Teacher/metric/MetricTeacherPage2";
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
@@ -134,6 +135,10 @@ function App() {
                 <Route
                   path="/teacher/evaluationRecords"
                   element={<EvaluationRecordTeacherPage />}
+                />
+                <Route
+                  path="/teacher/profile"
+                  element={<Profile />}
                 />
                 <Route path="/teacher/news" element={<NewsTeacherPage />} />
                 <Route

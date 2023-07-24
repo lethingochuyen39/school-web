@@ -77,7 +77,7 @@ export const secondaryListItems = (
 		<ListSubheader component="div" inset>
 			Hồ sơ của bạn
 		</ListSubheader>
-		<ListItemButton>
+		<ListItemButton component={Link} to="/teacher/profile">
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>
