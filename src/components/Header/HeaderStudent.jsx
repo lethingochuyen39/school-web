@@ -174,6 +174,11 @@ export default function HeaderStudent() {
                 <MenuItem key="mk" onClick={handleLogout}>
                   <Typography textAlign="center">Mật khẩu</Typography>
                 </MenuItem>
+                <MenuItem onClick={()=>{navigate("/changepassword")}}>
+											<Typography>
+												Đổi mật khẩu
+											</Typography>
+										</MenuItem>
                 <MenuItem key="dk" onClick={handleLogout}>
                   <Typography textAlign="center">Đăng xuất</Typography>
                 </MenuItem>

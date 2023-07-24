@@ -16,19 +16,24 @@ const ChangePassword = ()=>{
 		// cookies.remove("token");
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		let payload = {
-			id:localStorage.getItem("uid"),
-            oldpass:data.get("oldpass"),
-            newpass:data.get("newpass")
-		};
-        changepassword(payload);
-        try{
-            
-            navigate("/login");
+        if(data.get("confirmpass")!==data.get("newpass")){
+
+        }else{
+            let payload = {
+                id:localStorage.getItem("uid"),
+                oldpass:data.get("oldpass"),
+                newpass:data.get("newpass")
+            };
+            changepassword(payload);
+            try{
+                
+                navigate("/login");
+            }
+            catch(e){
+                console.log(e);
+            }
         }
-        catch(e){
-            console.log(e);
-        }
+
 	};
 
 
@@ -79,13 +84,23 @@ const ChangePassword = ()=>{
 								id="new-password"
 								autoComplete="password"
 							/>
+                            <TextField
+								margin="normal"
+								required
+								fullWidth
+								name="confirmpass"
+								label="Mật khẩu mới"
+								type="password"
+								id="confirm-password"
+								autoComplete="password"
+							/>
 							<Button
 								type="submit"
 								fullWidth
 								variant="contained"
 								sx={{ mt: 3, mb: 2 }}
 							>
-								Change Password
+								Đổi Mật Khẩu
 							</Button>
 						</Box>
 					</Box>

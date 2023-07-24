@@ -145,10 +145,6 @@ function App() {
                   path="/teacher/schedule"
                   element={<ScheduleTeacherPage />}
                 />
-                <Route
-                  path="/teacher/changepasswords"
-                  element={<ChangePassword />}
-                />
               </Route>
             </Route>
 
@@ -170,11 +166,13 @@ function App() {
                 />
                 <Route path="/user/score" element={<ScoreView />} />
                 <Route path="/user/reportCard" element={<ReportCardView />} />
-                <Route
+              </Route>
+            </Route>
+            <Route element={<RoleAccess roles={["STUDENT","TEACHER"]}/>}>
+            <Route
                   path="/user/changepasswords"
                   element={<ChangePassword />}
                 />
-              </Route>
             </Route>
             <Route path="/forgotpassword" element={<ForgotPass />} />
             <Route path="/reset_password" element={<ResetPassword />} />

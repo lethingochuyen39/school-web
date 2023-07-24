@@ -14,7 +14,7 @@ import { forgotpassword } from "../api/client";
 // import Cookies from "universal-cookie";
 const ForgotPass = () => {
 	// const { forgotpassword } = useContext(AuthContext);
-	localStorage.removeItem("role");
+	// localStorage.removeItem("role");
 	const navigate = useNavigate();
 	const defaultTheme = createTheme();
 
@@ -35,19 +35,6 @@ const ForgotPass = () => {
         }
 	};
 
-	useEffect(() => {
-		const role = localStorage.getItem("role");
-		// console.log(role);
-		if (role === "ADMIN") {
-			navigate("/admin/home");
-		}
-		if (role === "STUDENT" || role === "PARENT") {
-			navigate("/user/success");
-		}
-		if (role === "TEACHER") {
-			navigate("/teacher/home");
-		}
-	});
 
 	return (
 		<>
