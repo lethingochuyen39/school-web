@@ -93,7 +93,7 @@ const Profile = () => {
       columns={columns}
       loading={loading}
       handleEdit={handleEdit}
-      hiddenActions={("delete", "view")}
+      hiddenActions={["view", "delete"]}
     />
   );
 
