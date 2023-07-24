@@ -34,7 +34,7 @@ const schema = {
   gender: {
     presence: {
       allowEmpty: false,
-      message: "^Giới tính được bỏ trống",
+      message: "^Giới tính không được bỏ trống",
     },
   },
   address: {
@@ -42,17 +42,35 @@ const schema = {
       allowEmpty: false,
       message: "^Địa chỉ không được bỏ trống",
     },
+    length: {
+      minimum: 1,
+      maximum: 255,
+      message: "^Tên năm học phải có từ 1 đến 255 ký tự",
+    },
   },
   email: {
     presence: {
       allowEmpty: false,
       message: "^Email không được bỏ trống",
     },
+    email: {
+      message: "^Email phải đúng định dạng",
+    },
   },
   phone: {
     presence: {
       allowEmpty: false,
-      message: "^SĐT không được bỏ trống",
+      message: "^Số điện thoại không được bỏ trống",
+    },
+    format: {
+      pattern: "^[0-9]*$",
+      message: "^Số điện thoại phải là số",
+    },
+    length: {
+      minimum: 10,
+      maximum: 10,
+      tooShort: "^Số điện thoại quá ngắn",
+      tooLong: "^Số điện thoại quá dài",
     },
   },
 };
@@ -268,7 +286,7 @@ const TeacherForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
                   </span>
                 )}
               </FormControl>
-              
+
               <TextField
                 name="address"
                 label="Địa chỉ"

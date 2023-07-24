@@ -10,12 +10,12 @@ const schema = {
   name: {
     presence: {
       allowEmpty: false,
-      message: "^Tên năm học không được bỏ trống",
+      message: "^Tên môn học không được bỏ trống",
     },
     length: {
       minimum: 1,
       maximum: 255,
-      message: "^Tên năm học phải có từ 1 đến 255 ký tự",
+      message: "^Tên môn học phải có từ 1 đến 255 ký tự",
     },
   },
 };
