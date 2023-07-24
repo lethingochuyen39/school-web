@@ -20,11 +20,42 @@ const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedTeacher2, setSelectedTeacher2] = useState([]);
 
   const handleCloseTeacherForm = () => {
     setIsFormOpen(false);
     setTeacher(null);
   };
+
+  useEffect(() => {
+		const fetchScoreData = async () => {
+			try {
+        const teacherId = localStorage.getItem("id");
+          const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
+          const teacherData = teacherResponse.data;
+  
+          const teacherdRows = teacherData.map((teacher) => {
+            const teacherdRow = {
+              id: teacher.id,
+              name: teacher.name,
+              dob: teacher.dob,
+              gender: teacher.gender,
+              address: teacher.address,
+              email: teacher.email,
+              phone: teacher.phone,
+            };
+  
+            return teacherdRow;
+          });
+  
+          setSelectedTeacher2(teacherdRows);
+			} catch (error) {
+				console.error("Lỗi:", error);
+			}
+		};
+
+		fetchScoreData();
+	}, []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -93,7 +124,7 @@ const Profile = () => {
       columns={columns}
       loading={loading}
       handleEdit={handleEdit}
-      hiddenActions={["view", "delete"]}
+      hiddenActions={("delete", "view")}
     />
   );
 
@@ -108,71 +139,71 @@ const Profile = () => {
         />
       )}
 
-      {teacher && (
+      {selectedTeacher2.map((row) => (
         <Modal
-          open={isModalOpen}
-          onClose={closeModal}
-          aria-labelledby="modal-title"
-          aria-describedby="modal-content"
+        open={isModalOpen}
+        onClose={closeModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-content"
+      >
+        <Box
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 500,
+            bgcolor: "background.paper",
+            borderRadius: 4,
+            p: 2,
+            maxWidth: "90%",
+            maxHeight: "90%",
+            overflow: "auto",
+          }}
         >
-          <Box
-            sx={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 500,
-              bgcolor: "background.paper",
-              borderRadius: 4,
-              p: 2,
-              maxWidth: "90%",
-              maxHeight: "90%",
-              overflow: "auto",
-            }}
-          >
-            <>
-              <Typography
-                variant="h4"
-                id="modal-title"
-                sx={{
-                  mb: 2,
-                  fontWeight: "bold",
-                  textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
-                  color: "#FF4500",
-                  textAlign: "center",
-                }}
-              >
-                Thông tin
-              </Typography>
-              <Typography variant="body1" id="modal-content">
-                <b>ID:</b> {teacher.id}
-              </Typography>
-              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Tên:</b> {teacher.name}
-              </Typography>
-              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Ngày sinh:</b> {teacher.dob}
-              </Typography>
-              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Giới tính:</b> {teacher.gender}
-              </Typography>
-              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Địa chỉ:</b> {teacher.address}
-              </Typography>
-              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Email:</b> {teacher.email}
-              </Typography>
-              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-                <b>Số điện thoại:</b> {teacher.phone}
-              </Typography>
-            </>
+          <>
+            <Typography
+              variant="h4"
+              id="modal-title"
+              sx={{
+                mb: 2,
+                fontWeight: "bold",
+                textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+                color: "#FF4500",
+                textAlign: "center",
+              }}
+            >
+              Thông tin
+            </Typography>
+            <Typography variant="body1" id="modal-content">
+              <b>ID:</b> {row.id}
+            </Typography>
+            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+              <b>Tên:</b> {row.name}
+            </Typography>
+            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+              <b>Ngày sinh:</b> {row.dob}
+            </Typography>
+            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+              <b>Giới tính:</b> {row.gender}
+            </Typography>
+            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+              <b>Địa chỉ:</b> {row.address}
+            </Typography>
+            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+              <b>Email:</b> {row.email}
+            </Typography>
+            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+              <b>Số điện thoại:</b> {row.phone}
+            </Typography>
+          </>
 
-            <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
-              Đóng
-            </Button>
-          </Box>
-        </Modal>
-      )}
+          <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
+            Đóng
+          </Button>
+        </Box>
+      </Modal>
+      ))}
 
       <BasicCard content={getContent()} />
     </GridWrapper>
