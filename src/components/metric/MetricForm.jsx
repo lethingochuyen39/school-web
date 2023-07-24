@@ -105,7 +105,7 @@ const MetricForm = ({
 
 	useEffect(() => {
 		client
-			.get("/api/student/all")
+			.get("/api/student/allStudent")
 			.then((response) => {
 				setStudents(response.data);
 			})
