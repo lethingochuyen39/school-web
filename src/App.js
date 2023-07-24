@@ -173,10 +173,18 @@ function App() {
               </Route>
             </Route>
             <Route element={<RoleAccess roles={["STUDENT","TEACHER"]}/>}>
-            <Route
+              <Route element={<LayoutStudent/>}>
+              <Route
                   path="/user/changepasswords"
                   element={<ChangePassword />}
                 />
+              </Route>
+              <Route element={<LayoutTeacher/>}>
+              <Route
+                  path="/teacher/changepasswords"
+                  element={<ChangePassword />}
+                />
+              </Route>
             </Route>
             <Route path="/forgotpassword" element={<ForgotPass />} />
             <Route path="/reset_password" element={<ResetPassword />} />
