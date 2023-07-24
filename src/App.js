@@ -49,7 +49,7 @@ import ResetPassword from "./pages/resetpassword";
 import Student from "./pages/Student/StudentAdmin";
 import DateChecker from "./components/DateChecker";
 import ChangePassword from "./pages/changepassword";
-
+import ViewScorePage from "./pages/Score/ViewScorePage";
 function App() {
   // 	const navigate = useNavigate();
   //   useEffect(() => {
@@ -85,6 +85,10 @@ function App() {
                   path="/admin/class-score/:classId"
                   element={<ClassScorePage />}
                 />
+                    	<Route
+									path="/admin/view-score/:classId"
+									element={<ViewScorePage />}
+								/>
                 <Route path="/admin/classes" element={<Classes />} />
 
                 <Route path="/admin/document" element={<Document />} />
@@ -120,7 +124,7 @@ function App() {
                   element={<DocumentTeacherPage />}
                 />
                 <Route path="/teacher/score" element={<ScoreTeacherPage />} />
-                <Route
+<Route
                   path="/teacher/class-score/:classId"
                   element={<ClassScoreTeacherPage />}
                 />
