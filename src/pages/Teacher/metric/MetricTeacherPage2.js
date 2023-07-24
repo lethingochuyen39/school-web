@@ -6,7 +6,7 @@ import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../../components/common/DataTable/DataTable";
 import client from "../../../api/client";
 import MetricForm from "../../../components/metric/MetricForm";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, LinearProgress } from "@mui/material";
 
 const MetricTeacherPage2 = () => {
   const [data, setData] = useState([]);
@@ -18,6 +18,20 @@ const MetricTeacherPage2 = () => {
   const [selectedMetric, setSelectedMetric] = useState(null);
   const [error, setError] = useState("");
   const [academicYears, setAcademicYears] = useState([]);
+  const [teacher, setTeacher] = useState(null);
+	useEffect(() => {
+		const fetchTeacherData = async () => {
+			try {
+				const teacherId = localStorage.getItem("id");
+				const response = await client.get(`/api/teachers/${teacherId}`);
+				setTeacher(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchTeacherData();
+	}, []);
 
   const handleOpenMetricForm = async () => {
     if (metric) {
@@ -153,7 +167,16 @@ const MetricTeacherPage2 = () => {
   };
 
   return (
-    <GridWrapper>
+    <>
+			{teacher === null ? (
+				<LinearProgress />
+			) : teacher && !teacher.isActive ? (
+				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
+					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
+					biết thêm thông tin.
+				</div>
+			) : (
+				<GridWrapper>
       {isMetricFormOpen && (
         <MetricForm
           handleAddMetric={handleAddMetric}
@@ -199,6 +222,8 @@ const MetricTeacherPage2 = () => {
 
       <BasicCard header={getHeader()} content={getContent()} />
     </GridWrapper>
+			)}
+		</>
   );
 };
 
