@@ -1,18 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import AuthContext from "../../src/api/AuthContext";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import { Avatar, Button, CssBaseline, TextField, Typography } from "@mui/material";
+import { Box, Container, ThemeProvider, createTheme } from "@mui/system";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Outlet, useNavigate } from "react-router-dom";
-import { forgotpassword } from "../api/client";
-// import Cookies from "universal-cookie";
-const ForgotPass = () => {
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { changepassword } from "../api/client";
+
+const ChangePassword = ()=>{
 	// const { forgotpassword } = useContext(AuthContext);
 	localStorage.removeItem("role");
 	const navigate = useNavigate();
@@ -24,10 +17,13 @@ const ForgotPass = () => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		let payload = {
-			email: data.get("email"),
+			id:localStorage.getItem("uid"),
+            oldpass:data.get("oldpass"),
+            newpass:data.get("newpass")
 		};
+        changepassword(payload);
         try{
-            forgotpassword(payload);
+            
             navigate("/login");
         }
         catch(e){
@@ -35,19 +31,7 @@ const ForgotPass = () => {
         }
 	};
 
-	useEffect(() => {
-		const role = localStorage.getItem("role");
-		// console.log(role);
-		if (role === "ADMIN") {
-			navigate("/admin/home");
-		}
-		if (role === "STUDENT" || role === "PARENT") {
-			navigate("/user/success");
-		}
-		if (role === "TEACHER") {
-			navigate("/teacher/home");
-		}
-	});
+
 
 	return (
 		<>
@@ -66,7 +50,7 @@ const ForgotPass = () => {
 							<LockOutlinedIcon />
 						</Avatar>
 						<Typography component="h1" variant="h5">
-							Verify Email
+							Đổi mật khẩu
 						</Typography>
 						<Box
 							component="form"
@@ -74,26 +58,26 @@ const ForgotPass = () => {
 							noValidate
 							sx={{ mt: 1 }}
 						>
-							{/* <TextField
-								margin="normal"
-								required
-								fullWidth
-								type="email"
-								id="email"
-								label="Email Address"
-								name="username"
-								autoComplete="email"
-								autoFocus
-							/> */}
 							<TextField
 								margin="normal"
 								required
 								fullWidth
-								name="email"
-								label="Email"
-								type="text"
-								id="email"
-								autoComplete="email"
+								type="password"
+								id="old-pasword"
+								label="Mật khẩu cũ"
+								name="oldpass"
+								autoComplete="password"
+								autoFocus
+							/>
+							<TextField
+								margin="normal"
+								required
+								fullWidth
+								name="newpass"
+								label="Mật khẩu mới"
+								type="password"
+								id="new-password"
+								autoComplete="password"
 							/>
 							<Button
 								type="submit"
@@ -101,7 +85,7 @@ const ForgotPass = () => {
 								variant="contained"
 								sx={{ mt: 3, mb: 2 }}
 							>
-								Send Verification Code
+								Change Password
 							</Button>
 						</Box>
 					</Box>
@@ -109,5 +93,5 @@ const ForgotPass = () => {
 			</ThemeProvider>
 		</>
 	);
-};
-export default ForgotPass;
+}
+export default ChangePassword;

@@ -48,27 +48,28 @@ import SubjectTeacherPage from "./pages/Subject/SubjectTeacherPage";
 import ResetPassword from "./pages/resetpassword";
 import Student from "./pages/Student/StudentAdmin";
 import DateChecker from "./components/DateChecker";
+import ChangePassword from "./pages/changepassword";
 
 function App() {
-// 	const navigate = useNavigate();
-//   useEffect(() => {
-	
-//     let date = new Date(localStorage.getItem("date") * 1000);
-// 	// let date = localStorage.getItem("date");
-//     // console.log(date);
-// 	var unixTime = Date.now();
-//     let dateNow = new Date(unixTime*1000);
-	
-//     if (date < dateNow) {
-//     //   return <Login />;
-// 		navigate('/login');
-//     }
-//   });
+  // 	const navigate = useNavigate();
+  //   useEffect(() => {
+
+  //     let date = new Date(localStorage.getItem("date") * 1000);
+  // 	// let date = localStorage.getItem("date");
+  //     // console.log(date);
+  // 	var unixTime = Date.now();
+  //     let dateNow = new Date(unixTime*1000);
+
+  //     if (date < dateNow) {
+  //     //   return <Login />;
+  // 		navigate('/login');
+  //     }
+  //   });
   return (
     <ThemeProvider theme={dashboardTheme}>
       <BrowserRouter>
         <AuthContextProvider>
-			<DateChecker/>
+          <DateChecker />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Login />} />
@@ -144,6 +145,10 @@ function App() {
                   path="/teacher/schedule"
                   element={<ScheduleTeacherPage />}
                 />
+                <Route
+                  path="/teacher/changepasswords"
+                  element={<ChangePassword />}
+                />
               </Route>
             </Route>
 
@@ -165,6 +170,10 @@ function App() {
                 />
                 <Route path="/user/score" element={<ScoreView />} />
                 <Route path="/user/reportCard" element={<ReportCardView />} />
+                <Route
+                  path="/user/changepasswords"
+                  element={<ChangePassword />}
+                />
               </Route>
             </Route>
             <Route path="/forgotpassword" element={<ForgotPass />} />
