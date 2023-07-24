@@ -14,7 +14,7 @@ import { confirm } from "../../../api/client";
 import { useState } from "react";
 // import Cookies from "universal-cookie";
 const CheckInfo = () => {
-  const [state,setState] = useState({ selected: "female" });
+  const [state,setState] = useState({ selected: "Nữ" });
   const handleChange = ev => {
     setState({ selected: ev.target.value });
   };
@@ -99,12 +99,12 @@ const backHome = ()=>{
 				  onChange={handleChange} value={selected}
                 >
                   <FormControlLabel
-                    value="female"
+                    value="Nữ"
                     control={<Radio name="gender"/>}
                     label="Nữ"
                   />
                   <FormControlLabel
-                    value="male"
+                    value="Nam"
                     control={<Radio  name="gender"/>}
                     label="Nam"
                   />

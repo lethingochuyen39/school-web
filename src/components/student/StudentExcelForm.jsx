@@ -8,17 +8,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Grid from "@mui/material/Grid";
 import {
     Alert,
-    FormControl,
-    FormControlLabel,
     FormHelperText,
-    FormLabel,
-    Radio,
-    RadioGroup,
-    Switch,
     Typography,
 } from "@mui/material";
 import client from "../../api/client";
-import { format } from "date-fns";
 const schema = {
     name: {
         presence: {

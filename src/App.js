@@ -122,85 +122,88 @@ function App() {
 							</Route>
 						</Route>
 
-						<Route element={<RoleAccess roles={["TEACHER"]} />}>
-							<Route path="/teacher/" element={<LayoutTeacher />}>
-								<Route path="/teacher/home" element={<Dashboard />} />
-								<Route
-									path="/teacher/document"
-									element={<DocumentTeacherPage />}
-								/>
-								<Route path="/teacher/score" element={<ScoreTeacherPage />} />
-								<Route
-									path="/teacher/class-score/:classId"
-									element={<ClassScoreTeacherPage />}
-								/>
-								<Route
-									path="/teacher/metrics"
-									element={<MetricTeacherPage2 />}
-								/>
-								<Route
-									path="/teacher/reportCards"
-									element={<ReportCardTeacherPage />}
-								/>
-								<Route
-									path="/teacher/evaluationRecords"
-									element={<EvaluationRecordTeacherPage />}
-								/>
-								<Route path="/teacher/profile" element={<Profile />} />
-								<Route path="/teacher/news" element={<NewsTeacherPage />} />
-								<Route
-									path="/teacher/news-detail/:id"
-									element={<NewsDetailPage />}
-								/>
-								<Route
-									path="/teacher/schedule"
-									element={<ScheduleTeacherPage />}
-								/>
-							</Route>
-						</Route>
+            <Route element={<RoleAccess roles={["TEACHER"]} />}>
+              <Route path="/teacher/" element={<LayoutTeacher />}>
+                <Route path="/teacher/home" element={<Dashboard />} />
+                <Route
+                  path="/teacher/document"
+                  element={<DocumentTeacherPage />}
+                />
+                <Route path="/teacher/score" element={<ScoreTeacherPage />} />
+<Route
+                  path="/teacher/class-score/:classId"
+                  element={<ClassScoreTeacherPage />}
+                />
+                <Route
+                  path="/teacher/metrics"
+                  element={<MetricTeacherPage2 />}
+                />
+                <Route
+                  path="/teacher/reportCards"
+                  element={<ReportCardTeacherPage />}
+                />
+                <Route
+                  path="/teacher/evaluationRecords"
+                  element={<EvaluationRecordTeacherPage />}
+                />
+                <Route
+                  path="/teacher/profile"
+                  element={<Profile />}
+                />
+                <Route path="/teacher/news" element={<NewsTeacherPage />} />
+                <Route
+                  path="/teacher/news-detail/:id"
+                  element={<NewsDetailPage />}
+                />
+                <Route
+                  path="/teacher/schedule"
+                  element={<ScheduleTeacherPage />}
+                />
+              </Route>
+            </Route>
 
-						<Route element={<RoleAccess roles={["STUDENT"]} />}>
-							<Route path="/user/" element={<LayoutStudent />}>
-								<Route path="/user/home" element={<StudentHome />} />
-								<Route path="/user/news" element={<NewsStudentPage />} />
-								<Route
-									path="/user/news-detail/:id"
-									element={<NewsDetailStudentPage />}
-								/>
-								<Route
-									path="/user/schedule"
-									element={<StudentScheduleView />}
-								/>
-								<Route
-									path="/user/document"
-									element={<DocumentStudentPage />}
-								/>
-								<Route path="/user/score" element={<ScoreView />} />
-								<Route path="/user/reportCard" element={<ReportCardView />} />
-							</Route>
-						</Route>
-						<Route element={<RoleAccess roles={["STUDENT", "TEACHER"]} />}>
-							<Route element={<LayoutStudent />}>
-								<Route
-									path="/user/changepasswords"
-									element={<ChangePassword />}
-								/>
-							</Route>
-							<Route element={<LayoutTeacher />}>
-								<Route
-									path="/teacher/changepasswords"
-									element={<ChangePassword />}
-								/>
-							</Route>
-						</Route>
-						<Route path="/forgotpassword" element={<ForgotPass />} />
-						<Route path="/reset_password" element={<ResetPassword />} />
-						<Route path="/checkInfo" element={<CheckInfo />} />
-					</Routes>
-				</AuthContextProvider>
-			</BrowserRouter>
-		</ThemeProvider>
-	);
+            <Route element={<RoleAccess roles={["STUDENT"]} />}>
+              <Route path="/user/" element={<LayoutStudent />}>
+                <Route path="/user/home" element={<StudentHome />} />
+                <Route path="/user/news" element={<NewsStudentPage />} />
+                <Route
+                  path="/user/news-detail/:id"
+                  element={<NewsDetailStudentPage />}
+                />
+                <Route
+                  path="/user/schedule"
+                  element={<StudentScheduleView />}
+                />
+                <Route
+                  path="/user/document"
+                  element={<DocumentStudentPage />}
+                />
+                <Route path="/user/score" element={<ScoreView />} />
+                <Route path="/user/reportCard" element={<ReportCardView />} />
+              </Route>
+            </Route>
+            <Route element={<RoleAccess roles={["STUDENT","TEACHER"]}/>}>
+              <Route element={<LayoutStudent/>}>
+              <Route
+                  path="/user/changepasswords"
+                  element={<ChangePassword />}
+                />
+              </Route>
+              <Route element={<LayoutTeacher/>}>
+              <Route
+                  path="/teacher/changepasswords"
+                  element={<ChangePassword />}
+                />
+              </Route>
+            </Route>
+            <Route path="/forgotpassword" element={<ForgotPass />} />
+            <Route path="/reset_password" element={<ResetPassword />} />
+            <Route path="/checkInfo" element={<CheckInfo />} />
+          </Routes>
+        </AuthContextProvider>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 }
 
 export default App;

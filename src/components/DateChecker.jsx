@@ -12,6 +12,7 @@ const DateChecker = () => {
     if(date&&localStorage.getItem('date')){
       
     if (date < dateNow) {
+      noToken();
       localStorage.removeItem("role");
       localStorage.removeItem("token");
       localStorage.removeItem("date");

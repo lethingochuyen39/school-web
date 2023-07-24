@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../../components/common/DataTable/DataTable";
 import client from "../../../api/client";
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, LinearProgress } from "@mui/material";
 import ReportCardForm from "../../../components/reportCard/ReportCardForm";
 
 const ReportCardTeacherPage = () => {
@@ -19,6 +19,20 @@ const ReportCardTeacherPage = () => {
   const [error, setError] = useState("");
   const [students, setStudents] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
+  const [teacher, setTeacher] = useState(null);
+  useEffect(() => {
+    const fetchTeacherData = async () => {
+      try {
+        const teacherId = localStorage.getItem("id");
+        const response = await client.get(`/api/teachers/${teacherId}`);
+        setTeacher(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTeacherData();
+  }, []);
 
   const handleOpenForm = async () => {
     if (reportCard) {
@@ -158,53 +172,64 @@ const ReportCardTeacherPage = () => {
   );
 
   return (
-    <GridWrapper>
-      {isFormOpen && (
-        <ReportCardForm
-          handleAddReportCard={handleAddReportCard}
-          handleClose={handleCloseForm}
-          isEditMode={isEditMode}
-          initialData={selectedReportCard}
-          error={error}
-          students={students}
-          academicYears={academicYears}
-        />
-      )}
-      {reportCard && (
-        <Modal
-          open={isModalOpen}
-          onClose={closeModal}
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
-        >
-          <Box
-            sx={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 400,
-              bgcolor: "background.paper",
-              borderRadius: 4,
-              p: 2,
-            }}
-          >
-            <h2 id="modal-title">Thông tin hạnh kiểm</h2>
-            <p>Học sinh: {reportCard.student.name}</p>
-            <p>Vi phạm: {reportCard.violate}</p>
-            <p>Mô tả: {reportCard.description}</p>
-            <p>Ngày: {reportCard.date}</p>
-            <p>Năm học: {reportCard.academicYear.name}</p>
+    <>
+      {teacher === null ? (
+        <LinearProgress />
+      ) : teacher && !teacher.isActive ? (
+        <div style={{ fontWeight: "bold", color: "#1565c0" }}>
+          Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
+          biết thêm thông tin.
+        </div>
+      ) : (
+        <GridWrapper>
+          {isFormOpen && (
+            <ReportCardForm
+              handleAddReportCard={handleAddReportCard}
+              handleClose={handleCloseForm}
+              isEditMode={isEditMode}
+              initialData={selectedReportCard}
+              error={error}
+              students={students}
+              academicYears={academicYears}
+            />
+          )}
+          {reportCard && (
+            <Modal
+              open={isModalOpen}
+              onClose={closeModal}
+              aria-labelledby="modal-title"
+              aria-describedby="modal-description"
+            >
+              <Box
+                sx={{
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 400,
+                  bgcolor: "background.paper",
+                  borderRadius: 4,
+                  p: 2,
+                }}
+              >
+                <h2 id="modal-title">Thông tin hạnh kiểm</h2>
+                <p>Học sinh: {reportCard.student.name}</p>
+                <p>Vi phạm: {reportCard.violate}</p>
+                <p>Mô tả: {reportCard.description}</p>
+                <p>Ngày: {reportCard.date}</p>
+                <p>Năm học: {reportCard.academicYear.name}</p>
 
-            <Button variant="contained" onClick={closeModal}>
-              Đóng
-            </Button>
-          </Box>
-        </Modal>
-      )}
+                <Button variant="contained" onClick={closeModal}>
+                  Đóng
+                </Button>
+              </Box>
+            </Modal>
+          )}
 
-      <BasicCard header={getHeader()} content={getContent()} />
-    </GridWrapper>
+          <BasicCard header={getHeader()} content={getContent()} />
+        </GridWrapper>
+      )}
+    </>
   );
 };
 

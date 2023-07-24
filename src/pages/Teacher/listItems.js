@@ -77,13 +77,13 @@ export const secondaryListItems = (
 		<ListSubheader component="div" inset>
 			Hồ sơ của bạn
 		</ListSubheader>
-		<ListItemButton>
+		<ListItemButton component={Link} to="/teacher/profile">
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>
 			<ListItemText primary="Tài khoản" />
 		</ListItemButton>
-		<ListItemButton>
+		<ListItemButton  component={Link} to="/teacher/changepasswords">
 			<ListItemIcon>
 				<HttpsIcon />
 			</ListItemIcon>

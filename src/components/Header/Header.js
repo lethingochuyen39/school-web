@@ -144,6 +144,11 @@ const Header = ({ toggleSidebar }) => {
 										<MenuItem onClick={handleClose}>
 											<Typography>Tài khoản</Typography>
 										</MenuItem>
+										{/* <MenuItem onClick={()=>{navigate("/changepassword")}}>
+											<Typography>
+												Đổi mật khẩu
+											</Typography>
+										</MenuItem> */}
 										<MenuItem onClick={handleLogout}>
 											<Typography>Đăng xuất</Typography>
 										</MenuItem>
