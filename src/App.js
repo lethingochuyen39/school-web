@@ -49,6 +49,7 @@ import ResetPassword from "./pages/resetpassword";
 import Student from "./pages/Student/StudentAdmin";
 import DateChecker from "./components/DateChecker";
 import ViewScorePage from "./pages/Score/ViewScorePage";
+import StudentClassPage from "./pages/Classes/StudentClassPage";
 
 function App() {
 	// 	const navigate = useNavigate();
@@ -113,6 +114,10 @@ function App() {
 									element={<EvaluationRecord />}
 								/>
 								<Route path="/admin/reportCard" element={<ReportCard />} />
+								<Route
+									path="/admin/student-classes/:classId"
+									element={<StudentClassPage />}
+								/>
 							</Route>
 						</Route>
 
