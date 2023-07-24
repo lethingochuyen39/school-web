@@ -12,10 +12,9 @@ const DateChecker = () => {
     if(date&&localStorage.getItem('date')){
       
     if (date < dateNow) {
-      // const role = localStorage.getItem('role');
-        logout();
-      // navigate('/login');
-      // localStorage.removeItem('date');
+      localStorage.removeItem("role");
+      localStorage.removeItem("token");
+      localStorage.removeItem("date");
       client.post('/auth/refreshtoken', {refreshToken: localStorage.getItem('refreshToken')}).then((res)=>{
         const token = res.data.token;
 			const dateUnix = jwtDecode(token).exp;

@@ -66,12 +66,12 @@ const StudentExcelForm = ({ handleClose,fetchData }) => {
     const [errorMessage, setErrorMessage] = useState("");
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
 
 
 
-    };
+    // };
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -217,7 +217,7 @@ const StudentExcelForm = ({ handleClose,fetchData }) => {
                         <Button
                             type="submit"
                             variant="contained"
-                            onClick={handleSubmit}
+                            onClick={handleSubmitFile}
                             sx={{ mt: 2 }}
                         >
                             Thêm

@@ -160,33 +160,6 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
 		file: null,
 		// file: initialData ? { name: initialData.fileName } : null,
 	});
-  const handleFileChange = (event) => {
-		const file = event.target.files[0];
-		setDocument((prev) => ({
-			file: file,
-		}));
-	};
-  const handleSubmitFile = async(event)=>  {
-    event.preventDefault();
-		const formData = new FormData();
-		formData.append("file", document.file);
-    try {
-
-        await client.post(`/api/student/import`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        await fetchData();
-      setSuccessMessage("Thao tác thành công");
-      setErrorMessage("");
-    } catch (error) {
-      setErrorMessage(error.response.data);
-      setSuccessMessage("");
-    }
-
-    // await fetchData();
-  }
   return (
     <Modal open={showModal} onClose={handleCloseModal}>
       <Box
@@ -276,12 +249,12 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
               row
             >
               <FormControlLabel
-                value="male"
+                value="Nam"
                 control={<Radio color="primary" />}
                 label="Nam"
               />
               <FormControlLabel
-                value="female"
+                value="Nữ"
                 control={<Radio color="primary" />}
                 label="Nữ"
               />
