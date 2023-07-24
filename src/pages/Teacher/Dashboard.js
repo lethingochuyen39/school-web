@@ -99,7 +99,7 @@ const Dashboard = () => {
         >
           <StatBox
             title={numSchedules + " tiết"}
-            subtitle="Số tiết học của bạn"
+            subtitle="Số tiết dạy của bạn"
             icon={<CalendarMonthIcon />}
           />
         </Box>
