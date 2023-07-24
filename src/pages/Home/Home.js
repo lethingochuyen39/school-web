@@ -1,21 +1,65 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import SearchIcon from "@mui/icons-material/Search";
-import Input from "@mui/material/Input";
-import IconButton from "@mui/material/IconButton";
-import CommonButton from "../../components/common/CommonButton/CommonButton";
-import Typography from "@mui/material/Typography";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ClassIcon from '@mui/icons-material/Class';
 import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import client from "../../api/client";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
+import StatBox from "../../components/StatBox";
 
 const Home = () => {
-	const handleChange = (value) => {
-		console.log(value);
-	};
+	const [studentData, setStudentData] = useState([]);
+	const [numStudents, setNumStudents] = useState(0); // Số lượng học sinh
+	const [classData, setClassData] = useState([]);
+	const [numClasses, setNumClasses] = useState(0);
+	const [teacherData, setTeacherData] = useState([]);
+	const [numTeachers, setNumTeachers] = useState(0);
+	const [userData, setUserData] = useState([]);
+	const [numUsers, setUsers] = useState(0);
 
-	const addUser = () => {
-		console.log("click");
+	const navigate = useNavigate();
+
+	const fetchData = useCallback(async () => {
+		try {
+			const responseStudents = await client.get("/api/student/all");
+			const responseTeachers = await client.get("/api/teachers/all");
+			const responseClasses = await client.get("/api/classes/all");
+			const responseUsers = await client.get("auth/all");
+
+			const students = responseStudents.data;
+			const classes = responseClasses.data;
+			const teachers = responseTeachers.data;
+			const users = responseUsers.data;
+
+			setStudentData(students);
+			setClassData(classes);
+			setTeacherData(teachers);
+			setUserData(users);
+		} catch (error) {
+			console.error(error);
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	// Sử dụng useEffect để theo dõi thay đổi của data
+	useEffect(() => {
+		// Cập nhật tổng số lượng học sinh khi studentData thay đổi
+		setNumStudents(studentData.length);
+		// Cập nhật tổng số lượng lớp học khi classData thay đổi
+		setNumClasses(classData.length);
+		// Cập nhật tổng số lượng giáo viên khi teacherData thay đổi
+		setNumTeachers(teacherData.length);
+		// Cập nhật tổng số lượng user khi userData thay đổi
+		setUsers(userData.length);
+	}, [studentData, classData, teacherData, userData]);
+
+	const handleScoreClick = () => {
+		navigate(`/admin/score`);
 	};
 
 	const getHeader = () => (
@@ -41,50 +85,87 @@ const Home = () => {
 				display="flex"
 				alignItems="center"
 			>
-				<SearchIcon sx={{ marginRight: "15px" }} />
-				<Input
-					placeholder="Search by email address, phone number, or user UID"
-					onChange={(event) => handleChange(event.target.value)}
-					sx={{
-						width: { xs: "100%", sm: "auto", md: "100%" },
-						color: "rgba(0, 0, 0, 0.6)",
-						fontSize: "1.1rem",
-					}}
-					disableUnderline
-				/>
-			</Box>
-			<Box display="flex" alignItems="center" marginTop={{ xs: "10px", sm: 0 }}>
-				<CommonButton
-					variant="contained"
-					sx={{
-						color: "white",
-						backgroundImage: "linear-gradient(to right, #8bc34a, #4caf50)",
-					}}
-					onClick={addUser}
-					size="large"
-				>
-					Add New
-				</CommonButton>
-				<IconButton>
-					<RefreshIcon />
-				</IconButton>
+				<h2>School Management Dashboard</h2>
 			</Box>
 		</Box>
 	);
 
-	const getContent = () => (
-		<Typography
-			align="center"
-			sx={{
-				margin: "40px 16px",
-				color: "rgba(0, 0, 0, 0.6)",
-				fontSize: "1.rem",
-			}}
-		>
-			No users for this project yet
-		</Typography>
-	);
-
+	const getContent = () => {
+		return (
+			<Box
+				display="grid"
+				gridTemplateColumns="repeat(12, 1fr)"
+				gridAutoRows="140px"
+				gap="20px"
+			>
+				{/* ROW 1 */}
+				<Box
+					gridColumn="span 3"
+					backgroundColor="rgb(220,220,220)"
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+				>
+					<StatBox
+						title={numStudents + " students"}
+						subtitle="Total Students"
+						icon={<AccountCircleIcon />}
+					/>
+				</Box>
+				<Box
+					gridColumn="span 3"
+					backgroundColor="rgb(220,220,220)"
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+				>
+					<StatBox
+						title={numTeachers + " teachers"}
+						subtitle="Total Teachers"
+						icon={<AccountCircleIcon />}
+					/>
+				</Box>
+				<Box
+					gridColumn="span 3"
+					backgroundColor="rgb(220,220,220)"
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+				>
+					<StatBox
+						title={numUsers + " users"}
+						subtitle="Total User"
+						icon={<AccountCircleIcon />}
+					/>
+				</Box>
+				<Box
+					gridColumn="span 3"
+					backgroundColor="rgb(220,220,220)"
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+				>
+					<StatBox
+						title={numClasses + " classes"}
+						subtitle="Total Classes"
+						icon={<ClassIcon />}
+					/>
+				</Box>
+				{/* <Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
+				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button> */}
+			</Box>
+		);
+	};
 	return (
 		<GridWrapper>
 			<BasicCard header={getHeader()} content={getContent()} />
