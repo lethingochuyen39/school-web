@@ -38,6 +38,7 @@ import StudentHome from "./pages/Student/Home";
 import NewsStudentPage from "./pages/Student/news/NewsStudentPage";
 import NewsDetailStudentPage from "./pages/Student/news/NewsDetail";
 import ReportCardTeacherPage from "./pages/Teacher/reportCard/ReportCardTeacherPage";
+import Profile from "./pages/Teacher/profile/Profile";
 import EvaluationRecordTeacherPage from "./pages/Teacher/evaluationRecord/EvaluationRecordTeacherPage";
 import MetricTeacherPage2 from "./pages/Teacher/metric/MetricTeacherPage2";
 import StudentScheduleView from "./pages/Student/schedule/StudentScheduleView";
@@ -48,9 +49,9 @@ import SubjectTeacherPage from "./pages/Subject/SubjectTeacherPage";
 import ResetPassword from "./pages/resetpassword";
 import Student from "./pages/Student/StudentAdmin";
 import DateChecker from "./components/DateChecker";
+import ChangePassword from "./pages/changepassword";
 import ViewScorePage from "./pages/Score/ViewScorePage";
 import StudentClassPage from "./pages/Classes/StudentClassPage";
-
 function App() {
 	// 	const navigate = useNavigate();
 	//   useEffect(() => {
@@ -145,6 +146,7 @@ function App() {
 									path="/teacher/evaluationRecords"
 									element={<EvaluationRecordTeacherPage />}
 								/>
+								<Route path="/teacher/profile" element={<Profile />} />
 								<Route path="/teacher/news" element={<NewsTeacherPage />} />
 								<Route
 									path="/teacher/news-detail/:id"
@@ -175,6 +177,20 @@ function App() {
 								/>
 								<Route path="/user/score" element={<ScoreView />} />
 								<Route path="/user/reportCard" element={<ReportCardView />} />
+							</Route>
+						</Route>
+						<Route element={<RoleAccess roles={["STUDENT", "TEACHER"]} />}>
+							<Route element={<LayoutStudent />}>
+								<Route
+									path="/user/changepasswords"
+									element={<ChangePassword />}
+								/>
+							</Route>
+							<Route element={<LayoutTeacher />}>
+								<Route
+									path="/teacher/changepasswords"
+									element={<ChangePassword />}
+								/>
 							</Route>
 						</Route>
 						<Route path="/forgotpassword" element={<ForgotPass />} />
