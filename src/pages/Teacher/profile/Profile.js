@@ -28,34 +28,34 @@ const Profile = () => {
   };
 
   useEffect(() => {
-		const fetchScoreData = async () => {
-			try {
+    const fetchTeacherData = async () => {
+      try {
         const teacherId = localStorage.getItem("id");
-          const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
-          const teacherData = teacherResponse.data;
-  
-          const teacherdRows = teacherData.map((teacher) => {
-            const teacherdRow = {
-              id: teacher.id,
-              name: teacher.name,
-              dob: teacher.dob,
-              gender: teacher.gender,
-              address: teacher.address,
-              email: teacher.email,
-              phone: teacher.phone,
-            };
-  
-            return teacherdRow;
-          });
-  
-          setSelectedTeacher2(teacherdRows);
-			} catch (error) {
-				console.error("Lỗi:", error);
-			}
-		};
+        const teacherResponse = await client.get(`/api/teachers/${teacherId}`);
+        const teacherData = teacherResponse.data;
 
-		fetchScoreData();
-	}, []);
+        const teacherdRows = teacherData.map((teacher) => {
+          const teacherdRow = {
+            id: teacher.id,
+            name: teacher.name,
+            dob: teacher.dob,
+            gender: teacher.gender,
+            address: teacher.address,
+            email: teacher.email,
+            phone: teacher.phone,
+          };
+
+          return teacherdRow;
+        });
+
+        setSelectedTeacher2(teacherdRows);
+      } catch (error) {
+        console.error("Lỗi:", error);
+      }
+    };
+
+    fetchTeacherData();
+  }, []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -73,10 +73,6 @@ const Profile = () => {
       setLoading(false);
     }
   }, [teacher]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   useEffect(() => {
     fetchData();
@@ -141,68 +137,68 @@ const Profile = () => {
 
       {selectedTeacher2.map((row) => (
         <Modal
-        open={isModalOpen}
-        onClose={closeModal}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-content"
-      >
-        <Box
-          sx={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 500,
-            bgcolor: "background.paper",
-            borderRadius: 4,
-            p: 2,
-            maxWidth: "90%",
-            maxHeight: "90%",
-            overflow: "auto",
-          }}
+          open={isModalOpen}
+          onClose={closeModal}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-content"
         >
-          <>
-            <Typography
-              variant="h4"
-              id="modal-title"
-              sx={{
-                mb: 2,
-                fontWeight: "bold",
-                textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
-                color: "#FF4500",
-                textAlign: "center",
-              }}
-            >
-              Thông tin
-            </Typography>
-            <Typography variant="body1" id="modal-content">
-              <b>ID:</b> {row.id}
-            </Typography>
-            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-              <b>Tên:</b> {row.name}
-            </Typography>
-            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-              <b>Ngày sinh:</b> {row.dob}
-            </Typography>
-            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-              <b>Giới tính:</b> {row.gender}
-            </Typography>
-            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-              <b>Địa chỉ:</b> {row.address}
-            </Typography>
-            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-              <b>Email:</b> {row.email}
-            </Typography>
-            <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
-              <b>Số điện thoại:</b> {row.phone}
-            </Typography>
-          </>
+          <Box
+            sx={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 500,
+              bgcolor: "background.paper",
+              borderRadius: 4,
+              p: 2,
+              maxWidth: "90%",
+              maxHeight: "90%",
+              overflow: "auto",
+            }}
+          >
+            <>
+              <Typography
+                variant="h4"
+                id="modal-title"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)",
+                  color: "#FF4500",
+                  textAlign: "center",
+                }}
+              >
+                Thông tin
+              </Typography>
+              <Typography variant="body1" id="modal-content">
+                <b>ID:</b> {row.id}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Tên:</b> {row.name}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Ngày sinh:</b> {row.dob}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Giới tính:</b> {row.gender}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Địa chỉ:</b> {row.address}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Email:</b> {row.email}
+              </Typography>
+              <Typography variant="body1" sx={{ overflowWrap: "break-word" }}>
+                <b>Số điện thoại:</b> {row.phone}
+              </Typography>
+            </>
 
-          <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
-            Đóng
-          </Button>
-        </Box>
-      </Modal>
+            <Button variant="contained" onClick={closeModal} sx={{ mt: 2 }}>
+              Đóng
+            </Button>
+          </Box>
+        </Modal>
       ))}
 
       <BasicCard content={getContent()} />
