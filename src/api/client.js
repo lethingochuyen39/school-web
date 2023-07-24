@@ -44,3 +44,6 @@ export function resetpassword(payload){
 export function confirm(payload){
 	client.post("/api/student/confirm",payload);
 }
+export function changepassword(payload){
+	client.post("auth/changepassword",payload);
+}
