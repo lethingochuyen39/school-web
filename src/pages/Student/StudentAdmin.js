@@ -7,22 +7,27 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../components/common/DataTable/DataTable";
 import client from "../../api/client";
-import { Button, Modal } from "@mui/material";
+import { Button, FormHelperText, Grid, Modal } from "@mui/material";
 import StudentForm from "../../components/student/StudentForm";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import StudentExcelForm from "../../components/student/StudentExcelForm";
 
 const Student = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormExcelOpen, setIsFormExcelOpen] = useState(false);
+
   const [student, setStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  
   // const [searchTerm, setSearchTerm] = useState("");
   // const [isActive, setIsActive] = useState(false);
-
+  
   const handleStudentOpenForm = async () => {
     if (student) {
       setIsEditMode(true);
@@ -33,16 +38,18 @@ const Student = () => {
     }
 
     setIsFormOpen(true);
+    setIsFormExcelOpen(true);
   };
 
   const handleCloseStudentForm = () => {
     setIsFormOpen(false);
+    setIsFormExcelOpen(false);
     setStudent(null);
   };
 
   const fetchData = useCallback(async () => {
     try {
-      let url = "/api/students";
+      let url = "/api/student/all";
       // if (searchTerm) {
       //   url += `?name=${searchTerm}`;
       // }
@@ -104,12 +111,14 @@ const Student = () => {
       setStudent(selectedStudent);
       setIsEditMode(true);
       setIsFormOpen(true);
+      setIsFormExcelOpen(true);
+
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await client.delete(`/api/student/deleteStudent/${id}`);
+      await client.delete(`/api/student/delete/${id}`);
       fetchData();
     } catch (error) {
       console.error(error);
@@ -195,6 +204,9 @@ const Student = () => {
   );
 
   return (
+    <>
+
+    
     <GridWrapper>
       {isFormOpen && (
         <StudentForm
@@ -204,7 +216,13 @@ const Student = () => {
           fetchData={fetchData}
         />
       )}
+        {isFormExcelOpen && (
+        <StudentExcelForm 
+        fetchData={fetchData}
+        handleClose={handleCloseStudentForm}
+        />
 
+      )}
       {student && (
         <Modal
           open={isModalOpen}
@@ -276,6 +294,8 @@ const Student = () => {
 
       <BasicCard header={getHeader()} content={getContent()} />
     </GridWrapper>
+    </>
+
   );
 };
 

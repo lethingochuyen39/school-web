@@ -10,6 +10,7 @@ import {
   Alert,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   Radio,
   RadioGroup,
@@ -147,7 +148,45 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
   const getErrorMessage = (field) => {
     return hasError(field) ? error[field][0] : "";
   };
+  // const [error, setError] = useState(null);
 
+  // const hasError = (field) => {
+	// 	return error && error[field] ? true : false;
+	// };
+  // const getErrorMessage = (field) => {
+	// 	return hasError(field) ? error[field][0] : "";
+	// };
+  const [document, setDocument] = useState({
+		file: null,
+		// file: initialData ? { name: initialData.fileName } : null,
+	});
+  const handleFileChange = (event) => {
+		const file = event.target.files[0];
+		setDocument((prev) => ({
+			file: file,
+		}));
+	};
+  const handleSubmitFile = async(event)=>  {
+    event.preventDefault();
+		const formData = new FormData();
+		formData.append("file", document.file);
+    try {
+
+        await client.post(`/api/student/import`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        await fetchData();
+      setSuccessMessage("Thao tác thành công");
+      setErrorMessage("");
+    } catch (error) {
+      setErrorMessage(error.response.data);
+      setSuccessMessage("");
+    }
+
+    // await fetchData();
+  }
   return (
     <Modal open={showModal} onClose={handleCloseModal}>
       <Box
@@ -303,6 +342,7 @@ const StudentForm = ({ handleClose, isEditMode, initialData, fetchData }) => {
             Hủy
           </Button>
         </form>
+
       </Box>
     </Modal>
   );

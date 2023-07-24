@@ -138,7 +138,7 @@ const Header = ({ toggleSidebar }) => {
 									<MenuList autoFocusItem={Boolean(anchorEl)}>
 										<MenuItem onClick={handleClose}>
 											<Typography sx={headerStyles.username}>
-												Username
+												{localStorage.getItem('username')}
 											</Typography>
 										</MenuItem>
 										<MenuItem onClick={handleClose}>
