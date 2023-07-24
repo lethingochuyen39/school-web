@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import client from "../../../api/client";
 import TeacherForm from "../../../components/teacher/TeacherForm";
+import "./ProfilePage.css"; // Import the CSS file for styling
 
-const ProfilePage = () => {
+const Profile = () => {
   const [teacher, setTeacher] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false); // State to manage the TeacherForm
 
@@ -38,7 +39,9 @@ const ProfilePage = () => {
               <p>Số điện thoại: {teacher.phone}</p>
               <p>Email: {teacher.email}</p>
               <p>Địa chỉ: {teacher.address}</p>
-              <button onClick={handleEditProfile}>Edit Profile</button>{" "}
+              <button onClick={handleEditProfile} className="edit-button">
+                Edit Profile
+              </button>{" "}
               {/* Edit button */}
             </div>
           </>
@@ -75,4 +78,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default Profile;
