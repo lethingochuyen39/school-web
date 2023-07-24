@@ -16,6 +16,7 @@ import {
 	AlertTitle,
 	Stack,
 	IconButton,
+	LinearProgress,
 } from "@mui/material";
 
 const ClassScoreTeacherPage = () => {
@@ -343,7 +344,9 @@ const ClassScoreTeacherPage = () => {
 
 	return (
 		<>
-			{teacher && !teacher.isActive ? (
+			{teacher === null ? (
+				<LinearProgress />
+			) : teacher && !teacher.isActive ? (
 				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
 					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
 					biết thêm thông tin.

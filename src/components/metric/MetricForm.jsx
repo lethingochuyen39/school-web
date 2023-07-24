@@ -4,6 +4,13 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import validate from "validate.js";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 const schema = {
   description: {
@@ -39,15 +46,10 @@ const schema = {
       message: "^Giá trị phải nằm trong khoảng từ 0 đến 1000",
     },
   },
-  year: {
+  academicYearId: {
     presence: {
       allowEmpty: false,
-      message: "^Vui lòng nhập năm",
-    },
-    numericality: {
-      greaterThanOrEqualTo: 2020,
-      lessThanOrEqualTo: 2030,
-      message: "^Năm phải nằm trong khoảng từ 2020 đến 2030",
+      message: "^Vui lòng chọn năm học",
     },
   },
 };
@@ -58,25 +60,34 @@ const MetricForm = ({
   handleClose,
   isEditMode,
   initialData,
+  academicYears,
 }) => {
   const [metric, setMetric] = useState({
     id: isEditMode ? initialData.id : "",
     name: isEditMode ? initialData.name : "",
     description: isEditMode ? initialData.description : "",
     value: isEditMode ? initialData.value : "",
-    year: isEditMode ? initialData.year : "",
+    academicYearId: isEditMode ? initialData.academicYear.id : "",
   });
   const [showModal, setShowModal] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
     if (isEditMode && initialData) {
-      setMetric(initialData);
+      setMetric({
+        id: initialData.id,
+        name: initialData.name,
+        description: initialData.description,
+        value: initialData.value,
+        academicYearId: initialData.academicYear.id,
+      });
     }
-  }, [isEditMode, initialData]);
+  }, [isEditMode, initialData, academicYears]);
+
   const handleChange = (event) => {
-    setMetric((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
+    const { name, value } = event.target;
+    setMetric((prevMetric) => ({
+      ...prevMetric,
+      [name]: value,
     }));
   };
 
@@ -89,8 +100,14 @@ const MetricForm = ({
         setError(errors);
         return;
       }
+
       if (isEditMode) {
-        await handleUpdateMetric(metric);
+        const updatedMetric = {
+          name: metric.name,
+          description: metric.description,
+          value: metric.value,
+        };
+        await handleUpdateMetric(metric.id, updatedMetric);
       } else {
         await handleAddMetric(metric);
       }
@@ -130,55 +147,113 @@ const MetricForm = ({
         <h2>{isEditMode ? "Cập nhật thống kê" : "Thêm mới thống kê"}</h2>
 
         <form onSubmit={handleSubmit}>
-          <TextField
-            name="name"
-            label="Tên thống kê"
-            value={metric.name}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            required
-            error={hasError("name")}
-            helperText={getErrorMessage("name")}
-          />
-          <TextField
-            name="description"
-            label="Miêu tả"
-            value={metric.description}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            error={hasError("description")}
-            helperText={getErrorMessage("description")}
-          />
-          <TextField
-            name="value"
-            label="Giá trị"
-            value={metric.value}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            error={hasError("value")}
-            helperText={getErrorMessage("value")}
-          />
-          <TextField
-            name="year"
-            label="Năm"
-            value={metric.year}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            focused
-            error={hasError("year")}
-            helperText={getErrorMessage("year")}
-          />
+          {isEditMode ? (
+            <>
+              <TextField
+                name="name"
+                label="Tên thống kê"
+                value={metric.name}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("name")}
+                helperText={getErrorMessage("name")}
+              />
+              <TextField
+                name="description"
+                label="Miêu tả"
+                value={metric.description}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("description")}
+                helperText={getErrorMessage("description")}
+              />
+              <TextField
+                name="value"
+                label="Giá trị"
+                value={metric.value}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("value")}
+                helperText={getErrorMessage("value")}
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                name="name"
+                label="Tên thống kê"
+                value={metric.name}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                required
+                error={hasError("name")}
+                helperText={getErrorMessage("name")}
+              />
+              <TextField
+                name="description"
+                label="Miêu tả"
+                value={metric.description}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("description")}
+                helperText={getErrorMessage("description")}
+              />
+              <TextField
+                name="value"
+                label="Giá trị"
+                value={metric.value}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                focused
+                error={hasError("value")}
+                helperText={getErrorMessage("value")}
+              />
+              <FormControl
+                fullWidth
+                margin="normal"
+                error={hasError("academicYearId")}
+              >
+                <InputLabel id="academicYear-label">Năm học</InputLabel>
+                <Select
+                  labelId="academicYear-label"
+                  id="academicYear-select"
+                  name="academicYearId"
+                  value={metric.academicYearId}
+                  onChange={handleChange}
+                  label="Năm học"
+                >
+                  {academicYears.map((academicYear) => (
+                    <MenuItem key={academicYear.id} value={academicYear.id}>
+                      {academicYear.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {hasError("academicYearId") && (
+                  <FormHelperText>
+                    {getErrorMessage("academicYearId")}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </>
+          )}
           <Button type="submit" variant="contained" onClick={handleSubmit}>
             {isEditMode ? "Cập nhật" : "Thêm"}
           </Button>

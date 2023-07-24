@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import BasicCard from "../../components/common/BasicCard/BasicCard";
-import SearchIcon from "@mui/icons-material/Search";
-import Input from "@mui/material/Input";
 import CommonButton from "../../components/common/CommonButton/CommonButton";
 import Box from "@mui/material/Box";
 import GridWrapper from "../../components/common/GridWrapper/GridWrapper";
@@ -19,16 +17,25 @@ const Metric = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState(null);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [academicYears, setAcademicYears] = useState([]);
 
-  const handleOpenMetricForm = () => {
-    console.log(metric);
+  const handleOpenMetricForm = async () => {
     if (metric) {
       setIsEditMode(true);
       setSelectedMetric(metric);
     } else {
       setIsEditMode(false);
       setSelectedMetric(null);
+    }
+
+    try {
+      const responseAcademicYears = await client.get("/api/academic-years/all");
+      setAcademicYears(responseAcademicYears.data);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        setError(error.response.data);
+      }
     }
     setIsMetricFormOpen(true);
   };
@@ -38,10 +45,32 @@ const Metric = () => {
     setMetric(null);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setMetric(null);
+  };
+
+  const fetchData = useCallback(async () => {
+    try {
+      let url = "/api/metrics";
+      const response = await client.get(url);
+      setData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const handleAddMetric = async (newMetric) => {
+    console.log(newMetric);
     try {
       await client.post("/api/metrics", newMetric);
-      setIsModalOpen(true);
+
       await fetchData();
     } catch (error) {
       console.error(error);
@@ -65,11 +94,6 @@ const Metric = () => {
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setMetric(null);
-  };
-
   const handleEdit = (id) => {
     const selectedMetric = data.find((metric) => metric.id === id);
     if (selectedMetric) {
@@ -79,11 +103,11 @@ const Metric = () => {
     }
   };
 
-  const handleUpdateMetric = async (updatedMetric) => {
+  const handleUpdateMetric = async (id, updatedMetric) => {
     try {
-      await client.put(`/api/metrics/${updatedMetric.id}`, updatedMetric);
+      await client.put(`/api/metrics/${id}`, updatedMetric);
+      
       fetchData();
-      setIsModalOpen(true);
     } catch (error) {
       if (error.response) {
         setError(error.response.data.message);
@@ -101,22 +125,6 @@ const Metric = () => {
       console.error(error);
     }
   };
-
-  const fetchData = useCallback(async () => {
-    try {
-      let url = "/api/metrics";
-      const response = await client.get(url);
-      setData(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [searchTerm]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const getHeader = () => (
     <Box
@@ -156,7 +164,12 @@ const Metric = () => {
     { field: "name", headerName: "Tên thống kê", width: 200 },
     { field: "description", headerName: "Miêu tả", width: 200 },
     { field: "value", headerName: "Giá trị", width: 150 },
-    { field: "year", headerName: "Năm", width: 150 },
+    {
+      field: "academicYear",
+      headerName: "Năm học",
+      width: 150,
+      valueGetter: (params) => params.row.academicYear?.name || "",
+    },
   ];
 
   const getContent = () => {
@@ -182,6 +195,7 @@ const Metric = () => {
           isEditMode={isEditMode}
           initialData={selectedMetric}
           error={error}
+          academicYears={academicYears}
         />
       )}
 
@@ -209,7 +223,7 @@ const Metric = () => {
             <p>Tên thống kê: {metric.name}</p>
             <p>Miêu tả: {metric.description}</p>
             <p>Giá trị: {metric.value}</p>
-            <p>Năm: {metric.year}</p>
+            <p>Năm học: {metric.academicYear.name}</p>
             <Button variant="contained" onClick={closeModal}>
               Đóng
             </Button>

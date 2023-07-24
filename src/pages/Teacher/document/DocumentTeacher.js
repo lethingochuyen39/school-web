@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
 import DataTable from "../../../components/common/DataTable/DataTable";
 import client from "../../../api/client";
-import { Button, Modal } from "@mui/material";
+import { Button, LinearProgress, Modal } from "@mui/material";
 import DocumentForm from "../../../components/document/DocumentForm";
 import Typography from "@mui/material/Typography";
 import FileDownloader from "../../Document/FileDownloader";
@@ -52,6 +52,17 @@ const DocumentTeacherPage = () => {
 	const handleCloseForm = () => {
 		setIsFormOpen(false);
 		setDocument(null);
+	};
+	const formatDate = (dateString) => {
+		const options = {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		};
+		return new Date(dateString).toLocaleString("vi-VN", options);
 	};
 
 	const fetchData = useCallback(async () => {
@@ -188,7 +199,9 @@ const DocumentTeacherPage = () => {
 
 	return (
 		<>
-			{teacher && !teacher.isActive ? (
+			{teacher === null ? (
+				<LinearProgress />
+			) : teacher && !teacher.isActive ? (
 				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
 					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
 					biết thêm thông tin.
@@ -277,13 +290,13 @@ const DocumentTeacherPage = () => {
 										variant="body1"
 										sx={{ overflowWrap: "break-word" }}
 									>
-										<b>Ngày thêm:</b> {document.uploadedAt}
+										<b>Ngày thêm:</b> {formatDate(document.uploadedAt)}
 									</Typography>
 									<Typography
 										variant="body1"
 										sx={{ overflowWrap: "break-word" }}
 									>
-										<b>Ngày cập nhật:</b> {document.updatedAt}
+										<b>Ngày cập nhật:</b> {formatDate(document.updatedAt)}
 									</Typography>
 								</>
 

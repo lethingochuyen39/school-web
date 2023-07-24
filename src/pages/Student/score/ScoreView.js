@@ -13,6 +13,7 @@ import {
 	MenuItem,
 	Grid,
 	Typography,
+	LinearProgress,
 } from "@mui/material";
 import client from "../../../api/client";
 
@@ -24,7 +25,20 @@ const ScoreView = ({ refresh, setRefresh }) => {
 	const [classes, setClasses] = useState([]);
 	const [selectedClass, setSelectedClass] = useState("");
 	const averageScores = {};
+	const [student, setStudent] = useState(null);
+	useEffect(() => {
+		const fetchStudentData = async () => {
+			try {
+				const studentId = localStorage.getItem("id");
+				const response = await client.get(`/api/student/${studentId}`);
+				setStudent(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
 
+		fetchStudentData();
+	}, []);
 	const handleSemesterChange = (event) => {
 		setSemester(event.target.value);
 	};
@@ -34,10 +48,10 @@ const ScoreView = ({ refresh, setRefresh }) => {
 	};
 
 	useEffect(() => {
-		if (classes.length > 0) {
+		if (classes.length > 0 && !selectedClass) {
 			setSelectedClass(classes[0].id);
 		}
-	}, [classes]);
+	}, [classes, selectedClass]);
 
 	useEffect(() => {
 		const fetchScoreData = async () => {
@@ -133,151 +147,167 @@ const ScoreView = ({ refresh, setRefresh }) => {
 
 	return (
 		<>
-			<Grid container justifyContent="center" spacing={2} sx={{ mb: 2, mt: 2 }}>
-				<Grid item xs={12} md={6}>
-					<FormControl fullWidth size="small">
-						<InputLabel id="semester-label">Học kỳ</InputLabel>
-						<Select
-							labelId="semester-label"
-							id="semester-select"
-							name="semester"
-							value={semester}
-							onChange={handleSemesterChange}
-							label="Học kỳ"
-							required
-						>
-							<MenuItem value={1}>Học kỳ 1</MenuItem>
-							<MenuItem value={2}>Học kỳ 2</MenuItem>
-						</Select>
-					</FormControl>
-				</Grid>
-
-				<Grid item xs={12} md={6}>
-					<FormControl fullWidth size="small">
-						<InputLabel id="class-label">Lớp học</InputLabel>
-						<Select
-							labelId="class-label"
-							id="class-select"
-							name="classId"
-							size="small"
-							value={selectedClass}
-							onChange={handleChange}
-							label="Lớp học"
-							required
-						>
-							{classes.map((classItem) => (
-								<MenuItem key={classItem.id} value={classItem.id}>
-									LH{classItem.id}_{classItem.name}_năm học:{" "}
-									{classItem.academicYear.name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</Grid>
-			</Grid>
-
-			<TableContainer component={Paper}>
-				<Table sx={{ minWidth: 650 }} aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							<TableCell
-								sx={{
-									fontWeight: "bold",
-									backgroundColor: "#0097a7",
-									color: "#FFFFFF",
-									textAlign: "center",
-									border: "1px solid black",
-								}}
-							>
-								Môn học
-							</TableCell>
-							{scoreTypes.map((scoreType) => (
-								<TableCell
-									key={scoreType.id}
-									align="center"
-									sx={{
-										fontWeight: "bold",
-										color: "#FFFFFF",
-										backgroundColor: "#0097a7",
-										textAlign: "center",
-										border: "1px solid black",
-									}}
+			{student === null ? (
+				<LinearProgress />
+			) : student && !(student.status === "active") ? (
+				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
+					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
+					biết thêm thông tin.
+				</div>
+			) : (
+				<>
+					<Grid
+						container
+						justifyContent="center"
+						spacing={2}
+						sx={{ mb: 2, mt: 2 }}
+					>
+						<Grid item xs={12} md={6}>
+							<FormControl fullWidth size="small">
+								<InputLabel id="semester-label">Học kỳ</InputLabel>
+								<Select
+									labelId="semester-label"
+									id="semester-select"
+									name="semester"
+									value={semester}
+									onChange={handleSemesterChange}
+									label="Học kỳ"
+									required
 								>
-									{scoreType.name}
-								</TableCell>
-							))}
-							<TableCell
-								align="center"
-								sx={{
-									fontWeight: "bold",
-									color: "#FFFFFF",
-									backgroundColor: "#0097a7",
-									textAlign: "center",
-									border: "1px solid black",
-								}}
-							>
-								ĐTB
-							</TableCell>
-						</TableRow>
-					</TableHead>
+									<MenuItem value={1}>Học kỳ 1</MenuItem>
+									<MenuItem value={2}>Học kỳ 2</MenuItem>
+								</Select>
+							</FormControl>
+						</Grid>
 
-					<TableBody>
-						{scoreData.map((row, i) => (
-							<TableRow
-								key={i}
-								sx={{
-									"&:nth-of-type(odd)": {
-										backgroundColor: "#e3f2fd",
-									},
-								}}
-							>
-								<TableCell
-									sx={{
-										fontWeight: "bold",
-										width: "100px",
-										textAlign: "center",
-										whiteSpace: "nowrap",
-										border: "1px solid black",
-									}}
+						<Grid item xs={12} md={6}>
+							<FormControl fullWidth size="small">
+								<InputLabel id="class-label">Lớp học</InputLabel>
+								<Select
+									labelId="class-label"
+									id="class-select"
+									name="classId"
+									size="small"
+									value={selectedClass}
+									onChange={handleChange}
+									label="Lớp học"
+									required
 								>
-									{row.subjectName}
-								</TableCell>
-								{scoreTypes.map((scoreType) => (
+									{classes.map((classItem) => (
+										<MenuItem key={classItem.id} value={classItem.id}>
+											LH{classItem.id}_{classItem.name}_năm học:{" "}
+											{classItem.academicYear.name}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Grid>
+					</Grid>
+					<TableContainer component={Paper}>
+						<Table sx={{ minWidth: 650 }} aria-label="simple table">
+							<TableHead>
+								<TableRow>
 									<TableCell
-										key={scoreType.id}
-										align="center"
 										sx={{
+											fontWeight: "bold",
+											backgroundColor: "#0097a7",
+											color: "#FFFFFF",
+											textAlign: "center",
 											border: "1px solid black",
 										}}
 									>
-										{row[scoreType.id]}
+										Môn học
 									</TableCell>
-								))}
+									{scoreTypes.map((scoreType) => (
+										<TableCell
+											key={scoreType.id}
+											align="center"
+											sx={{
+												fontWeight: "bold",
+												color: "#FFFFFF",
+												backgroundColor: "#0097a7",
+												textAlign: "center",
+												border: "1px solid black",
+											}}
+										>
+											{scoreType.name}
+										</TableCell>
+									))}
+									<TableCell
+										align="center"
+										sx={{
+											fontWeight: "bold",
+											color: "#FFFFFF",
+											backgroundColor: "#0097a7",
+											textAlign: "center",
+											border: "1px solid black",
+										}}
+									>
+										ĐTB
+									</TableCell>
+								</TableRow>
+							</TableHead>
 
-								<TableCell
-									align="center"
-									sx={{
-										fontWeight: "bold",
-										border: "1px solid black",
-									}}
-								>
-									{row.average !== null ? row.average : "-"}
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
-			<Typography
-				style={{
-					color: "red",
-					fontWeight: "bold",
-					fontStyle: "italic",
-					marginTop: "10px",
-				}}
-			>
-				Vị trí "-" là thông tin chưa được công bố. Chi tiết liên hệ nhà trường
-			</Typography>
+							<TableBody>
+								{scoreData.map((row, i) => (
+									<TableRow
+										key={i}
+										sx={{
+											"&:nth-of-type(odd)": {
+												backgroundColor: "#e3f2fd",
+											},
+										}}
+									>
+										<TableCell
+											sx={{
+												fontWeight: "bold",
+												width: "100px",
+												textAlign: "center",
+												whiteSpace: "nowrap",
+												border: "1px solid black",
+											}}
+										>
+											{row.subjectName}
+										</TableCell>
+										{scoreTypes.map((scoreType) => (
+											<TableCell
+												key={scoreType.id}
+												align="center"
+												sx={{
+													border: "1px solid black",
+												}}
+											>
+												{row[scoreType.id]}
+											</TableCell>
+										))}
+
+										<TableCell
+											align="center"
+											sx={{
+												fontWeight: "bold",
+												border: "1px solid black",
+											}}
+										>
+											{row.average !== null ? row.average : "-"}
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					<Typography
+						style={{
+							color: "red",
+							fontWeight: "bold",
+							fontStyle: "italic",
+							marginTop: "10px",
+						}}
+					>
+						Vị trí "-" là thông tin chưa được công bố. Chi tiết liên hệ nhà
+						trường
+					</Typography>
+				</>
+			)}
 		</>
 	);
 };

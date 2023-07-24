@@ -13,6 +13,7 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
+	LinearProgress,
 } from "@mui/material";
 import client from "../../../api/client";
 import GridWrapper from "../../../components/common/GridWrapper/GridWrapper";
@@ -112,7 +113,9 @@ const ScheduleTeacherPage = () => {
 
 	return (
 		<>
-			{teacher && !teacher.isActive ? (
+			{teacher === null ? (
+				<LinearProgress />
+			) : teacher && !teacher.isActive ? (
 				<div style={{ fontWeight: "bold", color: "#1565c0" }}>
 					Tài khoản cá nhân bạn đang bị khóa. Vui lòng liên hệ nhà trường để
 					biết thêm thông tin.
