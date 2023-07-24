@@ -151,18 +151,7 @@ const Home = () => {
 						icon={<ClassIcon />}
 					/>
 				</Box>
-				{/* <Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button>
-				<Button onClick={handleScoreClick} variant="contained">Go to Score page</Button> */}
+				{/* <Button onClick={handleScoreClick} variant="contained">Go to Score page</Button> */}
 			</Box>
 		);
 	};
