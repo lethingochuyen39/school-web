@@ -108,10 +108,4 @@ export const mainNavbarItems = [
 		label: "Quản lý hạng kiểm",
 		route: "reportCard",
 	},
-	{
-		id: 16,
-		icon: <ContactEmergencyIcon />,
-		label: "Quản lý điểm danh",
-		route: "attendance",
-	},
 ];
