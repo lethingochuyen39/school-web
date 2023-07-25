@@ -42,9 +42,6 @@ const StudentHome = () => {
               <p>Số điện thoại: {teacher.phone}</p>
               <p>Email: {teacher.email}</p>
               <p>Địa chỉ: {teacher.address}</p>
-              <button onClick={handleEditProfile} className="edit-button">
-                Edit Profile
-              </button>{" "}
               {/* Edit button */}
             </div>
           </>
