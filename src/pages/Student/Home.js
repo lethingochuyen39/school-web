@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import client from "../../../api/client";
-import TeacherForm from "../../components/teacher/TeacherForm";
+
+import StudentForm from "../../components/student/StudentForm";
 import client from "../../api/client";
 // import TeacherForm from "../../../components/teacher/TeacherForm";
 // import "./ProfilePage.css"; // Import the CSS file for styling
@@ -53,7 +54,7 @@ const StudentHome = () => {
       </div>
 
       {isFormOpen && (
-        <TeacherForm
+        <StudentForm
           handleClose={() => setIsFormOpen(false)}
           isEditMode={true} // Set isEditMode to true for editing
           initialData={teacher}
