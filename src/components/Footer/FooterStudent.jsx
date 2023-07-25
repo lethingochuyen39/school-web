@@ -48,21 +48,15 @@ export default function FooterStudent() {
 			title: "Social Media",
 			description: [
 				{
-					name: "Twitter",
-					link: "https://www.twitter.com",
-					icon: <Twitter />,
-					color: "#0091ea",
-				},
-				{
 					name: "Instagram",
-					link: "https://www.instagram.com",
+					link: "https://www.instagram.com/fptaptech1999",
 					icon: <Instagram />,
 					color: "red",
 				},
 
 				{
 					name: "Facebook",
-					link: "https://www.facebook.com",
+					link: "https://www.facebook.com/aptech.fpt",
 					icon: <Facebook />,
 					color: "#00b0ff",
 				},
@@ -100,7 +94,7 @@ export default function FooterStudent() {
 								{footer.description.map((item) => (
 									<li key={item.name}>
 										<SocialMediaLink
-											href="#"
+											href={item.link}
 											variant="subtitle1"
 											color="text.secondary"
 										>
