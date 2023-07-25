@@ -11,8 +11,37 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Outlet, useNavigate } from "react-router-dom";
 import { changepassword } from "../api/client";
-
+const schema = {
+	newpass:{
+		presence:{
+			allowEmpty: false,
+			message: "^Nhập mật khẩu mới"
+		},
+	},
+	oldpass:{
+		presence:{
+			allowEmpty: false,
+			message: "^Nhập mật khẩu hiện tại"
+		},
+	},
+	confirmpass:{
+		presence:{
+			allowEmpty: false,
+			message: "^Xác nhận mật khẩu"
+		},
+		equality: {
+			attribue: "newpass",
+			message: "Mật khẩu xác nhận không trùng khớp với mật khẩu mới",
+			comparator: function(a,b){
+				return a===b;
+			},
+		}
+	}
+}
 const ChangePassword = ()=>{
+	const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 	// const { forgotpassword } = useContext(AuthContext);
 	// localStorage.removeItem("role");
 	const navigate = useNavigate();
@@ -23,22 +52,16 @@ const ChangePassword = ()=>{
 		// cookies.remove("token");
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-        if(data.get("confirmpass")!==data.get("newpass")){
-            console.log("not match");
-        }else{
-            let payload = {
-                id:localStorage.getItem("userId"),
-                oldpass:data.get("oldpass"),
-                newpass:data.get("newpass")
-            };
-            changepassword(payload);
-            // try{
-                
-            //     navigate("/login");
-            // }
-            // catch(e){
-            //     console.log(e);
-            // }
+			try{
+				let payload = {
+					id:localStorage.getItem("userId"),
+					oldpass:data.get("oldpass"),
+					newpass:data.get("newpass")
+				};
+				changepassword(payload);
+			}
+			catch(e){
+				console.log(e);
         }
 
 	};
