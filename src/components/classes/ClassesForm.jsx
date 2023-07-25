@@ -36,7 +36,7 @@ const schema = {
       message: "^Khối không được bỏ trống",
     },
   },
-  limitStudent:{
+  limitStudent: {
     presence: {
       allowEmpty: false,
       message: "^Số lượng không được bỏ trống",
@@ -54,12 +54,12 @@ const schema = {
       message: "^Năm học không được bỏ trống",
     },
   },
-  teacherId: {
-    presence: {
-      allowEmpty: false,
-      message: "^Giáo viên không được bỏ trống",
-    },
-  },
+  // teacherId: {
+  //   presence: {
+  //     allowEmpty: false,
+  //     message: "^Giáo viên không được bỏ trống",
+  //   },
+  // },
 };
 
 const ClassesForm = ({
@@ -228,7 +228,7 @@ const ClassesForm = ({
             helperText={getErrorMessage("limitStudent")}
           />
 
-          <FormControl fullWidth margin="normal" error={hasError("teacherId")}>
+          {/* <FormControl fullWidth margin="normal" error={hasError("teacherId")}>
             <InputLabel id="teacher-label">Giáo viên</InputLabel>
             <Select
               labelId="teacher-label"
@@ -247,7 +247,7 @@ const ClassesForm = ({
             {hasError("teacherId") && (
               <FormHelperText>{getErrorMessage("teacherId")}</FormHelperText>
             )}
-          </FormControl>
+          </FormControl> */}
 
           <FormControl
             fullWidth
