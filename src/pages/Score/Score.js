@@ -31,6 +31,8 @@ const Score = () => {
 	const [classes, setClasses] = useState([]);
 	const [viewScores, setViewScores] = useState([]);
 	const [selectedView, setSelectedView] = useState(null);
+	const [isOpenAddClassModal, setIsOpenAddClassModal] = useState(false);
+	const [isOpenViewClassModal, setIsOpenViewClassModal] = useState(false);
 
 	const navigate = useNavigate();
 	const handleOpenForm = async () => {
@@ -141,7 +143,7 @@ const Score = () => {
 			const response = await client.get("/api/classes");
 			setClassScores(response.data);
 			setFilteredClassSchedule(response.data);
-			setIsModalOpen(true);
+			setIsOpenAddClassModal(true);
 		} catch (error) {
 			console.error(error);
 		}
@@ -151,7 +153,7 @@ const Score = () => {
 			const response = await client.get("/api/classes");
 			setViewScores(response.data);
 			setFilteredClassSchedule(response.data);
-			setIsModalOpen(true);
+			setIsOpenViewClassModal(true);
 		} catch (error) {
 			console.error(error);
 		}
@@ -164,7 +166,6 @@ const Score = () => {
 
 	const handleViewClick = (classId) => {
 		setSelectedClass(classId);
-		// Chuyển hướng đến trang điểm của lớp đó
 		navigate(`/admin/view-score/${classId}`);
 	};
 
@@ -314,7 +315,7 @@ const Score = () => {
 			)}
 			{classScores && (
 				<Modal
-					open={isModalOpen}
+					open={isOpenAddClassModal}
 					onClose={closeModal}
 					aria-labelledby="modal-title"
 					aria-describedby="modal-description"
@@ -395,7 +396,7 @@ const Score = () => {
 
 			{viewScores && (
 				<Modal
-					open={isModalOpen}
+					open={isOpenViewClassModal}
 					onClose={closeModal}
 					aria-labelledby="modal-title"
 					aria-describedby="modal-description"
