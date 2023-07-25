@@ -34,7 +34,7 @@ const Classes = () => {
 		}
 
 		try {
-			const responseTeacher = await client.get("/api/student/all");
+			const responseTeacher = await client.get("/api/teachers");
 			const responseAcademicYear = await client.get("/api/academic-years");
 			setTeachers(responseTeacher.data);
 			setAcademicYears(responseAcademicYear.data);
@@ -195,7 +195,7 @@ const Classes = () => {
 		{ field: "limitStudent", headerName: "Giới hạn", width: 100 },
 		{
 			field: "teacher",
-			headerName: "Giáo viên",
+			headerName: "Giáo viên chủ nhiệm",
 			width: 100,
 			valueGetter: (params) => params.row.teacher?.name || "",
 		},
