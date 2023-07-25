@@ -195,7 +195,7 @@ const Classes = () => {
 		{ field: "limitStudent", headerName: "Giới hạn", width: 100 },
 		{
 			field: "teacher",
-			headerName: "Giáo viên",
+			headerName: "Giáo viên chủ nhiệm",
 			width: 100,
 			valueGetter: (params) => params.row.teacher?.name || "",
 		},
