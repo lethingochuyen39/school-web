@@ -40,7 +40,7 @@ const Login = () => {
     }
     catch(e){
       console.log(e);
-      setError('Invalid Username or Password');
+      setError('Sai tên đăng nhập hoặc mật khẩu!');
     }
 	};
 	const [showPassword, setShowPassword] = useState(false);
@@ -78,7 +78,7 @@ const Login = () => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Đăng nhập
             </Typography>
 
             <Box
@@ -94,7 +94,7 @@ const Login = () => {
                 fullWidth
                 type="email"
                 id="email"
-                label="Email Address"
+                label="Địa chỉ email"
                 name="username"
                 autoComplete="email"
                 autoFocus
@@ -104,7 +104,7 @@ const Login = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Mật khẩu"
                 // type="password"
                 id="password"
                 autoComplete="current-password"
@@ -130,17 +130,17 @@ const Login = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Đăng nhặp
               </Button>
               <Grid container>
                 <Grid item xs>
                   <Link href="/forgotpassword" variant="body2">
-                    Forgot password?
+                    Quên mật khẩu?
                   </Link>
                 </Grid>
                 <Grid item xs sx={{paddingLeft: "165px"}}>
                   <Link href="/checkinfo" variant="body2">
-                    Get Account
+                    Lấy tài khoản
                   </Link>
                 </Grid>
               </Grid>
