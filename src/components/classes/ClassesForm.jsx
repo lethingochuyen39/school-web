@@ -41,12 +41,11 @@ const schema = {
       allowEmpty: false,
       message: "^Số lượng không được bỏ trống",
     },
-    length: {
-      minimum: 25,
-      maximum: 50,
-      tooShort: "^Số lượng học sinh quá ít",
-      tooLong: "^Số lượng học sinh quá nhiều",
-    },
+		numericality: {
+			greaterThanOrEqualTo: 25,
+			lessThanOrEqualTo: 50,
+			message: "^Số lượng phải nằm trong khoảng từ 25 đến 50",
+		},
   },
   academicYearId: {
     presence: {
@@ -236,7 +235,7 @@ const ClassesForm = ({
               name="teacherId"
               value={classes.teacherId}
               onChange={handleChange}
-              label="Giáo viên"
+              label="Giáo viên chủ nhiệm"
             >
               {teachers.map((teacher) => (
                 <MenuItem key={teacher.id} value={teacher.id}>
