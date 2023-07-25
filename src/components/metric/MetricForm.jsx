@@ -263,7 +263,7 @@ const MetricForm = ({
 							</FormControl>
 							<TextField
 								name="value"
-								label="Giá trị"
+								label="Học sinh"
 								value={metric.value}
 								onChange={handleChange}
 								fullWidth
